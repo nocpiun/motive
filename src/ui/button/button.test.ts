@@ -1,7 +1,7 @@
 import { Button } from "./button";
 
 describe("button-component-tests", () => {
-    const button = new Button("test");
+    const button = new Button("Test");
 
     it("button-properties", () => {
         expect(button.text).toBe("test");

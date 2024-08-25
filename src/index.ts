@@ -1,7 +1,13 @@
-import "@/style/layout.less";
+import "@/style/main.less";
 
 import { Button } from "./ui/button/button";
 
-const button = new Button("test");
+function addButton(variant: any): void {
+    const button = new Button("Test123", { variant, disabled: false });
+    document.body.appendChild(button.element);
+}
 
-document.body.appendChild(button.element);
+addButton("primary");
+addButton("secondary");
+addButton("success");
+addButton("danger");
