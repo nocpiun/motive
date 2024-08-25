@@ -4,8 +4,8 @@ describe("button-component-tests", () => {
     const button = new Button("Test");
 
     it("button-properties", () => {
-        expect(button.text).toBe("test");
-        expect(button.element.className).toStrictEqual("button");
+        expect(button.text).toBe("Test");
+        expect(Array.from(button.element.classList)).toStrictEqual(["button", "button-primary"]);
     });
 
     it("button-click", () => {
