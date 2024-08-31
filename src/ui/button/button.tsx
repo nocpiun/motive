@@ -21,7 +21,7 @@ const defaultOptions: ButtonOptions = {
     disabled: false
 };
 
-interface IButton extends IComponent {
+export interface IButton extends IComponent {
     variant: ButtonVariant
     disabled: boolean
 

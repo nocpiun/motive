@@ -6,6 +6,14 @@ export interface IComponent<E extends HTMLElement = HTMLElement> extends IDispos
 
 export type ComponentLike<E extends HTMLElement = HTMLElement> = E | IComponent<E>;
 
+function append(element: HTMLElement, target: ComponentLike): void {
+    if(target instanceof HTMLElement) {
+        target.appendChild(element);
+    } else if(target instanceof Component) {
+        (target.element as HTMLElement).appendChild(element);
+    }
+}
+
 export abstract class Component<E extends HTMLElement = HTMLElement, O = any> extends Disposable implements IComponent<E> {
     protected _options: O;
 
@@ -32,11 +40,7 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
             this._options = options;
         }
 
-        if(target instanceof HTMLElement) {
-            target.appendChild(this._element);
-        } else if(target instanceof Component) {
-            (target.element as HTMLElement).appendChild(this._element);
-        }
+        append(this._element, target);
     }
 
     public get element(): E {
@@ -49,4 +53,11 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
         this._element.remove();
         this._element = null;
     }
+}
+
+export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, target: ComponentLike): HTMLElementTagNameMap[K] {
+    const elem = document.createElement(tagName);
+    append(elem, target);
+    
+    return elem;
 }

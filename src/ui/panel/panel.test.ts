@@ -6,4 +6,10 @@ describe("panel-component-tests", () => {
     it("panel-properties", () => {
         expect(panel.element.classList.contains("panel")).toBeTruthy();
     });
+
+    it("panel-dispose", () => {
+        panel.dispose();
+
+        expect(panel.element).toBeNull();
+    });
 });

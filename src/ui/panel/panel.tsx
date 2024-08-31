@@ -1,8 +1,11 @@
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { Box, Menu, RefreshCw, RotateCw, Settings } from "lucide";
+
+import { Component, ComponentLike, createElement, IComponent } from "@/ui/ui";
+import { Button } from "@/ui/button/button";
+import { ButtonGroup } from "@/ui/button/buttonGroup";
+import { Switcher } from "@/ui/switcher/switcher";
 
 import "./panel.less";
-import { ButtonGroup } from "../button/buttonGroup";
-import { Box, Menu, RefreshCw, RotateCw, Settings } from "lucide";
 
 export interface PanelOptions {
     width?: number
@@ -30,9 +33,15 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         if(this._options.width) this._element.style.width = `${this._options.width}px`;
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
 
-        const group = new ButtonGroup(this);
-        group.addButton({ text: "Settings", icon: Settings });
-        group.addButton({ icon: RotateCw });
-        group.addButton({ icon: Box });
+        const toolbar = createElement("div", this);
+        toolbar.classList.add("panel-toolbar");
+
+        const toolbarLeftGroup = new ButtonGroup(toolbar);
+        toolbarLeftGroup.addButton({ icon: Settings });
+        toolbarLeftGroup.addButton({ icon: Box });
+
+        new Button(toolbar, { icon: RotateCw });
+
+        new Switcher(this, { text: "TestObj", icon: Box });
     }
 }
