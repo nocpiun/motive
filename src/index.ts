@@ -1,13 +1,12 @@
+import { Box, Menu, Settings } from "lucide";
+
 import "@/style/main.less";
 
-import { Button } from "./ui/button/button";
+import { ButtonGroup } from "./ui/button/buttonGroup";
 
-function addButton(variant: any): void {
-    const button = new Button("Test123", { variant, disabled: false });
-    document.body.appendChild(button.element);
-}
+const root = document.getElementById("root");
+const group = new ButtonGroup(root);
 
-addButton("primary");
-addButton("secondary");
-addButton("success");
-addButton("danger");
+group.addButton({ text: "Settings", icon: Settings });
+group.addButton({ icon: Menu, disabled: true });
+group.addButton({ icon: Box });

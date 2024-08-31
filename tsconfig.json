@@ -2,6 +2,8 @@
     "compilerOptions": {
         "target": "ES2015",
         "jsx": "react-jsx",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "paths": {
             "@/*": ["./src/*"],
             "react/jsx-runtime": ["./node_modules/jsx-dom/jsx-runtime.js"]

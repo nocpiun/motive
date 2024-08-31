@@ -1,11 +1,13 @@
 @import "@/style/vars.less";
 
-// Button Colors
 :root {
+    // Button Colors
     --mt-button-primary-bg: var(--tw-color-blue-600);
     --mt-button-primary-hover-bg: var(--tw-color-blue-700);
     --mt-button-primary-active-bg: var(--tw-color-blue-800);
     --mt-button-primary-disabled-bg: var(--tw-color-blue-500);
+    --mt-button-primary-disabled-fg: var(--tw-color-blue-700);
+    --mt-button-primary-border: var(--tw-color-blue-700);
 
     --mt-button-secondary-bg: var(--tw-color-gray-200);
     --mt-button-secondary-active-bg: var(--tw-color-gray-300);
@@ -21,20 +23,34 @@
     --mt-button-danger-hover-bg: var(--tw-color-red-700);
     --mt-button-danger-active-bg: var(--tw-color-red-800);
     --mt-button-danger-disabled-bg: var(--tw-color-red-400);
+
+    // Button Properties
+    --mt-button-border-width: 1px;
+    --mt-button-border-radius: 6px;
 }
 
 .button {
-    margin: 0 2px;
-    padding: 5px 12px;
-    border: 1px solid;
-    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin: 2px;
+    padding: 6px 10px;
+    border: var(--mt-button-border-width) solid;
+    border-radius: var(--mt-button-border-radius);
     font-family: NotoSans-SC;
     font-size: 10pt;
     cursor: pointer;
 
+    svg {
+        width: 17px;
+        height: 17px;
+    }
+
     &.button-primary {
         color: var(--mt-foreground-white);
         background-color: var(--mt-button-primary-bg);
+        border-color: var(--mt-button-primary-border);
         &:hover {
             background-color: var(--mt-button-primary-hover-bg);
         }
@@ -77,10 +93,15 @@
         }
     }
 
+    &.button-icon-only {
+        padding: 6px;
+    }
+
     &.button-disabled {
         cursor: default;
 
         &.button-primary {
+            color: var(--mt-button-primary-disabled-fg) !important;
             background-color: var(--mt-button-primary-disabled-bg);
         }
 
@@ -95,6 +116,28 @@
 
         &.button-danger {
             background-color: var(--mt-button-danger-disabled-bg);
+        }
+    }
+}
+
+.button-group {
+    display: flex;
+    margin: 2px;
+
+    .button.grouped {
+        margin: 0;
+        border-right-width: 0;
+        border-radius: 0;
+
+        &:first-child {
+            border-top-left-radius: var(--mt-button-border-radius);
+            border-bottom-left-radius: var(--mt-button-border-radius);
+        }
+
+        &:last-child {
+            border-right-width: var(--mt-button-border-width);
+            border-top-right-radius: var(--mt-button-border-radius);
+            border-bottom-right-radius: var(--mt-button-border-radius);
         }
     }
 }

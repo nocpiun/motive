@@ -4,10 +4,12 @@ export interface IComponent<E extends HTMLElement = HTMLElement> extends IDispos
     element: E
 }
 
+export type ComponentLike<E extends HTMLElement = HTMLElement> = E | IComponent<E>;
+
 export abstract class Component<E extends HTMLElement = HTMLElement, O = any> extends Disposable implements IComponent<E> {
     protected _options: O;
 
-    protected constructor(protected _element: E, defaultOptions: O, options?: O) {
+    protected constructor(protected _element: E, target: ComponentLike, defaultOptions: O, options?: O) {
         super();
 
         if(!options) {
@@ -28,6 +30,12 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
             }
 
             this._options = options;
+        }
+
+        if(target instanceof HTMLElement) {
+            target.appendChild(this._element);
+        } else if(target instanceof Component) {
+            (target.element as HTMLElement).appendChild(this._element);
         }
     }
 
