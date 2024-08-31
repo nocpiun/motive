@@ -1,0 +1,19 @@
+@import "@/style/vars.less";
+
+:root {
+    // Panel Colors
+    --mt-panel-bg: var(--tw-color-gray-100);
+    --mt-panel-border: var(--tw-color-gray-200);
+
+    // Panel Properties
+    --mt-panel-border-radius: 12px;
+    --mt-panel-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.panel {
+    padding: 7px;
+    background-color: var(--mt-panel-bg);
+    border: 1px solid var(--mt-panel-border);
+    border-radius: var(--mt-panel-border-radius);
+    box-shadow: var(--mt-panel-shadow);
+}

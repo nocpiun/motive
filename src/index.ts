@@ -1,12 +1,5 @@
-import { Box, Menu, Settings } from "lucide";
-
 import "@/style/main.less";
-
-import { ButtonGroup } from "./ui/button/buttonGroup";
+import { Panel } from "@/ui/panel/panel";
 
 const root = document.getElementById("root");
-const group = new ButtonGroup(root);
-
-group.addButton({ text: "Settings", icon: Settings });
-group.addButton({ icon: Menu, disabled: true });
-group.addButton({ icon: Box });
+new Panel(root);

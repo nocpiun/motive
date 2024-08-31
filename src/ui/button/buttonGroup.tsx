@@ -1,5 +1,5 @@
 import { Component, ComponentLike, IComponent } from "@/ui/ui";
-import { Emitter, Event } from "@/common/event";
+import { Emitter, Event, Listener } from "@/common/event";
 import { Button, type ButtonOptions } from "./button";
 
 import "./button.less";
@@ -37,11 +37,13 @@ export class ButtonGroup extends Component<HTMLDivElement, ButtonGroupOptions> i
         this._register(this._onDidChange);
     }
 
-    public addButton(options: ButtonOptions) {
+    public addButton(options: ButtonOptions, onClick?: Listener<PointerEvent>) {
         const button = new Button(this, options);
         button.element.classList.add("grouped");
         if(this._options.variant) button.variant = this._options.variant;
         if(this._options.disabled) button.disabled = true;
+
+        if(onClick) button.onClick(onClick);
 
         this._register(button);
         this._onDidChange.fire(button);

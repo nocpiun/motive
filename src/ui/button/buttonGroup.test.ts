@@ -11,14 +11,23 @@ describe("button-group-component-tests", () => {
         expect(Array.from(group.element.getElementsByTagName("button")).includes(button.element)).toBeTruthy();
     });
 
+    it("group-add-clickable-button", () => {
+        let counter = 0;
+
+        const button = group.addButton({ text: "Test2" }, () => counter++);
+        button.element.click();
+
+        expect(counter).toBe(1);
+    });
+
     it("disabled-group-add-button", () => {
-        const button = groupDisabled.addButton({ text: "Test2", disabled: false });
+        const button = groupDisabled.addButton({ text: "Test3", disabled: false });
 
         expect(button.disabled).toBeTruthy();
     });
 
     it("styled-group-add-button", () => {
-        const button = groupStyled.addButton({ text: "Test3", variant: "danger" });
+        const button = groupStyled.addButton({ text: "Test4", variant: "danger" });
 
         expect(button.variant).toBe("primary");
     });
@@ -30,7 +39,7 @@ describe("button-group-component-tests", () => {
             counter++;
         });
 
-        group.addButton({ text: "Test4" });
+        group.addButton({ text: "Test5" });
         expect(counter).toBe(1);
     });
 
