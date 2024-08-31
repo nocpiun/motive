@@ -42,6 +42,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
 
         new Button(toolbar, { icon: RotateCw });
 
-        new Switcher(this, { text: "TestObj", icon: Box });
+        new Switcher(this, { text: "TestObj", variant: "primary", icon: Box });
     }
 }
