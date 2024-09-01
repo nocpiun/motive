@@ -12,17 +12,24 @@
 }
 
 .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     padding: 7px;
     background-color: var(--mt-panel-bg);
     border: 1px solid var(--mt-panel-border);
     border-radius: var(--mt-panel-border-radius);
+    overflow: hidden;
     box-shadow: var(--mt-panel-shadow);
 
     &-toolbar {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 5px;
         padding-bottom: 5px;
         border-bottom: 1px solid var(--mt-panel-toolbar-border);
+    }
+
+    &-switcher-container {
+        overflow-y: auto;
     }
 }

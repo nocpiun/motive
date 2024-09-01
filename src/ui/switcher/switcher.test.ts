@@ -1,33 +1,40 @@
 import { Switcher } from "./switcher";
 
 describe("switcher-component-tests", () => {
-    const switcher = new Switcher(document.body, { text: "Test" });
+    const switcher1 = new Switcher(document.body, { text: "Test1" });
+    const switcher2 = new Switcher(document.body, { text: "Test2", defaultValue: true });
 
     it("switcher-properties", () => {
-        expect(switcher.element.classList.contains("switcher")).toBeTruthy();
+        expect(switcher1.element.classList.contains("switcher")).toBeTruthy();
+        expect(switcher2.element.classList.contains("switcher-active")).toBeTruthy();
     });
 
     it("switcher-toggle", () => {
-        switcher.element.click();
-        expect(switcher.isActive).toBeTruthy();
-        expect(switcher.element.classList.contains("switcher-active")).toBeTruthy();
+        switcher1.element.click();
+        expect(switcher1.isActive).toBeTruthy();
+        expect(switcher1.element.classList.contains("switcher-active")).toBeTruthy();
 
-        switcher.element.click();
-        expect(switcher.isActive).toBeFalsy();
-        expect(switcher.element.classList.contains("switcher-active")).toBeFalsy();
+        switcher1.element.click();
+        expect(switcher1.isActive).toBeFalsy();
+        expect(switcher1.element.classList.contains("switcher-active")).toBeFalsy();
     });
 
     it("switcher-toggle-change", () => {
-        switcher.onDidChange((isActive) => {
-            expect(isActive).toBeTruthy();
+        let counter = 0;
+
+        switcher1.onDidChange(({ isActive }) => {
+            if(isActive) counter++;
         });
 
-        switcher.element.click();
+        switcher1.element.click();
+        expect(counter).toBe(1);
     });
 
     it("switcher-dispose", () => {
-        switcher.dispose();
+        switcher1.dispose();
+        switcher2.dispose();
 
-        expect(switcher.element).toBeNull();
+        expect(switcher1.element).toBeNull();
+        expect(switcher2.element).toBeNull();
     });
 });

@@ -32,10 +32,12 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
         if(this._options.width) this._element.width = this._options.width;
         if(this._options.height) this._element.height = this._options.height;
 
-        this._ctx = this._element.getContext("2d");
-
-        if(!this._ctx) {
-            throw new Error("Unable to get the 2D context from canvas.");
+        if(process.env.NODE_ENV !== "test") {
+            this._ctx = this._element.getContext("2d");
+            
+            if(!this._ctx) {
+                throw new Error("Unable to get the 2D context from canvas.");
+            }
         }
     }
 

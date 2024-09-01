@@ -14,6 +14,7 @@ export interface ButtonOptions {
     height?: number
     disabled?: boolean
     icon?: IconNode
+    id?: string
 }
 
 const defaultOptions: ButtonOptions = {
@@ -24,6 +25,7 @@ const defaultOptions: ButtonOptions = {
 export interface IButton extends IComponent {
     variant: ButtonVariant
     disabled: boolean
+    id?: string
 
     onClick: Event<PointerEvent>
 }
@@ -54,6 +56,7 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
         if(this._options.disabled) this.disabled = this._options.disabled;
         if(this._options.width) this._element.style.width = `${this._options.width}px`;
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
+        if(this._options.id) this._element.id = this._options.id;
 
         this._register(this._onClick);
     }
@@ -79,6 +82,10 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
 
     public get disabled() {
         return this._options.disabled;
+    }
+
+    public get id() {
+        return this._options.id;
     }
 
     public get onClick() {

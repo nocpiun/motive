@@ -1,7 +1,8 @@
 import "@/style/main.less";
-import { Panel } from "@/ui/panel/panel";
+
 import { Canvas } from "@/ui/canvas/canvas";
 import { Render } from "@/render/render";
+import { Panel } from "@/ui/panel/panel";
 
 const root = document.getElementById("root");
 
