@@ -9,6 +9,8 @@
     // Panel Properties
     --mt-panel-border-radius: 12px;
     --mt-panel-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --mt-panel-transition-fn: ease;
+    --mt-panel-transition-duration: .3s;
 }
 
 .panel {
@@ -21,6 +23,12 @@
     border-radius: var(--mt-panel-border-radius);
     overflow: hidden;
     box-shadow: var(--mt-panel-shadow);
+    transition: transform var(--mt-panel-transition-fn) var(--mt-panel-transition-duration);
+    transform: translateY(100%);
+
+    &.panel-popped-up {
+        transform: translateY(0);
+    }
 
     &-toolbar {
         display: flex;

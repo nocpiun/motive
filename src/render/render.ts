@@ -12,9 +12,9 @@ export class Render extends Disposable {
     }
 
     private _init() {
-        this._ctx.fillStyle = "#dddddd";
-        this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
-        this._ctx.fill();
+        // this._ctx.fillStyle = "#dddddd";
+        // this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
+        // this._ctx.fill();
     }
 
     /** @todo */

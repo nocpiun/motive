@@ -13,7 +13,7 @@ export interface SwitcherOptions extends ButtonOptions {
     defaultValue?: boolean
 }
 
-interface SwitcherEvent {
+export interface SwitcherEvent {
     id?: string
     isActive: boolean
 }
@@ -27,6 +27,7 @@ interface ISwitcher extends IButton {
 
 
 export class Switcher extends Button implements ISwitcher {
+    // events
     private _onDidChange = new Emitter<SwitcherEvent>();
 
     public isActive: boolean = false;

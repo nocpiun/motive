@@ -1,5 +1,6 @@
 import { Component, ComponentLike, IComponent } from "@/ui/ui";
 import { Emitter, Event, Listener } from "@/common/event";
+import { Switcher, SwitcherOptions, type SwitcherEvent } from "@/ui/switcher/switcher";
 import { Button, type ButtonOptions } from "./button";
 
 import "./button.less";
@@ -18,6 +19,7 @@ const defaultOptions: ButtonGroupOptions = {
 
 interface IButtonGroup extends IComponent {
     addButton(options: ButtonOptions): Button
+    addSwitcher(options: SwitcherOptions): Switcher
 
     onDidChange: Event<Button>
 }
@@ -48,6 +50,19 @@ export class ButtonGroup extends Component<HTMLDivElement, ButtonGroupOptions> i
         this._register(button);
         this._onDidChange.fire(button);
         return button;
+    }
+
+    public addSwitcher(options: SwitcherOptions, onDidChange?: Listener<SwitcherEvent>): Switcher {
+        const switcher = new Switcher(this, options);
+        switcher.element.classList.add("grouped");
+        if(this._options.variant) switcher.variant = this._options.variant;
+        if(this._options.disabled) switcher.disabled = true;
+
+        if(onDidChange) switcher.onDidChange(onDidChange);
+
+        this._register(switcher);
+        this._onDidChange.fire(switcher);
+        return switcher;
     }
 
     public get onDidChange() {
