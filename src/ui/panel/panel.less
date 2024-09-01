@@ -4,6 +4,7 @@
     // Panel Colors
     --mt-panel-bg: var(--tw-color-gray-100);
     --mt-panel-border: var(--tw-color-gray-200);
+    --mt-panel-toolbar-border: var(--tw-color-gray-300);
 
     // Panel Properties
     --mt-panel-border-radius: 12px;
@@ -20,5 +21,8 @@
     &-toolbar {
         display: flex;
         justify-content: space-between;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--mt-panel-toolbar-border);
     }
 }

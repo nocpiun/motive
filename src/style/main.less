@@ -22,15 +22,22 @@ body {
     main#root {
         width: 100vw;
         height: 100vh;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
 
-        // display: flex;
-        // justify-content: center;
-        // align-items: center;
+        canvas.motive-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
 
-        // .panel {
-        //     position: absolute;
-        //     bottom: 20px;
-        // }
+        .panel {
+            position: absolute;
+            bottom: 20px;
+        }
     }
 }
 

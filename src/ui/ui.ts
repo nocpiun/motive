@@ -41,6 +41,8 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
         }
 
         append(this._element, target);
+
+        this._element.setAttribute("data-component", "");
     }
 
     public get element(): E {
