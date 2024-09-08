@@ -2,12 +2,16 @@ const path = require("path");
 
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackInjector = require("html-webpack-injector");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: "./src/index.ts",
+    entry: {
+        main: "./src/index.ts"
+    },
     output: {
-        filename: "bundle.js",
+        filename: "[name].bundle.js",
         path: path.resolve(__dirname, "build"),
         libraryTarget: "umd",
         globalObject: "this"
@@ -30,26 +34,30 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                use: ["style-loader", "css-loader", "less-loader"]
+                use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
             },
         ]
     },
     plugins: [
         new CleanWebpackPlugin(),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.join(__dirname, "./public/index.html"),
-                    to: path.join(__dirname, "./build/index.html")
-                }
-            ]
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, "./public/index.html"),
+            filename: path.join(__dirname, "./build/index.html"),
+            minify: false
+        }),
+        new HtmlWebpackInjector(),
+        new MiniCssExtractPlugin({
+            filename: "[name].bundle.css"
         }),
     ],
     optimization: {
         minimize: true,
         minimizer: [new TerserWebpackPlugin({
             extractComments: false
-        })]
+        })],
+        splitChunks: {
+            chunks: "all",
+        }
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js", ".json"],

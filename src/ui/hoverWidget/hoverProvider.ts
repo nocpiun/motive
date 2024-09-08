@@ -22,7 +22,7 @@ class HoverProvider extends Provider<HoverWidget> implements IHoverProvider {
     }
 
     public createTextHoverWidget(text: string, anchor: Anchor, position: HoverWidgetPosition) {
-        const id = generateRandomID();
+        const id = `hover.${generateRandomID()}`;
         const widget = new HoverWidget(this._providerElement, { text, anchor, position, id });
 
         this._registerComponent(id, widget);
@@ -30,7 +30,7 @@ class HoverProvider extends Provider<HoverWidget> implements IHoverProvider {
     }
 
     public createTitleTextHoverWidget(title: string, text: string, anchor: Anchor, position: HoverWidgetPosition) {
-        const id = generateRandomID();
+        const id = `hover.${generateRandomID()}`;
         const widget = new HoverWidget(this._providerElement, { title, text, anchor, position, id });
 
         this._registerComponent(id, widget);

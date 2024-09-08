@@ -52,6 +52,10 @@ export abstract class Provider<C extends Component> extends Disposable {
 }
 
 export function registerProvider<P extends Provider<C>, C extends Component>(provider: any): P {
+    if(!(provider.prototype instanceof Provider)) {
+        throw new Error("Not a valid provider.");
+    }
+
     if(providerInstances.has(provider)) {
         throw new Error("Cannot register the same provider twice.");
     }
