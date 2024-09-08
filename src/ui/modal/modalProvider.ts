@@ -4,12 +4,14 @@ import { Provider, registerProvider } from "@/ui/provider";
 import { Modal } from "./modal";
 
 // Modals
+import { TestModal } from "./testModal";
 import { SettingsModal } from "./settingsModal";
 import { ManagerModal } from "./managerModal";
 
 export interface IModalProvider extends IDisposable {
     open(id: string): void
     closeAll(): void
+    getCurrentModal(): Modal | null
 }
 
 class ModalProvider extends Provider<Modal> implements IModalProvider {
@@ -18,6 +20,7 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
     public constructor() {
         super("modal-provider");
 
+        if(process.env.NODE_ENV === "test") this._registerModal(TestModal);
         this._registerModal(SettingsModal);
         this._registerModal(ManagerModal);
     }
@@ -40,6 +43,12 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
     public closeAll() {
         this._components.forEach((modal) => modal.close());
         this._currentModalId = null;
+    }
+
+    public getCurrentModal() {
+        if(!this._currentModalId) return null;
+
+        return this._getComponent(this._currentModalId);
     }
 }
 
