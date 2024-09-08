@@ -53,6 +53,11 @@ describe("hover-widget-provider-tests", () => {
         expect(hoverWidget.text).toBe("test 1");
         expect(hoverWidget.id).toBeDefined();
         expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(1);
+
+        hoverWidget.text = "changed text";
+
+        expect(hoverWidget.text).toBe("changed text");
+        expect(document.getElementById("hover-widget-content").textContent).toBe("changed text");
     });
 
     it("create-text-hover-widget-with-title", () => {
@@ -62,6 +67,11 @@ describe("hover-widget-provider-tests", () => {
         expect(hoverWidgetWithTitle.title).toBe("Test Title");
         expect(hoverWidgetWithTitle.id).toBeDefined();
         expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(2);
+
+        hoverWidgetWithTitle.title = "changed title";
+        
+        expect(hoverWidgetWithTitle.title).toBe("changed title");
+        expect(document.getElementById("hover-widget-title").textContent).toBe("changed title");
     });
 
     it("clear-hover-widgets", () => {

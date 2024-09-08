@@ -5,6 +5,7 @@ describe("linked-nodes-tests", () => {
 
     it("create-linked-nodes-from-array", () => {
         expect(nodes.toArray()).toStrictEqual([1, 2, 3, "Hello", true]);
+        expect(nodes.length).toBe(5);
     });
 
     it("is-linked-nodes-empty", () => {

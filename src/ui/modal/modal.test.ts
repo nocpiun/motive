@@ -17,28 +17,43 @@ describe("modal-component-tests", () => {
     it("modal-properties", () => {
         expect(modal.element.classList.contains("modal-dialog")).toBeTruthy();
         expect(modal.element.id).toBe("test");
+        expect(modal.element.open).toBeFalsy();
+        expect(modal.element.classList.contains("opened")).toBeFalsy();
     });
 
     it("modal-content", () => {
         expect(modal.element.querySelector("h1").textContent).toBe("Test Modal");
-        expect(modal.element.querySelector("footer").childNodes.length).toBe(1);
+        
+        expect(modal.element.querySelector("footer").childNodes.length).toBe(2);
+        expect(document.getElementById("modal.test.test-btn").textContent).toBe("Test Footer Button");
     });
 
     it("modal-show", () => {
-        expect(modal.element.open).toBeFalsy();
-        expect(modal.element.classList.contains("opened")).toBeFalsy();
+        let counter = 0;
+
+        modal.onShow(() => {
+            counter++;
+        });
 
         modal.show();
 
         expect(modal.element.open).toBeTruthy();
         expect(modal.element.classList.contains("opened")).toBeTruthy();
+        expect(counter).toBe(1);
     });
 
     it("modal-close", () => {
+        let counter = 0;
+
+        modal.onClose(() => {
+            counter++;
+        });
+
         modal.close();
 
         expect(modal.element.open).toBeFalsy();
         expect(modal.element.classList.contains("opened")).toBeFalsy();
+        expect(counter).toBe(1);
     });
 
     it("modal-dispose", () => {
@@ -59,6 +74,9 @@ describe("modal-provider-tests", () => {
         modalProvider.open("test");
 
         const modal = modalProvider.getCurrentModal();
+        expect(modal.element.open).toBeTruthy();
+
+        modalProvider.open("test"); // open modal twice times
         expect(modal.element.open).toBeTruthy();
     });
 

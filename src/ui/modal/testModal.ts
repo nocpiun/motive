@@ -7,6 +7,12 @@ import { Modal } from "./modal";
 export class TestModal extends Modal {
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "test", title: "Test Modal" });
+        if(process.env.NODE_ENV !== "test") {
+            throw new Error("TestModal can only be used in test environment.");
+        }
+        
+        super(target, { id: "test", title: "Test Modal", width: 300, height: 200 });
+        
+        this._addFooterButton("test-btn", { text: "Test Footer Button" }, () => {});
     }
 }
