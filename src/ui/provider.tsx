@@ -5,6 +5,8 @@ import { Disposable } from "@/common/lifecycle";
 const providerHolder: HTMLDivElement = <div class="provider-holder"/>;
 document.body.appendChild(providerHolder);
 
+const providerInstances: Map<any, Provider<any>> = new Map();
+
 export abstract class Provider<C extends Component> extends Disposable {
     protected _providerElement: HTMLDivElement;
     protected _components: Map<string, C> = new Map();
@@ -33,7 +35,7 @@ export abstract class Provider<C extends Component> extends Disposable {
     protected _removeComponent(id: string): void {
         const component = this._getComponent(id);
         component.dispose();
-        
+
         this._components.delete(id);
     }
 
@@ -50,5 +52,12 @@ export abstract class Provider<C extends Component> extends Disposable {
 }
 
 export function registerProvider<P extends Provider<C>, C extends Component>(provider: any): P {
-    return new provider();
+    if(providerInstances.has(provider)) {
+        throw new Error("Cannot register the same provider twice.");
+    }
+
+    const instance = new provider();
+    providerInstances.set(provider, instance);
+
+    return instance;
 }
