@@ -1,9 +1,9 @@
 import { createElement as createLucide, type IconNode } from "lucide";
 
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
 import { Emitter, Event } from "@/common/event";
-import { hoverProvider } from "../hoverWidget/hoverProvider";
-import { HoverWidget } from "../hoverWidget/hoverWidget";
+import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { hoverProvider } from "@/ui/hoverWidget/hoverProvider";
+import { HoverWidget } from "@/ui/hoverWidget/hoverWidget";
 
 import "./button.less";
 

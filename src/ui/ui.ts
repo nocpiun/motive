@@ -8,7 +8,7 @@ export interface IComponent<E extends HTMLElement = HTMLElement> extends IDispos
     onUnhover: Event<any>
 }
 
-export type ComponentLike<E extends HTMLElement = HTMLElement> = E | IComponent<E>;
+export type ComponentLike<E extends HTMLElement = HTMLElement> = E | Element | IComponent<E>;
 
 function append(element: HTMLElement, target: ComponentLike): void {
     if(target instanceof HTMLElement) {

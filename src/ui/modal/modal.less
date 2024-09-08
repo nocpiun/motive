@@ -1,0 +1,43 @@
+:root {
+    // Modal Dialog Colors
+    --mt-modal-dialog-bg: var(--tw-color-gray-100);
+    --mt-modal-dialog-border: var(--tw-color-gray-300);
+    
+    // Modal Dialog Properties
+    --mt-modal-dialog-border-width: 1px;
+    --mt-modal-dialog-border-radius: 8px;
+    --mt-modal-dialog-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+dialog.modal-dialog {
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+    background-color: var(--mt-modal-dialog-bg);
+    border: var(--mt-modal-dialog-border-width) solid var(--mt-modal-dialog-border);
+    border-radius: var(--mt-modal-dialog-border-radius);
+    box-shadow: var(--mt-modal-dialog-shadow);
+
+    &.opened {
+        display: flex;
+    }
+
+    header.modal-dialog-header {
+        padding: 5px;
+        h1 {
+            margin: 0;
+            font-size: 18pt;
+        }
+    }
+
+    .modal-dialog-body {
+        flex: 1;
+    }
+
+    footer.modal-dialog-footer {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+        gap: 7px;
+    }
+}

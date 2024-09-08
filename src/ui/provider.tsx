@@ -29,7 +29,11 @@ export abstract class Provider<C extends Component> extends Disposable {
     }
 
     protected _getComponent(id: string): C {
-        return this._components.get(id);
+        try {
+            return this._components.get(id);
+        } catch (e) {
+            throw new Error(`Component not found in the provider ${this._id}. Id: ${id}`);
+        }
     }
 
     protected _removeComponent(id: string): void {

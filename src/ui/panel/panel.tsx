@@ -4,6 +4,7 @@ import { Component, ComponentLike, createElement, IComponent } from "@/ui/ui";
 import { Button } from "@/ui/button/button";
 import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
+import { modalProvider } from "@/ui/modal/modalProvider";
 import { Render } from "@/render/render";
 
 import "./panel.less";
@@ -53,8 +54,8 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         toolbar.classList.add("panel-toolbar");
 
         const toolbarLeftGroup = new ButtonGroup(toolbar);
-        toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => {});
-        toolbarLeftGroup.addButton({ icon: Box }, () => {});
+        toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
+        toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, () => {});
         

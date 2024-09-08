@@ -18,8 +18,8 @@ const defaultOptions: ButtonGroupOptions = {
 };
 
 interface IButtonGroup extends IComponent {
-    addButton(options: ButtonOptions): Button
-    addSwitcher(options: SwitcherOptions): Switcher
+    addButton(options: ButtonOptions, onClick?: Listener<PointerEvent>): Button
+    addSwitcher(options: SwitcherOptions, onDidChange?: Listener<SwitcherEvent>): Switcher
 
     onDidChange: Event<Button>
 }
@@ -52,7 +52,7 @@ export class ButtonGroup extends Component<HTMLDivElement, ButtonGroupOptions> i
         return button;
     }
 
-    public addSwitcher(options: SwitcherOptions, onDidChange?: Listener<SwitcherEvent>): Switcher {
+    public addSwitcher(options: SwitcherOptions, onDidChange?: Listener<SwitcherEvent>) {
         const switcher = new Switcher(this, options);
         switcher.element.classList.add("grouped");
         if(this._options.variant) switcher.variant = this._options.variant;
