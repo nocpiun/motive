@@ -1,4 +1,4 @@
-import { Box, Circle, Pin, RotateCw, Settings, Spline, X } from "lucide";
+import { Box, Circle, MousePointer2, Pin, RotateCw, Settings, Spline, X } from "lucide";
 
 import { Component, ComponentLike, createElement, IComponent } from "@/ui/ui";
 import { Button } from "@/ui/button/button";
@@ -32,6 +32,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     private _withdrawTimer: NodeJS.Timeout | null = null;
 
     private _refreshButton: Button;
+    private _pinSwitcher: Switcher;
     private _closeButton: Button;
     private _switchers: Switcher[] = [];
 
@@ -52,12 +53,13 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         toolbar.classList.add("panel-toolbar");
 
         const toolbarLeftGroup = new ButtonGroup(toolbar);
-        toolbarLeftGroup.addButton({ icon: Settings }, () => {});
+        toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => {});
         toolbarLeftGroup.addButton({ icon: Box }, () => {});
-        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw });
+        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
+        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, () => {});
         
         const toolbarRightGroup = new ButtonGroup(toolbar);
-        toolbarRightGroup.addSwitcher({ icon: Pin }, ({ isActive }) => {
+        this._pinSwitcher = toolbarRightGroup.addSwitcher({ icon: Pin, tooltip: "固定" }, ({ isActive }) => {
             isActive ? this._pin() : this._unpin();
         });
         this._closeButton = toolbarRightGroup.addButton({ icon: X }, () => this._withdraw(false));
@@ -65,9 +67,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const switcherContainer = createElement("div", this);
         switcherContainer.classList.add("panel-switcher-container");
 
-        this._switchers.push(new Switcher(switcherContainer, { id: "objects.ball", text: "小球", icon: Circle, defaultValue: true }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "objects.board", text: "木板", icon: Box }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "objects.rope", text: "绳子", icon: Spline }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "obj.ball", text: "小球", icon: Circle, defaultValue: true }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "obj.board", text: "木板", icon: Box }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "obj.rope", text: "绳子", icon: Spline }));
 
         // Listeners
 
@@ -105,6 +107,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
 
         this._isPinned = true;
         this._popUp();
+        this._pinSwitcher.setTooltip("取消固定");
         this._closeButton.disabled = true;
     }
 
@@ -112,6 +115,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         if(!this._isPinned) return;
 
         this._isPinned = false;
+        this._pinSwitcher.setTooltip("固定");
         this._closeButton.disabled = false;
     }
 

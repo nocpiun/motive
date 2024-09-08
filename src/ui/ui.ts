@@ -1,7 +1,11 @@
-import { Disposable, IDisposable } from "@/common/lifecycle";
+import { Emitter, Event } from "@/common/event";
+import { Disposable, type IDisposable } from "@/common/lifecycle";
 
 export interface IComponent<E extends HTMLElement = HTMLElement> extends IDisposable {
     element: E
+
+    onHover: Event<any>
+    onUnhover: Event<any>
 }
 
 export type ComponentLike<E extends HTMLElement = HTMLElement> = E | IComponent<E>;
@@ -16,6 +20,10 @@ function append(element: HTMLElement, target: ComponentLike): void {
 
 export abstract class Component<E extends HTMLElement = HTMLElement, O = any> extends Disposable implements IComponent<E> {
     protected _options: O;
+
+    // events
+    private _onHover = new Emitter();
+    private _onUnhover = new Emitter();
 
     protected constructor(protected _element: E, target: ComponentLike, defaultOptions: O, options?: O) {
         super();
@@ -43,10 +51,24 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
         append(this._element, target);
 
         this._element.setAttribute("data-component", "");
+
+        this._element.addEventListener("mouseenter", () => this._onHover.fire());
+        this._element.addEventListener("mouseleave", () => this._onUnhover.fire());
+
+        this._register(this._onHover);
+        this._register(this._onUnhover);
     }
 
     public get element(): E {
         return this._element;
+    }
+
+    public get onHover() {
+        return this._onHover.event;
+    }
+
+    public get onUnhover() {
+        return this._onUnhover.event;
     }
 
     public override dispose() {

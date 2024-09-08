@@ -1,0 +1,52 @@
+@import "@/style/vars.less";
+
+:root {
+    // Hover Widgets Colors
+    --mt-hover-widget-bg: var(--tw-color-gray-100);
+    --mt-hover-widget-border: var(--tw-color-gray-200);
+    
+    // Hover Widgets Properties
+    --mt-hover-widget-border-width: 1px;
+    --mt-hover-widget-border-radius: 4px;
+    --mt-hover-widget-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.hover-widget {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-items: center;
+    width: fit-content;
+    height: fit-content;
+    max-width: 400px;
+    max-height: 190px;
+    padding: 5px 9px;
+    overflow-y: auto;
+    color: var(--mt-foreground);
+    background-color: var(--mt-hover-widget-bg);
+    border: var(--mt-hover-widget-border-width) solid var(--mt-hover-widget-border);
+    border-radius: var(--mt-hover-widget-border-radius);
+    box-shadow: var(--mt-hover-widget-shadow);
+    transition: opacity ease .1s;
+    opacity: 0;
+    z-index: 1000;
+
+    &:has(#hover-widget-title) {
+        padding: 6px 10px;
+        padding-bottom: 10px;
+    }
+
+    h1#hover-widget-title {
+        margin: 0;
+        font-size: 11pt;
+        white-space: pre-wrap;
+    }
+
+    span#hover-widget-content {
+        font-size: 9.4pt;
+        white-space: pre-wrap;
+    }
+}

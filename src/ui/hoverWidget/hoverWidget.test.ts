@@ -1,0 +1,72 @@
+import { hoverProvider } from "./hoverProvider";
+import { HoverWidget } from "./hoverWidget";
+
+describe("hover-widget-component-tests", () => {
+    const hoverWidget = new HoverWidget(document.body, { text: "test 1", anchor: { x: 50, y: 40 }, position: "bottom-right" });
+    const hoverWidgetWithTitle = new HoverWidget(document.body, { title: "Test Title", text: "test 2", anchor: { x: 50, y: 40 }, position: "bottom-left" });
+
+    it("hover-widget-properties", () => {
+        expect(Array.from(hoverWidget.element.classList)).toStrictEqual(["hover-widget"]);
+        expect(Array.from(hoverWidgetWithTitle.element.classList)).toStrictEqual(["hover-widget"]);
+
+        expect(hoverWidget.element.getAttribute("data-position")).toBe("bottom-right");
+        expect(hoverWidgetWithTitle.element.getAttribute("data-position")).toBe("bottom-left");
+    });
+
+    it("hover-widget-text", () => {
+        expect(hoverWidget.text).toBe("test 1");
+        expect(hoverWidget.element.querySelector("#hover-widget-content").textContent).toBe("test 1");
+        expect(hoverWidget.title).toBeUndefined();
+        expect(hoverWidget.element.querySelector("#hover-widget-title")).toBeNull();
+
+        expect(hoverWidgetWithTitle.text).toBe("test 2");
+        expect(hoverWidgetWithTitle.element.querySelector("#hover-widget-content").textContent).toBe("test 2");
+        expect(hoverWidgetWithTitle.title).toBe("Test Title");
+        expect(hoverWidgetWithTitle.element.querySelector("#hover-widget-title").textContent).toBe("Test Title");
+    });
+
+    it("hover-widget-position", () => {
+        expect(hoverWidget.element.style.top).toBe("40px");
+        expect(hoverWidget.element.style.left).toBe("50px");
+
+        expect(hoverWidgetWithTitle.element.style.top).toBe("40px");
+        expect(hoverWidgetWithTitle.element.style.left).toBe("50px");
+    });
+
+    it("hover-widget-dispose", () => {
+        hoverWidget.dispose();
+        hoverWidgetWithTitle.dispose();
+
+        expect(hoverWidget.element).toBeNull();
+        expect(hoverWidgetWithTitle.element).toBeNull();
+    });
+});
+
+describe("hover-widget-provider-tests", () => {
+    it("get-hover-provider", () => {
+        expect(hoverProvider).toBeDefined();
+    });
+
+    it("create-text-hover-widget", () => {
+        const hoverWidget = hoverProvider.createTextHoverWidget("test 1", { x: 50, y: 40 }, "bottom-right");
+
+        expect(hoverWidget.text).toBe("test 1");
+        expect(hoverWidget.id).toBeDefined();
+        expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(1);
+    });
+
+    it("create-text-hover-widget-with-title", () => {
+        const hoverWidgetWithTitle = hoverProvider.createTitleTextHoverWidget("Test Title", "test 2", { x: 50, y: 40 }, "bottom-right");
+
+        expect(hoverWidgetWithTitle.text).toBe("test 2");
+        expect(hoverWidgetWithTitle.title).toBe("Test Title");
+        expect(hoverWidgetWithTitle.id).toBeDefined();
+        expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(2);
+    });
+
+    it("clear-hover-widgets", () => {
+        hoverProvider.clearHoverWidgets();
+
+        expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(0);
+    });
+});
