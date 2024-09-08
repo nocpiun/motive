@@ -1,4 +1,4 @@
-import { Modal } from "./modal";
+import { TestModal } from "./testModal";
 import { modalProvider } from "./modalProvider";
 
 /** @see https://github.com/jsdom/jsdom/issues/3294#issuecomment-1196577616 */
@@ -12,7 +12,7 @@ beforeAll(() => {
 });
 
 describe("modal-component-tests", () => {
-    const modal = new Modal(document.body, { id: "test", title: "Test Modal Dialog" });
+    const modal = new TestModal(document.body);
 
     it("modal-properties", () => {
         expect(modal.element.classList.contains("modal-dialog")).toBeTruthy();
@@ -20,7 +20,7 @@ describe("modal-component-tests", () => {
     });
 
     it("modal-content", () => {
-        expect(modal.element.querySelector("h1").textContent).toBe("Test Modal Dialog");
+        expect(modal.element.querySelector("h1").textContent).toBe("Test Modal");
         expect(modal.element.querySelector("footer").childNodes.length).toBe(1);
     });
 
