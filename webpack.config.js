@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlWebpackInjector = require("html-webpack-injector");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -52,9 +53,12 @@ module.exports = {
     ],
     optimization: {
         minimize: true,
-        minimizer: [new TerserWebpackPlugin({
-            extractComments: false
-        })],
+        minimizer: [
+            new TerserWebpackPlugin({
+                extractComments: false
+            }),
+            new CssMinimizerPlugin()
+        ],
         splitChunks: {
             chunks: "all",
         }
