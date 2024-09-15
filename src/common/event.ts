@@ -1,5 +1,4 @@
-import { LinkedNodes } from "@/utils/linkedNodes";
-
+import { LinkedNodes } from "./utils/linkedNodes";
 import { Disposable } from "./lifecycle";
 
 export interface Listener<T> {

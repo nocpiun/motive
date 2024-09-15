@@ -1,4 +1,4 @@
-import { LinkedNodes } from "@/utils/linkedNodes";
+import { LinkedNodes } from "@/common/utils/linkedNodes";
 
 describe("linked-nodes-tests", () => {
     const nodes = LinkedNodes.from([1, 2, 3, "Hello", true]);

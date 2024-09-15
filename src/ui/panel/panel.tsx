@@ -5,7 +5,7 @@ import { Button } from "@/ui/button/button";
 import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
-import { Render } from "@/render/render";
+import { Render } from "@/simulator/render/render";
 
 import "./panel.less";
 

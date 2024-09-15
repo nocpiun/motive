@@ -1,7 +1,7 @@
 import type { IDisposable } from "@/common/lifecycle";
 
 import { Provider, registerProvider } from "@/ui/provider";
-import { generateRandomID } from "@/utils/utils";
+import { generateRandomID } from "@/common/utils/utils";
 
 import { HoverWidget, HoverWidgetPosition } from "./hoverWidget";
 

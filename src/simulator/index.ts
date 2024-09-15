@@ -1,7 +1,8 @@
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
-import { Render } from "@/render/render";
 import { Panel } from "@/ui/panel/panel";
+
+import { Render } from "./render/render";
 
 export class Motive extends Disposable {
     private _canvas: Canvas;
