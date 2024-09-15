@@ -31,6 +31,8 @@ export abstract class Provider<C extends Component> extends Disposable {
     protected _getComponent(id: string): C {
         try {
             return this._components.get(id);
+            
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             throw new Error(`Component not found in the provider ${this._id}. Id: ${id}`);
         }

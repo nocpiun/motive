@@ -126,14 +126,14 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         
         this._register(this._refreshButton.onClick(() => this._renderer.refresh()));
 
-        for(let switcher of this._switchers) {
+        for(const switcher of this._switchers) {
             this._register(
                 switcher.onDidChange(({ id, isActive }) => {
                     if(!isActive) {
                         switcher.setActive(true);
                     }
 
-                    for(let _switcher of this._switchers) {
+                    for(const _switcher of this._switchers) {
                         if(_switcher.id !== id) {
                             _switcher.setActive(false);
                         }

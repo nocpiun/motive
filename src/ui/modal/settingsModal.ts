@@ -1,4 +1,5 @@
 import { ComponentLike } from "@/ui/ui";
+
 import { Modal } from "./modal";
 
 export class SettingsModal extends Modal {

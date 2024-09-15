@@ -1,6 +1,4 @@
-import { createElement as createLucide, type IconNode } from "lucide";
-
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { ComponentLike } from "@/ui/ui";
 import { Button, ButtonOptions, IButton } from "@/ui/button/button";
 import { Emitter, Event } from "@/common/event";
 

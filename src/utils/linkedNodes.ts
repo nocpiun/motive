@@ -23,7 +23,7 @@ export class LinkedNodes<E> {
     public static from<E>(iterable: Iterable<E>): LinkedNodes<E> {
         const nodes = new LinkedNodes<E>();
 
-        for(let item of iterable) {
+        for(const item of iterable) {
             nodes.push(item);
         }
 
@@ -41,7 +41,7 @@ export class LinkedNodes<E> {
     public toArray(): E[] {
         const arr: E[] = [];
         
-        for(let node of this) {
+        for(const node of this) {
             arr.push(node);
         }
 
@@ -53,7 +53,7 @@ export class LinkedNodes<E> {
 
         let node = this._first;
         while(node !== Node.Undefined) {
-            let next = node.next;
+            const next = node.next;
             node.prev = Node.Undefined;
             node.next = Node.Undefined;
             node.value = undefined;

@@ -1,8 +1,9 @@
 import type { IDisposable } from "@/common/lifecycle";
 
 import { Provider, registerProvider } from "@/ui/provider";
-import { HoverWidget, HoverWidgetPosition } from "./hoverWidget";
 import { generateRandomID } from "@/utils/utils";
+
+import { HoverWidget, HoverWidgetPosition } from "./hoverWidget";
 
 export interface Anchor {
     x: number

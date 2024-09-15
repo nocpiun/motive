@@ -1,4 +1,5 @@
 import { LinkedNodes } from "@/utils/linkedNodes";
+
 import { Disposable } from "./lifecycle";
 
 export interface Listener<T> {
@@ -42,7 +43,7 @@ export class Emitter<T> extends Disposable {
     public fire(data?: T): void {
         if(this._isDisposed) return;
 
-        for(let listener of this._listeners) {
+        for(const listener of this._listeners) {
             listener(data);
 
             if(listener.once) {

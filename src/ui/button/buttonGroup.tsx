@@ -1,6 +1,7 @@
 import { Component, ComponentLike, IComponent } from "@/ui/ui";
 import { Emitter, Event, Listener } from "@/common/event";
 import { Switcher, SwitcherOptions, type SwitcherEvent } from "@/ui/switcher/switcher";
+
 import { Button, type ButtonOptions } from "./button";
 
 import "./button.less";

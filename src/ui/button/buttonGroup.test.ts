@@ -35,7 +35,7 @@ describe("button-group-component-tests", () => {
     it("button-group-change", () => {
         let counter = 0;
 
-        group.onDidChange((_newButton) => {
+        group.onDidChange(() => {
             counter++;
         });
 
