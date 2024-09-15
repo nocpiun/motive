@@ -22,7 +22,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
+    # Use `-f` flag to force install eslint-plugin-import
+    - run: npm install -f
 
     - name: Run ESLint
       run: npm run lint
