@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Linting
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  lint:
 
     runs-on: ubuntu-latest
 
@@ -24,10 +24,5 @@ jobs:
         cache: 'npm'
     - run: npm install
 
-    - name: Run Jest tests
-      run: npm run test-coverage
-    
-    - name: Upload test results to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Run ESLint
+      run: npm run lint
