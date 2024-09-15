@@ -15,9 +15,6 @@ export default ts.config(
         files: [
             "src/**/*.{js,jsx,ts,tsx}"
         ],
-        ignores: [
-            "eslint.config.js"
-        ],
         languageOptions: {
             parserOptions: {
                 sourceType: "module",
@@ -43,6 +40,9 @@ export default ts.config(
             "eqeqeq": "error",
             "prefer-arrow-callback": "warn",
             "prefer-const": "error",
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-unused-expressions": "off",
+            "@typescript-eslint/only-throw-error": "error",
             "import/order": ["warn", {
                 "groups": [
                     "type",
@@ -56,9 +56,6 @@ export default ts.config(
             "import/first": "error",
             "import/no-duplicates": "error",
             "import/no-named-as-default": "off",
-            "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-unused-expressions": "off",
-            "@typescript-eslint/only-throw-error": "error",
         }
     },
     {
@@ -68,6 +65,21 @@ export default ts.config(
         ...jest.configs["flat/recommended"],
         rules: {
             ...jest.configs['flat/recommended'].rules,
+            "jest/expect-expect": "off",
+        }
+    },
+    {
+        files: [
+            "*.config.{js,mjs}"
+        ],
+        languageOptions: {
+            globals: {
+                __dirname: "readonly",
+                ...globals.commonjs,
+            }
+        },
+        rules: {
+            "@typescript-eslint/no-require-imports": "off"
         }
     },
 );
