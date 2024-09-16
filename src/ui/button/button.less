@@ -50,10 +50,10 @@
         height: 17px;
     }
 
-    &.button-primary {
+    &-primary {
         color: var(--mt-foreground-white);
         background-color: var(--mt-button-primary-bg);
-        border-color: var(--mt-button-primary-border);
+        border-color: var(--mt-button-primary-bg);
         &:hover {
             background-color: var(--mt-button-primary-hover-bg);
         }
@@ -62,7 +62,7 @@
         }
     }
 
-    &.button-secondary {
+    &-secondary {
         color: var(--mt-foreground-secondary);
         background-color: var(--mt-button-secondary-bg);
         border-color: var(--mt-button-secondary-border);
@@ -74,9 +74,10 @@
         }
     }
 
-    &.button-success {
+    &-success {
         color: var(--mt-foreground-white);
         background-color: var(--mt-button-success-bg);
+        border-color: var(--mt-button-success-bg);
         &:hover {
             background-color: var(--mt-button-success-hover-bg);
         }
@@ -85,9 +86,10 @@
         }
     }
 
-    &.button-danger {
+    &-danger {
         color: var(--mt-foreground-white);
         background-color: var(--mt-button-danger-bg);
+        border-color: var(--mt-button-danger-bg);
         &:hover {
             background-color: var(--mt-button-danger-hover-bg);
         }
@@ -96,11 +98,11 @@
         }
     }
 
-    &.button-icon-only {
+    &-icon-only {
         padding: 6px;
     }
 
-    &.button-disabled {
+    &-disabled {
         cursor: default;
 
         &.button-primary {

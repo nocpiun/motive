@@ -68,9 +68,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const switcherContainer = createElement("div", this);
         switcherContainer.classList.add("panel-switcher-container");
 
-        this._switchers.push(new Switcher(switcherContainer, { id: "obj.ball", text: "小球", icon: Circle, defaultValue: true }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "obj.board", text: "木板", icon: Box }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "obj.rope", text: "绳子", icon: Spline }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.ball", text: "小球", icon: Circle, defaultValue: true }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.board", text: "木板", icon: Box }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.rope", text: "绳子", icon: Spline }));
 
         // Listeners
 

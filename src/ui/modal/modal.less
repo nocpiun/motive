@@ -2,6 +2,9 @@
     // Modal Dialog Colors
     --mt-modal-dialog-bg: var(--tw-color-gray-100);
     --mt-modal-dialog-border: var(--tw-color-gray-300);
+    --mt-modal-dialog-close-icon-color: var(--tw-color-gray-500);
+    --mt-modal-dialog-close-icon-hover-color: var(--tw-color-gray-600);
+    --mt-modal-dialog-close-icon-active-color: var(--tw-color-gray-700);
     
     // Modal Dialog Properties
     --mt-modal-dialog-border-width: 1px;
@@ -23,10 +26,35 @@ dialog.modal-dialog {
     }
 
     header.modal-dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 5px;
-        h1 {
+
+        .modal-dialog-title {
             margin: 0;
+            padding-left: 4px;
             font-size: 18pt;
+            font-weight: bold;
+        }
+
+        .modal-dialog-close-button {
+            display: flex;
+            align-items: center;
+            padding-top: 4px;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            svg {
+                color: var(--mt-modal-dialog-close-icon-color);
+                &:hover {
+                    color: var(--mt-modal-dialog-close-icon-hover-color);
+                }
+                &:active {
+                    color: var(--mt-modal-dialog-close-icon-active-color);
+                }
+            }
         }
     }
 

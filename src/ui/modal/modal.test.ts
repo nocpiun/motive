@@ -22,9 +22,9 @@ describe("modal-component-tests", () => {
     });
 
     it("modal-content", () => {
-        expect(modal.element.querySelector("h1").textContent).toBe("Test Modal");
+        expect(modal.element.querySelector("span").textContent).toBe("Test Modal");
         
-        expect(modal.element.querySelector("footer").childNodes.length).toBe(2);
+        expect(modal.element.querySelector("footer").childNodes.length).toBe(1);
         expect(document.getElementById("modal.test.test-btn").textContent).toBe("Test Footer Button");
     });
 

@@ -43,6 +43,7 @@ export default ts.config(
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-unused-expressions": "off",
             "@typescript-eslint/only-throw-error": "error",
+            "@typescript-eslint/switch-exhaustiveness-check": "error",
             "import/order": ["warn", {
                 "groups": [
                     "type",
@@ -66,6 +67,7 @@ export default ts.config(
         rules: {
             ...jest.configs['flat/recommended'].rules,
             "jest/expect-expect": "off",
+            "jest/no-commented-out-tests": "off",
         }
     },
     {

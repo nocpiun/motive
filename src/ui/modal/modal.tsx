@@ -1,3 +1,5 @@
+import { createElement as createLucide, X } from "lucide";
+
 import { Emitter, Event, Listener } from "@/common/event";
 import { Component, ComponentLike, IComponent } from "@/ui/ui";
 import { Button, ButtonOptions } from "@/ui/button/button";
@@ -40,7 +42,14 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
             (
                 <dialog className="modal-dialog" id={_options.id}>
                     <header className="modal-dialog-header">
-                        <h1>{_options.title}</h1>
+                        <span className="modal-dialog-title">{_options.title}</span>
+                        
+                        <button
+                            className="modal-dialog-close-button"
+                            id={`modal.${_options.id}.close`}
+                            onClick={() => this.close()}>
+                            {createLucide(X)}
+                        </button>
                     </header>
                     
                     <div className="modal-dialog-body"/>
@@ -57,8 +66,6 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
 
         this._container = this._element.querySelector(".modal-dialog-body");
-
-        this._addFooterButton("close", { text: "关闭" }, () => this.close());
     }
 
     public get id() {
