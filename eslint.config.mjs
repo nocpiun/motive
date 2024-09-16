@@ -40,10 +40,19 @@ export default ts.config(
             "eqeqeq": "error",
             "prefer-arrow-callback": "warn",
             "prefer-const": "error",
+            "no-unused-vars": ["error", {
+                "args": "none",
+                "caughtErrors": "none"
+            }],
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-unused-expressions": "off",
             "@typescript-eslint/only-throw-error": "error",
             "@typescript-eslint/switch-exhaustiveness-check": "error",
+            "@typescript-eslint/no-empty-object-type": "off",
+            "@typescript-eslint/no-unused-vars": ["error", {
+                "args": "none",
+                "caughtErrors": "none"
+            }],
             "import/order": ["warn", {
                 "groups": [
                     "type",
