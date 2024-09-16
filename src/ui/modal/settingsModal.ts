@@ -1,4 +1,4 @@
-import { ComponentLike } from "@/ui/ui";
+import type { ComponentLike } from "@/ui/ui";
 
 import { Modal } from "./modal";
 

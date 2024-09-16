@@ -1,6 +1,6 @@
 import type { Anchor } from "./hoverProvider";
 
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 
 import "./hoverWidget.less";
 

@@ -3,7 +3,7 @@ import type { IDisposable } from "@/common/lifecycle";
 import { Provider, registerProvider } from "@/ui/provider";
 
 // eslint-disable-next-line import/order
-import { Modal } from "./modal";
+import type { Modal } from "./modal";
 
 // Modals
 import { TestModal } from "./testModal";

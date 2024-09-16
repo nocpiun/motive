@@ -1,4 +1,4 @@
-import { Emitter, Event } from "@/common/event";
+import { Emitter, type Event } from "@/common/event";
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 
 export interface IComponent<E extends HTMLElement = HTMLElement> extends IDisposable {

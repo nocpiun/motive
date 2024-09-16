@@ -1,4 +1,4 @@
-import { Emitter, Event } from "@/common/event";
+import { Emitter, type Event } from "@/common/event";
 
 describe("event-interfaces-tests", () => {
     class TestClass {

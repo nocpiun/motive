@@ -1,8 +1,8 @@
 import { createElement as createLucide, X } from "lucide";
 
-import { Emitter, Event, Listener } from "@/common/event";
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
-import { Button, ButtonOptions } from "@/ui/button/button";
+import { Emitter, type Event, type Listener } from "@/common/event";
+import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
+import { Button, type ButtonOptions } from "@/ui/button/button";
 
 import "./modal.less";
 

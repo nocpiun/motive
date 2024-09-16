@@ -1,5 +1,5 @@
-import { Emitter, Event } from "@/common/event";
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { Emitter, type Event } from "@/common/event";
+import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 
 import "./input.less";
 

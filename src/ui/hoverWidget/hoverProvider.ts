@@ -3,7 +3,7 @@ import type { IDisposable } from "@/common/lifecycle";
 import { Provider, registerProvider } from "@/ui/provider";
 import { generateRandomID } from "@/common/utils/utils";
 
-import { HoverWidget, HoverWidgetPosition } from "./hoverWidget";
+import { HoverWidget, type HoverWidgetPosition } from "./hoverWidget";
 
 export interface Anchor {
     x: number

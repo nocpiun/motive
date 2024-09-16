@@ -1,9 +1,10 @@
-import { Disposable } from "@/common/lifecycle";
-import { Canvas } from "@/ui/canvas/canvas";
+import type { Canvas } from "@/ui/canvas/canvas";
+
+import { Disposable, type IDisposable } from "@/common/lifecycle";
 
 import { colors } from "./colors";
 
-interface IRender {
+interface IRender extends IDisposable {
     refresh(): void
     update(delta: number): void
 }

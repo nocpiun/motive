@@ -1,6 +1,7 @@
-import { ComponentLike } from "@/ui/ui";
-import { Button, ButtonOptions, IButton } from "@/ui/button/button";
-import { Emitter, Event } from "@/common/event";
+import type { ComponentLike } from "@/ui/ui";
+
+import { Button, type ButtonOptions, type IButton } from "@/ui/button/button";
+import { Emitter, type Event } from "@/common/event";
 
 import "./switcher.less";
 

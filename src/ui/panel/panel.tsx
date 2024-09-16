@@ -1,11 +1,12 @@
+import type { Button } from "@/ui/button/button";
+import type { Render } from "@/simulator/render/render";
+
 import { Box, Circle, MousePointer2, Pin, RotateCw, Settings, Spline, X } from "lucide";
 
-import { Component, ComponentLike, createElement, IComponent } from "@/ui/ui";
-import { Button } from "@/ui/button/button";
+import { Component, type ComponentLike, createElement, type IComponent } from "@/ui/ui";
 import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
-import { Render } from "@/simulator/render/render";
 
 import "./panel.less";
 

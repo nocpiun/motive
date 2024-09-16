@@ -53,6 +53,7 @@ export default ts.config(
                 "args": "none",
                 "caughtErrors": "none"
             }],
+            "@typescript-eslint/consistent-type-imports": "warn",
             "import/order": ["warn", {
                 "groups": [
                     "type",

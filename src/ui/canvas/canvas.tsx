@@ -1,4 +1,4 @@
-import { Component, ComponentLike, IComponent } from "@/ui/ui";
+import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { colors, type Color } from "@/simulator/render/colors";
 
 import "./canvas.less";
