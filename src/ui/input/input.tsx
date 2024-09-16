@@ -31,6 +31,7 @@ export interface IInput extends IComponent {
     disabled: boolean
     id?: string
 
+    type(text: string): void
     reset(): void
 
     onInput: Event<string>
@@ -51,7 +52,7 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
                         this._onDidChange.fire(this.value);
                     }}
                     onInput={(e: InputEvent) => {
-                        if(!this._validate()) {
+                        if(!this._validate(this.value)) {
                             e.preventDefault();
                             this.value = this.value.substring(0, this.value.length - 1);
 
@@ -78,14 +79,14 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
         this._register(this._onDidChange);
     }
 
-    private _validate(): boolean {
-        if(this.value.length > this._options.maxLength) return false;
+    private _validate(value: string): boolean {
+        if(value.length > this._options.maxLength) return false;
 
         switch(this._options.type) {
             case "text":
                 return true;
             case "number": {
-                const num = Number(this.value);
+                const num = Number(value);
 
                 if(isNaN(num)) return false;
                 if(num > this._options.maxValue) return false;
@@ -118,6 +119,15 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
 
     public get id() {
         return this._options.id;
+    }
+
+    public type(text: string) {
+        if(this._options.disabled || !this._validate(this.value + text)) return;
+
+        this.value += text;
+
+        this._onInput.fire(this.value);
+        this._onDidChange.fire(this.value);
     }
 
     public reset() {
