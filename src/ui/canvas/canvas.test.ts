@@ -4,7 +4,7 @@ describe("canvas-component-tests", () => {
     const canvas = new Canvas(document.body);
 
     it("canvas-properties", () => {
-        expect(canvas.element.classList.contains("motive-canvas")).toBeTruthy();
+        expect(canvas.element.classList.contains("motive-canvas-container")).toBeTruthy();
     });
 
     it("canvas-dispose", () => {
