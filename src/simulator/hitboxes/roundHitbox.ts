@@ -30,8 +30,11 @@ export class RoundHitbox extends Hitbox implements IRoundHitbox {
         if(hitbox instanceof ConvexHitbox) {
             //
         } else if(hitbox instanceof RoundHitbox) {
-            if(getPointDistance(this._anchor, hitbox._anchor) <= (this.radius + hitbox.radius)) {
-                this._onHit.fire(obj);
+            const distance = getPointDistance(this.anchor, hitbox.anchor);
+            const radiusSum = this.radius + hitbox.radius;
+
+            if(distance <= radiusSum) {
+                this._onHit.fire({ obj, depth: radiusSum - distance });
             }
         }
     }

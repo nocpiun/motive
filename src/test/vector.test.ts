@@ -9,6 +9,14 @@ describe("vector-tests", () => {
         expect(zero.length).toBe(0);
     });
 
+    it("get-unit-vector", () => {
+        const vector1 = Vector.Zero;
+        const vector2 = new Vector(3, 4);
+
+        expect(vector1.getUnitVector()).toBe(Vector.Zero);
+        expect(vector2.getUnitVector()).toEqual(new Vector(0.6, 0.8));
+    });
+
     it("vector-length", () => {
         const vector = new Vector(3, 4);
 
@@ -49,10 +57,11 @@ describe("vector-tests", () => {
         expect(Vector.reverse(vector)).toEqual(new Vector(-3, -4));
     });
 
-    it("vector-create-unit-vector", () => {
-        const vector = Vector.createUnitVector(Math.PI / 2);
+    it("vector-from-2-points", () => {
+        const point1 = new Vector(3, 4);
+        const point2 = new Vector(5, 6);
 
-        expect(vector).toEqual(new Vector(-0, 1));
+        expect(Vector.fromPoints(point1, point2)).toEqual(new Vector(2, 2));
     });
 });
 

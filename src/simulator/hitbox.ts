@@ -5,20 +5,22 @@ import { Emitter, type Event } from "@/common/event";
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 
 export interface IHitbox extends IDisposable {
+    anchor: Point
+
     test(obj: CanvasObject): void
     setAnchor(anchor: Point): void
     cancelNextTest(): void
 
-    onHit: Event<CanvasObject>
+    onHit: Event<{ obj: CanvasObject, depth: number }>
 }
 
 export abstract class Hitbox extends Disposable implements IHitbox {
     // events
-    protected _onHit = new Emitter<CanvasObject>();
+    protected _onHit = new Emitter<{ obj: CanvasObject, depth: number }>();
 
     protected _isNextTestCancelled: boolean = false;
 
-    public constructor(protected _anchor: Point) {
+    public constructor(public anchor: Point) {
         super();
 
         this._register(this._onHit);
@@ -27,7 +29,7 @@ export abstract class Hitbox extends Disposable implements IHitbox {
     public abstract test(obj: CanvasObject): void;
 
     public setAnchor(anchor: Point) {
-        this._anchor = anchor;
+        this.anchor = anchor;
     }
 
     public cancelNextTest() {

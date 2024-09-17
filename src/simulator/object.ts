@@ -7,18 +7,22 @@ import { Disposable } from "@/common/lifecycle";
 import { Vector, VectorCollection } from "./vector";
 
 interface ICanvasObject extends Renderable {
+    obj: PIXI.ContainerChild
     mass: number
     velocity: Vector
 
     applyForce(force: Vector): void
+    applyOnceForce(force: Vector): void
     clearForces(): void
+    updateHitboxAnchor(): void
 }
 
 export class CanvasObject extends Disposable implements ICanvasObject {
     private _forces: VectorCollection = new VectorCollection();
+    private _onceForces: VectorCollection = new VectorCollection();
 
     public constructor(
-        protected _obj: PIXI.ContainerChild,
+        public obj: PIXI.ContainerChild,
         public mass: number,
         public velocity: Vector,
         public hitbox: Hitbox
@@ -32,12 +36,17 @@ export class CanvasObject extends Disposable implements ICanvasObject {
         this._forces.push(force);
     }
 
-    public clearForces() {
-        this._forces.clear();
+    public applyOnceForce(force: Vector) {
+        this._onceForces.push(force);
     }
 
-    protected _updateHitboxAnchor(): void {
-        const bound = this._obj.getBounds();
+    public clearForces() {
+        this._forces.clear();
+        this._onceForces.clear();
+    }
+
+    public updateHitboxAnchor(): void {
+        const bound = this.obj.getBounds();
         this.hitbox.setAnchor({
             x: bound.x,
             y: bound.y
@@ -45,16 +54,17 @@ export class CanvasObject extends Disposable implements ICanvasObject {
     }
 
     public update(delta: number, app: PIXI.Application) {
-        const sumForce = this._forces.getSum();
+        const sumForce = Vector.add(this._forces.getSum(), this._onceForces.getSum());
         const accelerate = Vector.multiplyScalar(sumForce, 1 / this.mass);
         
         this.velocity = Vector.add(this.velocity, accelerate);
-        this._obj.x += this.velocity.x * delta;
-        this._obj.y -= this.velocity.y * delta;
+        this.obj.x += this.velocity.x * delta;
+        this.obj.y -= this.velocity.y * delta;
 
-        this._updateHitboxAnchor();
+        this.updateHitboxAnchor();
+        this._onceForces.clear();
 
-        app.stage.addChild(this._obj);
+        app.stage.addChild(this.obj);
     }
 
     public override dispose() {

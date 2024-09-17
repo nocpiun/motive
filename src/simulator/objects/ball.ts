@@ -4,6 +4,7 @@ import { CanvasObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
+import { gravity as g } from "@/common/global";
 
 export class Ball extends CanvasObject {
     public constructor(
@@ -24,21 +25,47 @@ export class Ball extends CanvasObject {
         );
 
         // Fake gravity
-        // this.applyForce(new Vector(0, -2));
+        this.applyForce(new Vector(0, -mass * g));
 
-        this._register(this.hitbox.onHit((obj) => {
-            obj.hitbox.cancelNextTest();
+        this._register(this.hitbox.onHit(({ obj, depth }) => {
+            if(obj instanceof Ball) {
+                // To prevent duplicated hitbox test
+                obj.hitbox.cancelNextTest();
 
-            const massSum = this.mass + obj.mass;
-            const massDiff = this.mass - obj.mass;
+                /**
+                 * To prevent balls from going through each other
+                 */
 
-            const va = Vector.multiplyScalar(obj.velocity, -massDiff / massSum);
-            const vb = Vector.multiplyScalar(this.velocity, (2 * this.mass) / massSum);
-            const vc = Vector.multiplyScalar(this.velocity, massDiff / massSum);
-            const vd = Vector.multiplyScalar(obj.velocity, (2 * obj.mass) / massSum);
+                const p1 = this.hitbox.anchor;
+                const p2 = obj.hitbox.anchor;
+                const movement = Vector.multiplyScalar(Vector.fromPoints(p1, p2).getUnitVector(), depth);
+                
+                this.obj.x -= movement.x / 2;
+                this.obj.y -= movement.y / 2;
+                obj.obj.x += movement.x / 2;
+                obj.obj.y += movement.y / 2;
 
-            obj.velocity = Vector.add(va, vb);
-            this.velocity = Vector.add(vc, vd);
+                this.updateHitboxAnchor();
+                obj.updateHitboxAnchor();
+
+                /**
+                 * Calculate new velocities (elastic collision)
+                 * 
+                 * v1' = ((m1 - m2) * v1) / (m1 + m2) + (2 * m2 * v2) / (m1 + m2)
+                 * v2' = ((m2 - m1) * v2) / (m1 + m2) + (2 * m1 * v1) / (m1 + m2)
+                 */
+
+                const massSum = this.mass + obj.mass;
+                const massDiff = this.mass - obj.mass;
+    
+                const va = Vector.multiplyScalar(obj.velocity, -massDiff / massSum);
+                const vb = Vector.multiplyScalar(this.velocity, (2 * this.mass) / massSum);
+                const vc = Vector.multiplyScalar(this.velocity, massDiff / massSum);
+                const vd = Vector.multiplyScalar(obj.velocity, (2 * obj.mass) / massSum);
+    
+                obj.velocity = Vector.add(va, vb);
+                this.velocity = Vector.add(vc, vd);
+            }
         }));
     }
 

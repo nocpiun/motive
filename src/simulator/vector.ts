@@ -1,10 +1,13 @@
-import { LinkedNodes } from "@/common/utils/linkedNodes"
+import type { Point } from "./render/render";
+
+import { LinkedNodes } from "@/common/utils/linkedNodes";
 
 interface IVector {
     x: number
     y: number
 
-    multiply(vector: IVector): number
+    multiply(vector: Vector): number
+    getUnitVector(): Vector
     get length(): number
 }
 
@@ -15,6 +18,16 @@ export class Vector implements IVector {
 
     public multiply(vector: Vector) {
         return Vector.multiply(this, vector);
+    }
+
+    public getUnitVector(): Vector {
+        const length = this.length;
+
+        if(length === 0) {
+            return Vector.Zero;
+        }
+
+        return new Vector(this.x / length, this.y / length);
     }
 
     public get length(): number {
@@ -41,10 +54,8 @@ export class Vector implements IVector {
         return new Vector(-vector.x, -vector.y);
     }
 
-    public static createUnitVector(angle: number): Vector {
-        const fixedAngle = parseFloat(angle.toFixed(3));
-
-        return new Vector(Math.round(Math.cos(fixedAngle)), Math.round(Math.sin(fixedAngle)));
+    public static fromPoints(point1: Point, point2: Point): Vector {
+        return new Vector(point2.x - point1.x, point2.y - point1.y);
     }
 }
 
