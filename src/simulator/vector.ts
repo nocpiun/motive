@@ -38,13 +38,21 @@ export class Vector implements IVector {
     }
 
     public static createUnitVector(angle: number): Vector {
-        return new Vector(Math.cos(angle), Math.sin(angle));
+        const fixedAngle = parseFloat(angle.toFixed(3));
+
+        return new Vector(Math.round(Math.cos(fixedAngle)), Math.round(Math.sin(fixedAngle)));
     }
 }
 
 export class VectorCollection extends LinkedNodes<Vector> {
-    public constructor() {
+    public constructor(iterable?: Iterable<Vector>) {
         super();
+
+        if(iterable) {
+            for(const item of iterable) {
+                this.push(item);
+            }
+        }
     }
 
     public getSum(): Vector {
