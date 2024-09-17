@@ -1,38 +1,44 @@
 import type { Canvas } from "@/ui/canvas/canvas";
 
+import * as PIXI from "pixi.js";
+
 import { Disposable, type IDisposable } from "@/common/lifecycle";
+import { LinkedNodes } from "@/common/utils/linkedNodes";
+import { Ball, type CanvasObject } from "@/simulator/object";
 
 import { colors } from "./colors";
 
-interface IRender extends IDisposable {
+export interface Renderable {
+    update(delta: number, app: PIXI.Application): void
+}
+
+interface IRender extends Renderable, IDisposable {
     refresh(): void
-    update(delta: number): void
 }
 
 export class Render extends Disposable implements IRender {
-    private _ctx: CanvasRenderingContext2D;
-    private _timer: number;
+    private _app: PIXI.Application;
+    private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
 
     public constructor(private _canvas: Canvas) {
         super();
 
-        this._ctx = this._canvas.ctx;
-        this._initTimer();
+        this._register(this._canvas.onLoad((app: PIXI.Application) => {
+            this._app = app;
+
+            this._init();
+            this._initTimer();
+        }));
+    }
+
+    private _init() {
+        this._objects.push(new Ball());
     }
 
     private _initTimer() {
-        let start: number;
-
-        const render = (current: number) => {
-            if(!start) start = current;
-
-            this.update(current - start);
-            start = current;
-
-            this._timer = window.requestAnimationFrame(render);
-        };
-
-        this._timer = window.requestAnimationFrame(render);
+        this._app.ticker.add((ticker) => {
+            this.update(ticker.deltaTime);
+        });
     }
 
     /** @todo */
@@ -41,16 +47,20 @@ export class Render extends Disposable implements IRender {
     }
 
     public update(delta: number) {
-        this._canvas.clear();
-        
-        // To solve the blurring issue of canvas
-        this._ctx.translate(.5, .5);
+        // console.log(delta);
+        this._app.stage.removeChildren();
 
-        this._canvas.drawFilledRect(0, this._canvas.height - 50, this._canvas.width, 50, colors["black"]);
+        // Fake ground
+        const ground = new PIXI.Graphics().rect(0, this._app.canvas.height - 50, this._app.screen.width, 50).fill(colors["black"]);
+        this._app.stage.addChild(ground);
+
+        for(const object of this._objects) {
+            object.update(delta, this._app);
+        }
     }
 
     public override dispose() {
-        window.cancelAnimationFrame(this._timer);
+        this._app.ticker.stop();
 
         super.dispose();
     }

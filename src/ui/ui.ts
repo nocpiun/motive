@@ -4,8 +4,8 @@ import { Disposable, type IDisposable } from "@/common/lifecycle";
 export interface IComponent<E extends HTMLElement = HTMLElement> extends IDisposable {
     element: E
 
-    onHover: Event<any>
-    onUnhover: Event<any>
+    onHover: Event<void>
+    onUnhover: Event<void>
 }
 
 export type ComponentLike<E extends HTMLElement = HTMLElement> = E | Element | IComponent<E>;

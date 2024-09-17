@@ -1,10 +1,9 @@
+import { LinkedNodes } from "@/common/utils/linkedNodes"
+
 interface IVector {
     x: number
     y: number
 
-    add(vector: IVector): void
-    sub(vector: IVector): void
-    multiplyScalar(scalar: number): void
     multiply(vector: IVector): number
     get length(): number
 }
@@ -13,21 +12,6 @@ export class Vector implements IVector {
     public static readonly Zero = new Vector(0, 0);
 
     public constructor(public x: number, public y: number) { }
-
-    public add(vector: Vector) {
-        this.x += vector.x;
-        this.y += vector.y;
-    }
-
-    public sub(vector: Vector) {
-        this.x -= vector.x;
-        this.y -= vector.y;
-    }
-
-    public multiplyScalar(scalar: number) {
-        this.x *= scalar;
-        this.y *= scalar;
-    }
 
     public multiply(vector: Vector): number {
         return Vector.multiply(this, vector);
@@ -49,7 +33,27 @@ export class Vector implements IVector {
         return vector1.x * vector2.x + vector1.y * vector2.y;
     }
 
+    public static multiplyScalar(vector: Vector, scalar: number): Vector {
+        return new Vector(vector.x * scalar, vector.y * scalar);
+    }
+
     public static createUnitVector(angle: number): Vector {
         return new Vector(Math.cos(angle), Math.sin(angle));
+    }
+}
+
+export class VectorCollection extends LinkedNodes<Vector> {
+    public constructor() {
+        super();
+    }
+
+    public getSum(): Vector {
+        let sum = Vector.Zero;
+
+        for(const vector of this) {
+            sum = Vector.add(sum, vector);
+        }
+
+        return sum;
     }
 }

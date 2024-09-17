@@ -26,8 +26,8 @@ export interface IModal extends IComponent {
     show(): void
     close(): void
 
-    onShow: Event<any>
-    onClose: Event<any>
+    onShow: Event<void>
+    onClose: Event<void>
 }
 
 export class Modal extends Component<HTMLDialogElement, ModalOptions> implements IModal {

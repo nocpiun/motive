@@ -1,7 +1,7 @@
-export type Color = string;
+export type Color = number;
 
 export const colors = {
-    "transparent": "",
-    "black": "#222",
-    "skyBlue": "#7dd3fc",
+    "transparent": NaN,
+    "black": 0x222222,
+    "skyBlue": 0x7dd3fc,
 } as Record<string, Color>;

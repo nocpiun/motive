@@ -14,7 +14,7 @@ export class LinkedNodes<E> {
     private _last: Node<E> = Node.Undefined;
     private _size: number = 0;
 
-    private constructor() { }
+    protected constructor() { }
 
     public static empty<E = any>(): LinkedNodes<E> {
         return new LinkedNodes<E>();

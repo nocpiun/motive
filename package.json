@@ -50,6 +50,7 @@
   "dependencies": {
     "jsx-dom": "^8.1.5",
     "jsx-dom-cjs": "^8.1.5",
-    "lucide": "^0.433.0"
+    "lucide": "^0.433.0",
+    "pixi.js": "^8.4.0"
   }
 }
