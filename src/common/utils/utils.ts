@@ -1,3 +1,5 @@
+import type { Point } from "@/simulator/render/render";
+
 export function getRandom(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -11,4 +13,8 @@ export function generateRandomID(length: number = 6): string {
     }
 
     return id;
+}
+
+export function getPointDistance(point1: Point, point2: Point): number {
+    return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
 }

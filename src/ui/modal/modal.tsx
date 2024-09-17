@@ -66,6 +66,9 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
 
         this._container = this._element.querySelector(".modal-dialog-body");
+
+        this._register(this._onShow);
+        this._register(this._onClose);
     }
 
     public get id() {

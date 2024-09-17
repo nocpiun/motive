@@ -13,7 +13,7 @@ export class Vector implements IVector {
 
     public constructor(public x: number, public y: number) { }
 
-    public multiply(vector: Vector): number {
+    public multiply(vector: Vector) {
         return Vector.multiply(this, vector);
     }
 
@@ -35,6 +35,10 @@ export class Vector implements IVector {
 
     public static multiplyScalar(vector: Vector, scalar: number): Vector {
         return new Vector(vector.x * scalar, vector.y * scalar);
+    }
+
+    public static reverse(vector: Vector): Vector {
+        return new Vector(-vector.x, -vector.y);
     }
 
     public static createUnitVector(angle: number): Vector {

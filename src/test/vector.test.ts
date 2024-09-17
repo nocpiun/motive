@@ -43,6 +43,12 @@ describe("vector-tests", () => {
         expect(Vector.multiplyScalar(vector, 100)).toEqual(new Vector(300, 400));
     });
 
+    it("vector-reverse", () => {
+        const vector = new Vector(3, 4);
+
+        expect(Vector.reverse(vector)).toEqual(new Vector(-3, -4));
+    });
+
     it("vector-create-unit-vector", () => {
         const vector = Vector.createUnitVector(Math.PI / 2);
 

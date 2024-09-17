@@ -5,11 +5,6 @@ import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 
 import "./canvas.less";
 
-export interface Point {
-    x: number
-    y: number
-}
-
 export interface CanvasOptions {
     
 }
@@ -39,7 +34,7 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
 
     public constructor(target: ComponentLike, _options?: CanvasOptions) {
         super(
-            <div className="motive-canvas"/>,
+            <div className="motive-canvas-container"/>,
             target,
             defaultOptions,
             _options
@@ -53,14 +48,17 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
                 throw new Error("Unable to load PIXI.js and canvas.");
             }
         }
+
+        this._register(this._onLoad);
     }
 
     private async _init(): Promise<void> {
         await this._app.init(this._pixiOptions);
 
         this._element.appendChild(this._app.canvas);
+        this._app.canvas.classList.add("motive-canvas");
         this._app.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
-        
+
         this._adaptDPR();
 
         this._onLoad.fire(this._app);

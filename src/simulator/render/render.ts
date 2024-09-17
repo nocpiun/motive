@@ -1,16 +1,21 @@
+import type * as PIXI from "pixi.js";
 import type { Canvas } from "@/ui/canvas/canvas";
 import type { CanvasObject } from "@/simulator/object";
-
-import * as PIXI from "pixi.js";
 
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ball } from "@/simulator/objects/ball";
 
-import { colors } from "./colors";
+import { Ground } from "../objects/ground";
+import { Vector } from "../vector";
 
 export interface Renderable {
     update(delta: number, app: PIXI.Application): void
+}
+
+export interface Point {
+    x: number
+    y: number
 }
 
 interface IRender extends Renderable, IDisposable {
@@ -33,7 +38,10 @@ export class Render extends Disposable implements IRender {
     }
 
     private _init() {
-        this._objects.push(new Ball());
+        this._objects.push(new Ground(this._app.canvas));
+
+        this._objects.push(new Ball(100, 100, 15, 1, new Vector(3, 0)));
+        this._objects.push(new Ball(600, 100, 15, 3, new Vector(-1, 0)));
     }
 
     private _initTimer() {
@@ -42,25 +50,35 @@ export class Render extends Disposable implements IRender {
         });
     }
 
-    public refresh() {
+    private _clearObjects(): void {
+        for(const obj of this._objects) {
+            obj.dispose();
+        }
         this._objects.clear();
     }
 
+    public refresh() {
+        this._clearObjects();
+        this._init();
+    }
+
     public update(delta: number) {
-        // console.log(delta);
         this._app.stage.removeChildren();
 
-        // Fake ground
-        const ground = new PIXI.Graphics().rect(0, this._app.canvas.height - 50, this._app.screen.width, 50).fill(colors["black"]);
-        this._app.stage.addChild(ground);
+        for(const obj of this._objects) {
+            obj.update(delta, this._app);
 
-        for(const object of this._objects) {
-            object.update(delta, this._app);
+            for(const _obj of this._objects) {
+                if(_obj !== obj) {
+                    obj.hitbox.test(_obj);
+                }
+            }
         }
     }
 
     public override dispose() {
         this._app.ticker.stop();
+        this._clearObjects();
 
         super.dispose();
     }

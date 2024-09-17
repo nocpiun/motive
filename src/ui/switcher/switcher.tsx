@@ -37,6 +37,7 @@ export class Switcher extends Button implements ISwitcher {
         this._element.classList.add("switcher");
         if((this._options as SwitcherOptions).defaultValue) this.setActive(true);
 
+        this._register(this._onDidChange);
         this._register(this.onClick(() => this._toggle()));
     }
 

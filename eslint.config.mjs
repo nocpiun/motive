@@ -94,4 +94,11 @@ export default ts.config(
             "@typescript-eslint/no-require-imports": "off"
         }
     },
+    {
+        ignores: [
+            "build/**/*.*",
+            "coverage/**/*.*",
+            "node_modules/**/*.*",
+        ]
+    }
 );
