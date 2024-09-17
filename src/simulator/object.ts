@@ -1,10 +1,8 @@
 import type { Renderable } from "./render/render";
-
-import * as PIXI from "pixi.js";
+import type * as PIXI from "pixi.js";
 
 import { Disposable } from "@/common/lifecycle";
 
-import { colors } from "./render/colors";
 import { Vector, VectorCollection } from "./vector";
 
 interface ICanvasObject extends Renderable {
@@ -43,23 +41,5 @@ export class CanvasObject extends Disposable implements ICanvasObject {
         this._obj.y -= this.velocity.y * delta;
 
         app.stage.addChild(this._obj);
-    }
-}
-
-export class Ball extends CanvasObject {
-    public constructor() {
-        super(
-            new PIXI.Graphics()
-                .arc(100, 100, 15, 0, 2 * Math.PI)
-                .fill(colors["black"]),
-            1,
-            new Vector(0, 0)
-        );
-
-        this.applyForce(new Vector(0, -2));
-    }
-
-    public update(delta: number, app: PIXI.Application) {
-        super.update(delta, app);
     }
 }

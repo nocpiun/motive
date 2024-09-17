@@ -1,10 +1,11 @@
 import type { Canvas } from "@/ui/canvas/canvas";
+import type { CanvasObject } from "@/simulator/object";
 
 import * as PIXI from "pixi.js";
 
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
-import { Ball, type CanvasObject } from "@/simulator/object";
+import { Ball } from "@/simulator/objects/ball";
 
 import { colors } from "./colors";
 
@@ -41,9 +42,8 @@ export class Render extends Disposable implements IRender {
         });
     }
 
-    /** @todo */
     public refresh() {
-        console.log("Refreshed.");
+        this._objects.clear();
     }
 
     public update(delta: number) {
