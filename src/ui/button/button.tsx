@@ -31,6 +31,11 @@ export interface IButton extends IComponent {
     disabled: boolean
     id?: string
 
+    /**
+     * Set the button's tooltip
+     * 
+     * @param text The new tooltip text
+     */
     setTooltip(text: string): void
 
     onClick: Event<PointerEvent>

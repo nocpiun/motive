@@ -11,8 +11,26 @@ export interface Anchor {
 }
 
 export interface IHoverProvider extends IDisposable {
+    /**
+     * Create a text-only hover widget and display it
+     * 
+     * @param text Hover text
+     * @param anchor The anchor point of the widget
+     * @param position The position of the widget
+     */
     createTextHoverWidget(text: string, anchor: Anchor, position: HoverWidgetPosition): HoverWidget
+    /**
+     * Create a hover widget that contains a title and text, and display it
+     * 
+     * @param title Hover title
+     * @param text Hover text
+     * @param anchor The anchor point of the widget
+     * @param position The position of the widget
+     */
     createTitleTextHoverWidget(title: string, text: string, anchor: Anchor, position: HoverWidgetPosition): HoverWidget
+    /**
+     * Clear and dispose all hover widgets
+     */
     clearHoverWidgets(): void
 }
 

@@ -10,6 +10,12 @@ import { Ground } from "@/simulator/objects/ground";
 import { Vector } from "@/simulator/vector";
 
 export interface Renderable {
+    /**
+     * Update the states and render the next frame of the canvas or an object
+     * 
+     * @param delta The time passed since the last frame
+     * @param container The parent container
+     */
     update(delta: number, container: PIXI.Container): void
 }
 
@@ -19,13 +25,36 @@ export interface Point {
 }
 
 interface IRender extends Renderable, IDisposable {
+    /**
+     * Add an object to the system
+     * 
+     * @param obj The object to add
+     */
+    addObject(obj: CanvasObject): void
+    /**
+     * Clear all objects in the system
+     */
+    clearObjects(): void
+    /**
+     * Set the whole system to the initial state
+     */
     refresh(): void
+    /**
+     * Pause the whole system at the current state
+     */
+    pause(): void
+    /**
+     * Let the system continue to run
+     */
+    unpause(): void
 }
 
 export class Render extends Disposable implements IRender {
     private _app: PIXI.Application;
     private _container: PIXI.Container = new PIXI.Container({ x: 0, y: 0 });
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
+
+    private _isPaused: boolean = false;
 
     public constructor(private _canvas: Canvas) {
         super();
@@ -42,7 +71,7 @@ export class Render extends Disposable implements IRender {
         }));
     }
 
-    private _init() {
+    private _init(): void {
 
         this._objects.push(new Ground(this._app.canvas));
         
@@ -50,13 +79,17 @@ export class Render extends Disposable implements IRender {
         this._objects.push(new Ball(100, 300, 15, 1, new Vector(8, 0)));
     }
 
-    private _initTimer() {
+    private _initTimer(): void {
         this._app.ticker.add((ticker) => {
             this.update(ticker.deltaTime);
         });
     }
 
-    private _clearObjects(): void {
+    public addObject(obj: CanvasObject) {
+        this._objects.push(obj);
+    }
+
+    public clearObjects() {
         for(const obj of this._objects) {
             obj.dispose();
         }
@@ -64,8 +97,16 @@ export class Render extends Disposable implements IRender {
     }
 
     public refresh() {
-        this._clearObjects();
+        this.clearObjects();
         this._init();
+    }
+
+    public pause() {
+        
+    }
+
+    public unpause() {
+        
     }
 
     public update(delta: number) {
@@ -84,7 +125,7 @@ export class Render extends Disposable implements IRender {
 
     public override dispose() {
         this._app.ticker.stop();
-        this._clearObjects();
+        this.clearObjects();
 
         super.dispose();
     }

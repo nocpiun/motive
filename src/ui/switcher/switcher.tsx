@@ -20,7 +20,11 @@ export interface SwitcherEvent {
 interface ISwitcher extends IButton {
     isActive: boolean
 
+    /**
+     * Set the state of the switcher
+     */
     setActive(isActive: boolean): void
+
     onDidChange: Event<SwitcherEvent>
 }
 

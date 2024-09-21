@@ -11,8 +11,21 @@ import { SettingsModal } from "./settingsModal";
 import { ManagerModal } from "./managerModal";
 
 export interface IModalProvider extends IDisposable {
+    /**
+     * Open a modal by its ID
+     * 
+     * @param id Modal ID
+     */
     open(id: string): void
+    /**
+     * Close all modals
+     */
     closeAll(): void
+    /**
+     * Get the currently opened modal
+     * 
+     * If there is no modal opened, it will return `null`.
+     */
     getCurrentModal(): Modal | null
 }
 

@@ -31,7 +31,18 @@ export interface IInput extends IComponent {
     disabled: boolean
     id?: string
 
+    /**
+     * Type a string into the input
+     * 
+     * @example
+     * // input.value === "hello"
+     * input.type(" world");
+     * // input.value === "hello world"
+     */
     type(text: string): void
+    /**
+     * Clear the input
+     */
     reset(): void
 
     onInput: Event<string>

@@ -39,6 +39,9 @@ export class Emitter<T> extends Disposable {
         return disposable;
     }
 
+    /**
+     * Fires all registered listeners in the emitter
+     */
     public fire(data?: T): void {
         if(this._isDisposed) return;
 

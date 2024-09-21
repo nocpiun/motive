@@ -8,6 +8,15 @@ export interface IVector {
 
     multiply(vector: Vector): number
     getUnitVector(): Vector
+    /**
+     * Get the component vector by a **unit** normal vector
+     * 
+     * If the length of the given normal vector is not 1,
+     * the result of this method will be completely wrong.
+     * 
+     * @param n A unit normal vector
+     */
+    getComponent(n: Vector): Vector
     get length(): number
 }
 
@@ -30,14 +39,6 @@ export class Vector implements IVector {
         return new Vector(this.x / length, this.y / length);
     }
 
-    /**
-     * Get the component vector by a **unit** normal vector
-     * 
-     * If the length of the given normal vector is not 1,
-     * the result of this method will be completely wrong.
-     * 
-     * @param n A unit normal vector
-     */
     public getComponent(n: Vector): Vector {
         // v' = (n·v) * n (when |n| = 1)
         return Vector.multiplyScalar(n, n.multiply(this));

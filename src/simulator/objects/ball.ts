@@ -30,7 +30,6 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
             if(obj instanceof Ball) {
-                // To prevent duplicated hitbox test
                 obj.hitbox.cancelNextTest();
 
                 /**

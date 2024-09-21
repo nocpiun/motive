@@ -12,8 +12,23 @@ export interface OnHitListenerData {
 export interface IHitbox extends IDisposable {
     anchor: Point
 
+    /**
+     * Run a hitbox test between this hitbox and the target object
+     * 
+     * @param obj A target object to test
+     */
     test(obj: CanvasObject): void
+    /**
+     * Set a new anchor for the hitbox
+     * 
+     * @param anchor The new anchor
+     */
     setAnchor(anchor: Point): void
+    /**
+     * Cancel a test running in the next frame
+     * 
+     * In order to avoid duplicated hitbox tests.
+     */
     cancelNextTest(): void
 
     onHit: Event<OnHitListenerData>

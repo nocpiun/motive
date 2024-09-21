@@ -19,7 +19,19 @@ const defaultOptions: ButtonGroupOptions = {
 };
 
 interface IButtonGroup extends IComponent {
+    /**
+     * Add a new button to the button group
+     * 
+     * @param options The options of the new button
+     * @param onClick The `onClick` listener of the new button
+     */
     addButton(options: ButtonOptions, onClick?: Listener<PointerEvent>): Button
+    /**
+     * Add a new switcher to the button group
+     * 
+     * @param options The options of the new switcher
+     * @param onDidChange The `onDidChange` listener of the new switcher
+     */
     addSwitcher(options: SwitcherOptions, onDidChange?: Listener<SwitcherEvent>): Switcher
 
     onDidChange: Event<Button>

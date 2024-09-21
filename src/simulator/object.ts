@@ -12,9 +12,26 @@ interface ICanvasObject extends Renderable {
     mass: number
     velocity: Vector
 
+    /**
+     * Apply a force to the object
+     * 
+     * @param force The force to apply
+     */
     applyForce(force: Force): void
+    /**
+     * Apply a one-time force to the object
+     * 
+     * @param force The force to apply
+     */
     applyOnceForce(force: Force): void
+    /**
+     * Clear all forces from the object
+     */
     clearForces(): void
+    /**
+     * Update the anchor point of the hitbox,
+     * so that it matches the current position of the object.
+     */
     updateHitboxAnchor(): void
 }
 

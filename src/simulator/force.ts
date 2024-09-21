@@ -18,7 +18,7 @@ export class Force extends Vector implements IForce {
     }
 
     public setSize(size: number) {
-        const length = this.length; // To avoid duplicate calculation of vector length
+        const length = this.length; // To avoid duplicated calculation of vector length
         const sin = this.y / length;
         const cos = this.x / length;
 

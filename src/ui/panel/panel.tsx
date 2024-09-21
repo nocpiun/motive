@@ -21,6 +21,11 @@ const defaultOptions: PanelOptions = {
 };
 
 interface IPanel extends IComponent {
+    /**
+     * Link a renderer to the panel,
+     * so that the panel can add, remove and change objects in the system,
+     * which will then be rendered into the canvas by the renderer linked.
+     */
     linkRenderer(renderer: Render): void
 }
 

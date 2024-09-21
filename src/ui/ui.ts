@@ -10,6 +10,12 @@ export interface IComponent<E extends HTMLElement = HTMLElement> extends IDispos
 
 export type ComponentLike<E extends HTMLElement = HTMLElement> = E | Element | IComponent<E>;
 
+/**
+ * Append an element to a component or an element
+ * 
+ * @param element The element to append
+ * @param target The target to be appended
+ */
 function append(element: HTMLElement, target: ComponentLike): void {
     if(target instanceof HTMLElement) {
         target.appendChild(element);
@@ -18,6 +24,12 @@ function append(element: HTMLElement, target: ComponentLike): void {
     }
 }
 
+/**
+ * A component is a basic unit in the UI, holding and managing an element and its child(ren),
+ * providing some basic events to use.
+ * 
+ * A component can be registered to a `Provider`.
+ */
 export abstract class Component<E extends HTMLElement = HTMLElement, O = any> extends Disposable implements IComponent<E> {
     protected _options: O;
 
@@ -79,6 +91,11 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
     }
 }
 
+/**
+ * A utility function to create DOM element and append the element to a component or an element.
+ * 
+ * @returns The new element
+ */
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, target: ComponentLike): HTMLElementTagNameMap[K] {
     const elem = document.createElement(tagName);
     append(elem, target);

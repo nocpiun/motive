@@ -7,6 +7,13 @@ document.body.appendChild(providerHolder);
 
 const providerInstances: Map<any, Provider<any>> = new Map();
 
+/**
+ * A provider holds and manages some components of a certain type,
+ * which allows the components to be easily accessed and operated.
+ * 
+ * - The provider element (or the provider container), which holds the component elements, will be invisible.
+ * - The components held by the provider will be positioned relatively to the whole page.
+ */
 export abstract class Provider<C extends Component> extends Disposable {
     protected _providerElement: HTMLDivElement;
     protected _components: Map<string, C> = new Map();
@@ -55,6 +62,12 @@ export abstract class Provider<C extends Component> extends Disposable {
     }
 }
 
+/**
+ * Initialize and register the new provider to the provider instances holder globally
+ * 
+ * @param provider The provider to register
+ * @returns The instance of the provider
+ */
 export function registerProvider<P extends Provider<C>, C extends Component>(provider: any): P {
     if(!(provider.prototype instanceof Provider)) {
         throw new Error("Not a valid provider.");
