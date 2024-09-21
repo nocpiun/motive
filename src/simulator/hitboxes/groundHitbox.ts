@@ -26,7 +26,7 @@ export class GroundHitbox extends Hitbox implements IGroundHitbox {
             const distance = this.anchor.y - hitbox.anchor.y;
 
             if(this.anchor.y - hitbox.anchor.y <= hitbox.radius) {
-                this._onHit.fire({ obj, depth: 2 * hitbox.radius - distance });
+                this._onHit.fire({ obj, depth: hitbox.radius - distance });
             }
         }
     }

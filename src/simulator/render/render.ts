@@ -1,6 +1,7 @@
-import type * as PIXI from "pixi.js";
 import type { Canvas } from "@/ui/canvas/canvas";
 import type { CanvasObject } from "@/simulator/object";
+
+import * as PIXI from "pixi.js";
 
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
@@ -9,7 +10,7 @@ import { Ground } from "@/simulator/objects/ground";
 import { Vector } from "@/simulator/vector";
 
 export interface Renderable {
-    update(delta: number, app: PIXI.Application): void
+    update(delta: number, container: PIXI.Container): void
 }
 
 export interface Point {
@@ -23,6 +24,7 @@ interface IRender extends Renderable, IDisposable {
 
 export class Render extends Disposable implements IRender {
     private _app: PIXI.Application;
+    private _container: PIXI.Container = new PIXI.Container({ x: 0, y: 0 });
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
 
     public constructor(private _canvas: Canvas) {
@@ -31,15 +33,21 @@ export class Render extends Disposable implements IRender {
         this._register(this._canvas.onLoad((app: PIXI.Application) => {
             this._app = app;
 
+            this._container.width = this._canvas.width;
+            this._container.height = this._canvas.height;
+            this._app.stage.addChild(this._container);
+
             this._init();
             this._initTimer();
         }));
     }
 
     private _init() {
-        this._objects.push(new Ground(this._app.canvas));
 
-        this._objects.push(new Ball(100, 100, 15, 1, new Vector(0, 0)));
+        this._objects.push(new Ground(this._app.canvas));
+        
+        // this._objects.push(new Ball(100, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(8, 0)));
+        this._objects.push(new Ball(100, 300, 15, 1, new Vector(8, 0)));
     }
 
     private _initTimer() {
@@ -61,10 +69,10 @@ export class Render extends Disposable implements IRender {
     }
 
     public update(delta: number) {
-        this._app.stage.removeChildren();
+        this._container.removeChildren();
 
         for(const obj of this._objects) {
-            obj.update(delta, this._app);
+            obj.update(delta, this._container);
 
             for(const _obj of this._objects) {
                 if(_obj !== obj) {

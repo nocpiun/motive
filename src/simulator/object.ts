@@ -5,19 +5,20 @@ import type { Hitbox } from "./hitbox";
 import { Disposable } from "@/common/lifecycle";
 
 import { Vector, VectorCollection } from "./vector";
+import { Force } from "./force";
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
     mass: number
     velocity: Vector
 
-    applyForce(force: Vector): void
-    applyOnceForce(force: Vector): void
+    applyForce(force: Force): void
+    applyOnceForce(force: Force): void
     clearForces(): void
     updateHitboxAnchor(): void
 }
 
-export class CanvasObject extends Disposable implements ICanvasObject {
+export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implements ICanvasObject {
     private _forces: VectorCollection = new VectorCollection();
     private _onceForces: VectorCollection = new VectorCollection();
 
@@ -25,18 +26,18 @@ export class CanvasObject extends Disposable implements ICanvasObject {
         public obj: PIXI.ContainerChild,
         public mass: number,
         public velocity: Vector,
-        public hitbox: Hitbox
+        public hitbox: H
     ) {
         super();
 
         this._register(this.hitbox);
     }
 
-    public applyForce(force: Vector) {
+    public applyForce(force: Force) {
         this._forces.push(force);
     }
 
-    public applyOnceForce(force: Vector) {
+    public applyOnceForce(force: Force) {
         this._onceForces.push(force);
     }
 
@@ -53,9 +54,9 @@ export class CanvasObject extends Disposable implements ICanvasObject {
         });
     }
 
-    public update(delta: number, app: PIXI.Application) {
-        const sumForce = Vector.add(this._forces.getSum(), this._onceForces.getSum());
-        const accelerate = Vector.multiplyScalar(sumForce, 1 / this.mass);
+    public update(delta: number, container: PIXI.Container) {
+        const sumForce = Force.add(this._forces.getSum(), this._onceForces.getSum());
+        const accelerate = sumForce.getAccelerate(this.mass);
         
         this.velocity = Vector.add(this.velocity, accelerate);
         this.obj.x += this.velocity.x * delta;
@@ -64,12 +65,13 @@ export class CanvasObject extends Disposable implements ICanvasObject {
         this.updateHitboxAnchor();
         this._onceForces.clear();
 
-        app.stage.addChild(this.obj);
+        container.addChild(this.obj);
     }
 
     public override dispose() {
         this.clearForces();
         this.velocity = Vector.Zero;
+        this.obj.destroy();
         
         super.dispose();
     }

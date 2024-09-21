@@ -43,7 +43,6 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
         if(process.env.NODE_ENV !== "test") {
             try {
                 this._init();
-                // this._adaptDPR();
             } catch (e) {
                 throw new Error("Unable to load PIXI.js and canvas.");
             }

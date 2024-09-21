@@ -4,9 +4,9 @@ import { CanvasObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
-import { gravity as g } from "@/common/global";
+import { Force } from "@/simulator/force";
 
-export class Ball extends CanvasObject {
+export class Ball extends CanvasObject<RoundHitbox> {
     public constructor(
         x: number,
         y: number,
@@ -16,7 +16,7 @@ export class Ball extends CanvasObject {
     ) {
         super(
             new PIXI.Graphics()
-                .arc(x, y, radius, 0, 2 * Math.PI)
+                .circle(0, 0, radius)
                 .fill(colors["black"]),
             mass,
             velocity,
@@ -24,8 +24,9 @@ export class Ball extends CanvasObject {
             new RoundHitbox(radius, { x, y })
         );
 
-        // Fake gravity
-        this.applyForce(new Vector(0, -mass * g));
+        this.obj.position.set(x, y);
+
+        this.applyForce(Force.gravity(mass));
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
             if(obj instanceof Ball) {
@@ -69,7 +70,7 @@ export class Ball extends CanvasObject {
         }));
     }
 
-    public update(delta: number, app: PIXI.Application) {
-        super.update(delta, app);
+    public override update(delta: number, container: PIXI.Container) {
+        super.update(delta, container);
     }
 }

@@ -4,6 +4,11 @@ import type { Point } from "./render/render";
 import { Emitter, type Event } from "@/common/event";
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 
+export interface OnHitListenerData {
+    obj: CanvasObject
+    depth: number
+}
+
 export interface IHitbox extends IDisposable {
     anchor: Point
 
@@ -11,12 +16,12 @@ export interface IHitbox extends IDisposable {
     setAnchor(anchor: Point): void
     cancelNextTest(): void
 
-    onHit: Event<{ obj: CanvasObject, depth: number }>
+    onHit: Event<OnHitListenerData>
 }
 
 export abstract class Hitbox extends Disposable implements IHitbox {
     // events
-    protected _onHit = new Emitter<{ obj: CanvasObject, depth: number }>();
+    protected _onHit = new Emitter<OnHitListenerData>();
 
     protected _isNextTestCancelled: boolean = false;
 
