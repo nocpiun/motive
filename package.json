@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "A web-based physics simulator",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "webpack serve --config webpack.config.js --mode development",
     "build": "webpack --config webpack.config.js --mode production",
