@@ -1,4 +1,4 @@
-import { Menu } from "lucide";
+import { List, Menu } from "lucide";
 
 import { Button } from "./button";
 
@@ -51,6 +51,10 @@ describe("button-component-tests", () => {
 
         tooltipButton.element.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
         expect(document.getElementById("hover-widget-provider").childNodes.length).toBe(0);
+    });
+
+    it("set-button-icon", () => {
+        iconButton.setIcon(List);
     });
 
     it("set-button-hover-tooltip", () => {
