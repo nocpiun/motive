@@ -73,7 +73,18 @@ export class Vector implements IVector {
     }
 }
 
-export class VectorCollection extends LinkedNodes<Vector> {
+interface IVectorCollection {
+    getSum(): Vector
+}
+
+/**
+ * A collection storing multiple **anonymous** vectors
+ * 
+ * Cannot remove one single vector from the collection.
+ * 
+ * @extends {LinkedNodes<Vector>}
+ */
+export class VectorCollection extends LinkedNodes<Vector> implements IVectorCollection {
     public constructor(iterable?: Iterable<Vector>) {
         super();
 
@@ -84,10 +95,61 @@ export class VectorCollection extends LinkedNodes<Vector> {
         }
     }
 
-    public getSum(): Vector {
+    public getSum() {
         let sum = Vector.Zero;
 
         for(const vector of this) {
+            sum = Vector.add(sum, vector);
+        }
+
+        return sum;
+    }
+}
+
+interface IForceCollection {
+    has(key: string): boolean
+    add(key: string, vector: Vector): void
+    remove(key: string): void
+    clear(): void
+    getSum(): Vector
+}
+
+/**
+ * A collection storing multiple vectors with their keys
+ * 
+ * It is a wrapper of `Map<string, Vector>`.
+ * 
+ * **Note:** `ForceCollection` is unrelated to `VectorCollection`.
+ */
+export class ForceCollection implements IForceCollection {
+    private _map: Map<string, Vector>;
+
+    public constructor(iterable?: Iterable<readonly [string, Vector]>) {
+        this._map = new Map(iterable);
+    }
+
+    public has(key: string) {
+        return this._map.has(key);
+    }
+
+    public add(key: string, vector: Vector) {
+        return this._map.set(key, vector);
+    }
+
+    public remove(key: string) {
+        if(!this._map.has(key)) return;
+
+        this._map.delete(key);
+    }
+
+    public clear() {
+        this._map.clear();
+    }
+
+    public getSum() {
+        let sum = Vector.Zero;
+
+        for(const vector of this._map.values()) {
             sum = Vector.add(sum, vector);
         }
 

@@ -4,7 +4,8 @@ import { CanvasObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
-import { Force } from "@/simulator/force";
+
+import { Ground } from "./ground";
 
 export class Ball extends CanvasObject<RoundHitbox> {
     public constructor(
@@ -26,7 +27,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         this.obj.position.set(x, y);
 
-        this.applyForce(Force.gravity(mass));
+        this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
             if(obj instanceof Ball) {
@@ -55,21 +56,31 @@ export class Ball extends CanvasObject<RoundHitbox> {
                  * v2' = ((m2 - m1) * v2) / (m1 + m2) + (2 * m1 * v1) / (m1 + m2)
                  */
 
+                /** *m1 + m2* */
                 const massSum = this.mass + obj.mass;
+                /** *m1 - m2* */
                 const massDiff = this.mass - obj.mass;
     
+                /** *((m2 - m1) v2) / (m1 + m2)* */
                 const va = Vector.multiplyScalar(obj.velocity, -massDiff / massSum);
+                /** *(2 m1 v1) / (m1 + m2)* */
                 const vb = Vector.multiplyScalar(this.velocity, (2 * this.mass) / massSum);
+                /** *((m1 - m2) v1) / (m1 + m2)* */
                 const vc = Vector.multiplyScalar(this.velocity, massDiff / massSum);
+                /** *(2 m2 v2) / (m1 + m2)* */
                 const vd = Vector.multiplyScalar(obj.velocity, (2 * obj.mass) / massSum);
     
-                obj.velocity = Vector.add(va, vb);
-                this.velocity = Vector.add(vc, vd);
+                obj.velocity = Vector.add(va, vb); // v2'
+                this.velocity = Vector.add(vc, vd); // v1'
             }
         }));
     }
 
     public override update(delta: number, container: PIXI.Container) {
         super.update(delta, container);
+
+        if(this.obj.y < Ground.GROUND_HEIGHT - this.hitbox.radius) {
+            this.removeForce("ground.support");
+        }
     }
 }

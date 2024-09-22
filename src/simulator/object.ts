@@ -3,8 +3,9 @@ import type { Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 
 import { Disposable } from "@/common/lifecycle";
+import { generateRandomID } from "@/common/utils/utils";
 
-import { Vector, VectorCollection } from "./vector";
+import { ForceCollection, Vector } from "./vector";
 import { Force } from "./force";
 
 interface ICanvasObject extends Renderable {
@@ -17,13 +18,27 @@ interface ICanvasObject extends Renderable {
      * 
      * @param force The force to apply
      */
-    applyForce(force: Force): void
+    applyForce(key: string, force: Force): void
     /**
      * Apply a one-time force to the object
      * 
      * @param force The force to apply
      */
     applyOnceForce(force: Force): void
+    /**
+     * Apply the gravity to the object
+     * 
+     * *G = mg*
+     */
+    applyGravity(): void
+    /**
+     * Remove a specified force from the object
+     * 
+     * If the given key doesn't exist, do nothing.
+     * 
+     * @param key The key of the force
+     */
+    removeForce(key: string): void
     /**
      * Clear all forces from the object
      */
@@ -36,8 +51,8 @@ interface ICanvasObject extends Renderable {
 }
 
 export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implements ICanvasObject {
-    private _forces: VectorCollection = new VectorCollection();
-    private _onceForces: VectorCollection = new VectorCollection();
+    private _forces: ForceCollection = new ForceCollection();
+    private _onceForces: ForceCollection = new ForceCollection();
 
     public constructor(
         public obj: PIXI.ContainerChild,
@@ -50,12 +65,20 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this._register(this.hitbox);
     }
 
-    public applyForce(force: Force) {
-        this._forces.push(force);
+    public applyForce(key: string, force: Force) {
+        this._forces.add(key, force);
     }
 
     public applyOnceForce(force: Force) {
-        this._onceForces.push(force);
+        this._onceForces.add(generateRandomID(), force);
+    }
+
+    public applyGravity() {
+        this._forces.add("gravity", Force.gravity(this.mass));
+    }
+
+    public removeForce(key: string) {
+        this._forces.remove(key);
     }
 
     public clearForces() {

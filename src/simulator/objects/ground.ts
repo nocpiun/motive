@@ -10,6 +10,8 @@ import { Ball } from "./ball";
 
 export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly GROUND_HEIGHT = 50;
+    public static readonly DAMPING = .95;
+    public static readonly STABLE_VELOCITY = 23;
 
     public readonly normalVector: Vector = new Vector(0, 1);
 
@@ -37,11 +39,11 @@ export class Ground extends CanvasObject<GroundHitbox> {
                 const vy = obj.velocity.getComponent(this.normalVector);
                 const vx = Vector.sub(obj.velocity, vy);
 
-                if(vy.length > 2) {
-                    obj.velocity = Vector.add(vx, Vector.reverse(vy));
+                if(vy.length > Ground.STABLE_VELOCITY) {
+                    obj.velocity = Vector.add(vx, Vector.multiplyScalar(Vector.reverse(vy), Ground.DAMPING));
                 } else {
                     obj.velocity = vx;
-                    obj.applyForce(Force.reverse(Force.gravity(obj.mass)));
+                    obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
                 }
             }
         }));

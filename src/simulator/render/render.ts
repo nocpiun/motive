@@ -72,11 +72,11 @@ export class Render extends Disposable implements IRender {
     }
 
     private _init(): void {
-
         this._objects.push(new Ground(this._app.canvas));
         
         // this._objects.push(new Ball(100, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(8, 0)));
-        this._objects.push(new Ball(100, 300, 15, 1, new Vector(8, 0)));
+        this._objects.push(new Ball(100, 200, 15, 1, new Vector(1, 0)));
+        // this._objects.push(new Ball(170, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(0, 0)));
     }
 
     private _initTimer(): void {
