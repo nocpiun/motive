@@ -1,7 +1,7 @@
 import type { Button } from "@/ui/button/button";
 import type { Render } from "@/simulator/render/render";
 
-import { Box, Circle, MousePointer2, Pin, RotateCw, Settings, Spline, X } from "lucide";
+import { Box, Circle, MousePointer2, Pause, Pin, Play, RotateCw, Settings, Spline, X } from "lucide";
 
 import { Component, type ComponentLike, createElement, type IComponent } from "@/ui/ui";
 import { ButtonGroup } from "@/ui/button/buttonGroup";
@@ -39,6 +39,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     private _withdrawTimer: NodeJS.Timeout | null = null;
 
     private _refreshButton: Button;
+    private _pauseSwitcher: Switcher;
     private _pinSwitcher: Switcher;
     private _closeButton: Button;
     private _switchers: Switcher[] = [];
@@ -64,6 +65,17 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, () => {});
+        this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: "暂停" }, ({ isActive }) => {
+            if(isActive) {
+                this._renderer.pause();
+                this._pauseSwitcher.setIcon(Play);
+                this._pauseSwitcher.setTooltip("继续");
+            } else {
+                this._renderer.unpause();
+                this._pauseSwitcher.setIcon(Pause);
+                this._pauseSwitcher.setTooltip("暂停");
+            }
+        });
         
         const toolbarRightGroup = new ButtonGroup(toolbar);
         this._pinSwitcher = toolbarRightGroup.addSwitcher({ icon: Pin, tooltip: "固定" }, ({ isActive }) => {

@@ -41,13 +41,17 @@
     font-size: 10pt;
     cursor: pointer;
 
-    &:has(svg) {
+    &:has(.icon-wrapper) {
         padding-left: 6px;
     }
 
-    svg {
+    .icon-wrapper {
         width: 17px;
         height: 17px;
+        svg {
+            width: 17px;
+            height: 17px;
+        }
     }
 
     &-primary {

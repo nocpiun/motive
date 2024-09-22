@@ -102,14 +102,21 @@ export class Render extends Disposable implements IRender {
     }
 
     public pause() {
-        
+        if(this._isPaused) return;
+
+        this._isPaused = true;
     }
 
     public unpause() {
-        
+        if(!this._isPaused) return;
+
+        this._isPaused = false;
     }
 
     public update(delta: number) {
+        if(this._isPaused) return;
+
+        // Repaint the canvas
         this._container.removeChildren();
 
         for(const obj of this._objects) {

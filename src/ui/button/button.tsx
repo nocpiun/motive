@@ -31,6 +31,7 @@ export interface IButton extends IComponent {
     disabled: boolean
     id?: string
 
+    setIcon(icon: IconNode): void
     /**
      * Set the button's tooltip
      * 
@@ -55,7 +56,9 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
                     onClick={(e: PointerEvent) => {
                         this._onClick.fire(e);
                     }}>
-                    {_options.icon && createLucide(_options.icon)}
+                    <div className="icon-wrapper">
+                        {_options.icon && createLucide(_options.icon)}
+                    </div>
                     {_options.text && <span>{_options.text}</span>}
                 </button>
             ),
@@ -113,6 +116,10 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
 
     public get id() {
         return this._options.id;
+    }
+
+    public setIcon(icon: IconNode) {
+        this._element.querySelector(".icon-wrapper")!.replaceChildren(createLucide(icon));
     }
 
     public setTooltip(text: string) {
