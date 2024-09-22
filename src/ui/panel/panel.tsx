@@ -77,10 +77,12 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 this._renderer.pause();
                 this._pauseSwitcher.setIcon(Play);
                 this._pauseSwitcher.setTooltip("继续");
+                this._refreshButton.disabled = true;
             } else {
                 this._renderer.unpause();
                 this._pauseSwitcher.setIcon(Pause);
                 this._pauseSwitcher.setTooltip("暂停");
+                this._refreshButton.disabled = false;
             }
         });
         
