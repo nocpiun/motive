@@ -1,6 +1,8 @@
 import type * as PIXI from "pixi.js";
 import type { Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
+import type { Ball } from "./objects/ball";
+import type { Ground } from "./objects/ground";
 
 import { Disposable } from "@/common/lifecycle";
 import { generateRandomID } from "@/common/utils/utils";
@@ -115,4 +117,21 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         
         super.dispose();
     }
+}
+
+export interface ObjectNameMap {
+    "ball": Ball
+    "ground": Ground
+}
+
+const objMap = new Map<string, any>();
+
+export function registerObject(id: string, obj: any): void {
+    objMap.set(id, obj);
+}
+
+export function createObject<T extends keyof ObjectNameMap>(id: string, ...args: any[]): ObjectNameMap[T] {
+    const objClass = objMap.get(id);
+
+    return new objClass(...args);
 }

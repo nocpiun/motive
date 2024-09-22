@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import { CanvasObject } from "@/simulator/object";
+import { CanvasObject, registerObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
@@ -84,3 +84,5 @@ export class Ball extends CanvasObject<RoundHitbox> {
         }
     }
 }
+
+registerObject("ball", Ball);

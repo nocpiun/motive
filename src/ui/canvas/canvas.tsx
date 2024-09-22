@@ -17,17 +17,19 @@ interface ICanvas extends IComponent {
     height: number
 
     onLoad: Event<PIXI.Application>
+    onClick: Event<PIXI.FederatedPointerEvent>
 }
 
 export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implements ICanvas {
     // events
-    private _onLoad = new Emitter();
+    private _onLoad = new Emitter<PIXI.Application>();
+    private _onClick = new Emitter<PIXI.FederatedPointerEvent>();
 
     private readonly _app = new PIXI.Application();
     public readonly ratio: number = window.devicePixelRatio || 1;
 
     private readonly _pixiOptions: Partial<PIXI.ApplicationOptions> = {
-        backgroundColor: 0xFFFFFF,
+        backgroundColor: 0xffffff,
         resizeTo: window,
         antialias: true
     };
@@ -60,6 +62,11 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
 
         this._adaptDPR();
 
+        this._app.stage.interactive = true;
+        this._app.stage.on("click", (e) => {
+            this._onClick.fire(e);
+        });
+
         this._onLoad.fire(this._app);
     }
 
@@ -75,14 +82,18 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
     }
 
     public get width() {
-        return this._element.width;
+        return this._app.canvas.width;
     }
 
     public get height() {
-        return this._element.height;
+        return this._app.canvas.height;
     }
 
     public get onLoad() {
         return this._onLoad.event;
+    }
+
+    public get onClick() {
+        return this._onClick.event;
     }
 }

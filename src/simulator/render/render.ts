@@ -5,9 +5,11 @@ import * as PIXI from "pixi.js";
 
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
-import { Ball } from "@/simulator/objects/ball";
 import { Ground } from "@/simulator/objects/ground";
-import { Vector } from "@/simulator/vector";
+
+import { colors } from "./colors";
+// import { Ball } from "@/simulator/objects/ball";
+// import { Vector } from "@/simulator/vector";
 
 export interface Renderable {
     /**
@@ -62,10 +64,15 @@ export class Render extends Disposable implements IRender {
         this._register(this._canvas.onLoad((app: PIXI.Application) => {
             this._app = app;
 
+            // Invisible background for interactions
+            const bg = new PIXI.Graphics().rect(0, 0, this._canvas.width, this._canvas.height).fill(colors["transparent"]);
+            this._app.stage.addChild(bg);
+            
+            // Container
             this._container.width = this._canvas.width;
             this._container.height = this._canvas.height;
             this._app.stage.addChild(this._container);
-
+            
             this._init();
             this._initTimer();
         }));
@@ -75,7 +82,7 @@ export class Render extends Disposable implements IRender {
         this._objects.push(new Ground(this._app.canvas));
         
         // this._objects.push(new Ball(100, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(8, 0)));
-        this._objects.push(new Ball(100, 200, 15, 1, new Vector(1, 0)));
+        // this._objects.push(new Ball(100, 200, 15, 1, new Vector(1, 0)));
         // this._objects.push(new Ball(170, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(0, 0)));
     }
 

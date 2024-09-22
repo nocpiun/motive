@@ -1,8 +1,10 @@
 import type { Button } from "@/ui/button/button";
 import type { Render } from "@/simulator/render/render";
+import type { ObjectNameMap } from "@/simulator/object";
 
 import { Box, Circle, MousePointer2, Pause, Pin, Play, RotateCw, Settings, Spline, X } from "lucide";
 
+import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, createElement, type IComponent } from "@/ui/ui";
 import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
@@ -27,12 +29,17 @@ interface IPanel extends IComponent {
      * which will then be rendered into the canvas by the renderer linked.
      */
     linkRenderer(renderer: Render): void
+
+    onSelectedObjectChange: Event<keyof ObjectNameMap>
 }
 
 export class Panel extends Component<HTMLDivElement, PanelOptions> implements IPanel {
     private static readonly WITHDRAW_TIME = 1500; // ms
     private _renderer: Render | null = null;
     private _controller: AbortController | null = new AbortController();
+
+    // events
+    private _onSelectedObjectChange = new Emitter<keyof ObjectNameMap>();
     
     private _isPoppedUp: boolean = false;
     private _isPinned: boolean = false;
@@ -142,11 +149,16 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         this._renderer = renderer;
         this._register(this._renderer);
         
-        this._register(this._refreshButton.onClick(() => this._renderer.refresh()));
+        this._register(this._refreshButton.onClick(() => {
+            this._renderer.refresh();
+            this._withdraw(false);
+        }));
 
         for(const switcher of this._switchers) {
             this._register(
                 switcher.onDidChange(({ id, isActive }) => {
+                    this._onSelectedObjectChange.fire(id.replace("btn.obj.", "") as keyof ObjectNameMap);
+                    
                     if(!isActive) {
                         switcher.setActive(true);
                     }
@@ -159,6 +171,10 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 })
             );
         }
+    }
+
+    public get onSelectedObjectChange() {
+        return this._onSelectedObjectChange.event;
     }
 
     public override dispose(): void {
