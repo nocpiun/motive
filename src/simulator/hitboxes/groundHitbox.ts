@@ -2,6 +2,7 @@ import type { Point } from "@/simulator/render/render";
 import type { CanvasObject } from "@/simulator/object";
 
 import { Hitbox, type IHitbox } from "@/simulator/hitbox";
+import { Block } from "@/simulator/objects/block";
 
 import { RoundHitbox } from "./roundHitbox";
 
@@ -25,8 +26,14 @@ export class GroundHitbox extends Hitbox implements IGroundHitbox {
         if(hitbox instanceof RoundHitbox) {
             const distance = this.anchor.y - hitbox.anchor.y;
 
-            if(this.anchor.y - hitbox.anchor.y <= hitbox.radius) {
+            if(distance <= hitbox.radius) {
                 this._onHit.fire({ obj, depth: hitbox.radius - distance });
+            }
+        } else if(obj instanceof Block) { // special type of ConvexHitbox
+            const distance = this.anchor.y - obj.hitbox.anchor.y - obj.size / 2;
+
+            if(distance <= obj.size / 2) {
+                this._onHit.fire({ obj, depth: obj.size / 2 - distance });
             }
         }
     }

@@ -7,6 +7,7 @@ import { GroundHitbox } from "@/simulator/hitboxes/groundHitbox";
 import { Force } from "@/simulator/force";
 
 import { Ball } from "./ball";
+import { Block } from "./block";
 
 export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly GROUND_HEIGHT = 50;
@@ -30,10 +31,8 @@ export class Ground extends CanvasObject<GroundHitbox> {
 
         this._register(this.hitbox.onHit(({ obj }) => {
             if(obj instanceof Ball) {
-                this.hitbox.cancelNextTest();
-
                 // To prevent the object from going through the ground
-                obj.obj.y = this.hitbox.anchor.y - obj.hitbox.radius;
+                obj.obj.y = this.hitbox.anchor.y - obj.radius;
                 obj.updateHitboxAnchor();
 
                 const vy = obj.velocity.getComponent(this.normalVector);
@@ -45,6 +44,13 @@ export class Ground extends CanvasObject<GroundHitbox> {
                     obj.velocity = vx;
                     obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
                 }
+            } else if(obj instanceof Block) {
+                // To prevent the object from going through the ground
+                obj.obj.y = this.hitbox.anchor.y - obj.size;
+                obj.updateHitboxAnchor();
+
+                obj.velocity.y = 0;
+                obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
             }
         }));
     }

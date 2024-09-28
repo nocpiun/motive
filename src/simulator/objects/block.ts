@@ -3,26 +3,32 @@ import * as PIXI from "pixi.js";
 import { CanvasObject, registerObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
-import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
+import { ConvexHitbox } from "@/simulator/hitboxes/convexHitbox";
 
 import { Ground } from "./ground";
+import { Ball } from "./ball";
 
-export class Ball extends CanvasObject<RoundHitbox> {
+export class Block extends CanvasObject<ConvexHitbox> {
     public constructor(
         x: number,
         y: number,
-        public radius: number = 15,
+        public size: number = 30,
         mass: number = 1,
         velocity: Vector = Vector.Zero
     ) {
         super(
             new PIXI.Graphics()
-                .circle(0, 0, radius)
-                .fill(colors["black"]),
+                .rect(0, 0, size, size)
+                .fill(colors["wood"]),
             mass,
             velocity,
 
-            new RoundHitbox(radius, { x, y })
+            new ConvexHitbox([
+                new Vector(size, 0),
+                new Vector(0, -size),
+                new Vector(-size, 0),
+                new Vector(0, size),
+            ], { x: x - size / 2, y: y - size / 2 })
         );
 
         this.obj.position.set(x, y);
@@ -30,11 +36,11 @@ export class Ball extends CanvasObject<RoundHitbox> {
         this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
-            if(obj instanceof Ball) {
+            if(obj instanceof Block || obj instanceof Ball) {
                 obj.hitbox.cancelNextTest();
 
                 /**
-                 * To prevent balls from going through each other
+                 * To prevent objects from going through each other
                  */
 
                 const p1 = this.hitbox.anchor;
@@ -79,10 +85,10 @@ export class Ball extends CanvasObject<RoundHitbox> {
     public override update(delta: number, container: PIXI.Container) {
         super.update(delta, container);
 
-        if(this.obj.y < Ground.GROUND_HEIGHT - this.radius) {
+        if(this.obj.y < Ground.GROUND_HEIGHT - this.size / 2) {
             this.removeForce("ground.support");
         }
     }
 }
 
-registerObject("ball", Ball);
+registerObject("block", Block);

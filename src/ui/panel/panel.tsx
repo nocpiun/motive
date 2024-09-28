@@ -2,7 +2,19 @@ import type { Button } from "@/ui/button/button";
 import type { Render } from "@/simulator/render/render";
 import type { ObjectNameMap } from "@/simulator/object";
 
-import { Box, Circle, MousePointer2, Pause, Pin, Play, RotateCw, Settings, Spline, X } from "lucide";
+import {
+    Box,
+    Circle,
+    Cuboid,
+    MousePointer2,
+    Pause,
+    Pin,
+    Play,
+    RotateCw,
+    Settings,
+    Spline,
+    X
+} from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, createElement, type IComponent } from "@/ui/ui";
@@ -96,8 +108,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         switcherContainer.classList.add("panel-switcher-container");
 
         this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.ball", text: "小球", icon: Circle, defaultValue: true }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.board", text: "木板", icon: Box }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.rope", text: "绳子", icon: Spline }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.block", text: "木块", icon: Box }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.board", text: "木板", icon: Cuboid, disabled: true }));
+        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.rope", text: "绳子", icon: Spline, disabled: true }));
 
         // Listeners
 
