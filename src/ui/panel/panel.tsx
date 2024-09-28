@@ -6,6 +6,7 @@ import {
     Box,
     Circle,
     Cuboid,
+    Info,
     MousePointer2,
     Pause,
     Pin,
@@ -82,23 +83,14 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const toolbarLeftGroup = new ButtonGroup(toolbar);
         toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
         toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
-        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, () => {});
+        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: "暂停" }, ({ isActive }) => {
-            if(isActive) {
-                this._renderer.pause();
-                this._pauseSwitcher.setIcon(Play);
-                this._pauseSwitcher.setTooltip("继续");
-                this._refreshButton.disabled = true;
-            } else {
-                this._renderer.unpause();
-                this._pauseSwitcher.setIcon(Pause);
-                this._pauseSwitcher.setTooltip("暂停");
-                this._refreshButton.disabled = false;
-            }
+            isActive ? this._pauseRenderer() : this._unpauseRenderer();
         });
         
         const toolbarRightGroup = new ButtonGroup(toolbar);
+        toolbarRightGroup.addButton({ icon: Info, tooltip: "关于" }, () => modalProvider.open("about"));
         this._pinSwitcher = toolbarRightGroup.addSwitcher({ icon: Pin, tooltip: "固定" }, ({ isActive }) => {
             isActive ? this._pin() : this._unpin();
         });
@@ -160,6 +152,20 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         this._closeButton.disabled = false;
     }
 
+    private _pauseRenderer(): void {
+        this._renderer.pause();
+        this._pauseSwitcher.setIcon(Play);
+        this._pauseSwitcher.setTooltip("继续");
+        this._refreshButton.disabled = true;
+    }
+
+    private _unpauseRenderer(): void {
+        this._renderer.unpause();
+        this._pauseSwitcher.setIcon(Pause);
+        this._pauseSwitcher.setTooltip("暂停");
+        this._refreshButton.disabled = false;
+    }
+
     public linkRenderer(renderer: Render) {
         this._renderer = renderer;
         this._register(this._renderer);
@@ -168,6 +174,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             this._renderer.refresh();
             this._withdraw(false);
         }));
+
+        this._register(modalProvider.onModalOpen(() => this._pauseRenderer()));
+        this._register(modalProvider.onModalClose(() => this._unpauseRenderer()));
 
         for(const switcher of this._switchers) {
             this._register(

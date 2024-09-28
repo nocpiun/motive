@@ -14,6 +14,7 @@ export class TestModal extends Modal {
         
         super(target, { id: "test", title: "Test Modal", width: 300, height: 200 });
         
-        this._addFooterButton("test-btn", { text: "Test Footer Button" }, () => {});
+        this._addFooterButton("test-btn-1", { text: "Test Footer Button 1" }, "right", () => {});
+        this._addFooterButton("test-btn-2", { text: "Test Footer Button 2" }, "left", () => {});
     }
 }

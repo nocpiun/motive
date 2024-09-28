@@ -24,8 +24,11 @@ describe("modal-component-tests", () => {
     it("modal-content", () => {
         expect(modal.element.querySelector("span").textContent).toBe("Test Modal");
         
-        expect(modal.element.querySelector("footer").childNodes.length).toBe(1);
-        expect(document.getElementById("modal.test.test-btn").textContent).toBe("Test Footer Button");
+        expect(modal.element.querySelector(".footer-right-split").childNodes.length).toBe(1);
+        expect(modal.element.querySelector(".footer-left-split").childNodes.length).toBe(1);
+        
+        expect(document.getElementById("modal.test.test-btn-1").textContent).toBe("Test Footer Button 1");
+        expect(document.getElementById("modal.test.test-btn-2").textContent).toBe("Test Footer Button 2");
     });
 
     it("modal-show", () => {

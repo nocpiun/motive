@@ -56,9 +56,14 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
                     onClick={(e: PointerEvent) => {
                         this._onClick.fire(e);
                     }}>
-                    <div className="icon-wrapper">
-                        {_options.icon && createLucide(_options.icon)}
-                    </div>
+                    {
+                        _options.icon
+                        && (
+                            <div className="icon-wrapper">
+                                {_options.icon && createLucide(_options.icon)}
+                            </div>
+                        )
+                    }
                     {_options.text && <span>{_options.text}</span>}
                 </button>
             ),

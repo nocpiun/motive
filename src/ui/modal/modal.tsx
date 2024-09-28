@@ -54,7 +54,10 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
                     
                     <div className="modal-dialog-body"/>
 
-                    <footer className="modal-dialog-footer"/>
+                    <footer className="modal-dialog-footer">
+                        <div className="footer-left-split"/>
+                        <div className="footer-right-split"/>
+                    </footer>
                 </dialog>
             ),
             target,
@@ -87,8 +90,8 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         this._onClose.fire();
     }
 
-    protected _addFooterButton(id: string, options: ButtonOptions, onClick?: Listener<PointerEvent>) {
-        const button = new Button(this._element.querySelector(".modal-dialog-footer"), { ...options, id: `modal.${this._options.id}.${id}` });
+    protected _addFooterButton(id: string, options: ButtonOptions, dock: "left" | "right" = "right", onClick?: Listener<PointerEvent>) {
+        const button = new Button(this._element.querySelector(`.footer-${dock}-split`), { ...options, id: `modal.${this._options.id}.${id}` });
         button.element.classList.add("modal-dialog-button");
 
         if(onClick) button.onClick(onClick);
