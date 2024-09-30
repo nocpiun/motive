@@ -11,7 +11,9 @@ export class AboutModal extends Modal {
     public constructor(target: ComponentLike) {
         super(target, { id: "about", title: "关于" });
 
-        this._addFooterButton("donate", { text: "打赏", variant: "primary", icon: HandCoins }, "left");
+        this._addFooterButton("donate", { text: "打赏", variant: "primary", icon: HandCoins }, "left", () => {
+            window.open("https://nin.red/donate", "_blank");
+        });
         this._addFooterButton("changelog", { text: "更新日志", variant: "secondary", icon: BookMarked });
 
         // UI
@@ -36,7 +38,7 @@ export class AboutModal extends Modal {
     }
 
     private _addInfoListItem(name: string, content: string, link?: string): void {
-        document.querySelector(".info-list-container")?.appendChild(
+        this._container.querySelector(".info-list-container")?.appendChild(
             <div className="info-list-item">
                 <span className="info-list-item-name">{name}</span>
                 {
