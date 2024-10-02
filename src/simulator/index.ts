@@ -1,3 +1,5 @@
+import { Box, Circle, Cuboid, Spline } from "lucide";
+
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
 import { Panel } from "@/ui/panel/panel";
@@ -24,6 +26,14 @@ export class Motive extends Disposable {
         this._render = new Render(this._canvas);
         
         this._panel = new Panel(this._root);
+        
+        // Register object switchers
+        this._panel.addObjectSwitcher("ball", "小球", Circle, false, true);
+        this._panel.addObjectSwitcher("block", "木块", Box);
+        this._panel.addObjectSwitcher("board", "木板", Cuboid, true);
+        this._panel.addObjectSwitcher("rope", "绳子", Spline, true);
+
+        // Initialize the control panel
         this._panel.linkRenderer(this._render);
 
         this._register(this._canvas);

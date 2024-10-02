@@ -83,7 +83,7 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
         if(this._options.id) this._element.id = this._options.id;
 
-        if(this._options.contextMenuItems && this._options.contextMenuItems.length > 0) {
+        if(this._options.contextMenuItems && this._options.contextMenuItems.length > 0 && !this._options.disabled) {
             contextMenuProvider.registerContextMenu(this, this._options.contextMenuItems);
         }
 

@@ -20,6 +20,7 @@ export interface SwitcherEvent {
 interface ISwitcher extends IButton {
     isActive: boolean
 
+    select(): void
     /**
      * Set the state of the switcher
      */
@@ -51,6 +52,16 @@ export class Switcher extends Button implements ISwitcher {
         this._onDidChange.fire({
             id: this._options.id,
             isActive: this.isActive
+        });
+    }
+
+    public select() {
+        if(this.isActive) return;
+
+        this.setActive(true);
+        this._onDidChange.fire({
+            id: this._options.id,
+            isActive: true
         });
     }
 

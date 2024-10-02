@@ -3,9 +3,8 @@ import type { Render } from "@/simulator/render/render";
 import type { ObjectNameMap } from "@/simulator/object";
 
 import {
+    type IconNode,
     Box,
-    Circle,
-    Cuboid,
     Info,
     MousePointer2,
     Pause,
@@ -13,7 +12,7 @@ import {
     Play,
     RotateCw,
     Settings,
-    Spline,
+    Wrench,
     X
 } from "lucide";
 
@@ -25,6 +24,8 @@ import { modalProvider } from "@/ui/modal/modalProvider";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 
 import "./panel.less";
+
+type AvailableObjectNames = Exclude<keyof ObjectNameMap, "ground">;
 
 export interface PanelOptions {
     width?: number
@@ -43,6 +44,7 @@ interface IPanel extends IComponent {
      * which will then be rendered into the canvas by the renderer linked.
      */
     linkRenderer(renderer: Render): void
+    addObjectSwitcher(id: AvailableObjectNames, displayName: string, icon: IconNode, disabled?: boolean, defaultValue?: boolean): Switcher
 
     onSelectedObjectChange: Event<keyof ObjectNameMap>
 }
@@ -98,11 +100,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
 
         const switcherContainer = createElement("div", this);
         switcherContainer.classList.add("panel-switcher-container");
-
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.ball", text: "小球", icon: Circle, defaultValue: true }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.block", text: "木块", icon: Box }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.board", text: "木板", icon: Cuboid, disabled: true }));
-        this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.rope", text: "绳子", icon: Spline, disabled: true }));
 
         // Context Menu
         
@@ -226,6 +223,31 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 })
             );
         }
+    }
+
+    public addObjectSwitcher(id: AvailableObjectNames, displayName: string, icon: IconNode, disabled = false, defaultValue = false) {
+        const switcherContainer = document.querySelector(".panel-switcher-container");
+        const switcher = new Switcher(switcherContainer, {
+            id: "btn.obj."+ id,
+            text: displayName,
+            icon,
+            disabled,
+            defaultValue,
+            contextMenuItems: [
+                {
+                    text: "选择",
+                    action: () => switcher.select()
+                },
+                {
+                    text: "参数属性",
+                    icon: Wrench,
+                    action: () => {}
+                }
+            ]
+        });
+
+        this._switchers.push(switcher);
+        return switcher;
     }
 
     public get onSelectedObjectChange() {

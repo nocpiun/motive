@@ -179,7 +179,6 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
         this._register(this._onClick);
 
         if(this._subItems) {
-
             this._register(this.onHover(() => {
                 contextMenuProvider.clearSubContextMenus();
 

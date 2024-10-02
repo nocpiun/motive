@@ -1,8 +1,9 @@
 import type * as PIXI from "pixi.js";
 import type { Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
-import type { Ball } from "./objects/ball";
 import type { Ground } from "./objects/ground";
+import type { Ball } from "./objects/ball";
+import type { Block } from "./objects/block";
 
 import { Disposable } from "@/common/lifecycle";
 import { generateRandomID } from "@/common/utils/utils";
@@ -120,8 +121,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 }
 
 export interface ObjectNameMap {
-    "ball": Ball
     "ground": Ground
+    "ball": Ball
+    "block": Block
+    "board": any
+    "rope": any
 }
 
 const objMap = new Map<string, any>();
