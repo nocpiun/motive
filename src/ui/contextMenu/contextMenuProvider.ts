@@ -8,6 +8,14 @@ import { ContextMenu, type ContextMenuItemInfo, type ContextMenuPosition } from 
 
 export interface IContextMenuProvider extends IDisposable {
     /**
+     * Create a context menu and display it
+     * 
+     * @param items Items of the context menu
+     * @param anchor The anchor point of the context menu
+     * @param position The position of the context menu
+     */
+    createContextMenu(items: ContextMenuItemInfo[], anchor: Anchor, position: ContextMenuPosition): ContextMenu
+    /**
      * Reigster a new context menu to an element or a component
      * 
      * @param target The element that registers the context menu
@@ -21,16 +29,25 @@ export interface IContextMenuProvider extends IDisposable {
 }
 
 class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuProvider {
+    private _subMenuComponents: Map<string, ContextMenu> = new Map();
 
     public constructor() {
         super("context-menu-provider");
     }
 
-    private _createContextMenu(items: ContextMenuItemInfo[], anchor: Anchor, position: ContextMenuPosition) {
+    public createContextMenu(items: ContextMenuItemInfo[], anchor: Anchor, position: ContextMenuPosition) {
         const id = `context-menu.${generateRandomID()}`;
         const menu = new ContextMenu(this._providerElement, { items, anchor, position, id });
 
         this._registerComponent(id, menu);
+        return menu;
+    }
+
+    public createSubContextMenu(items: ContextMenuItemInfo[], anchor: Anchor) {
+        const id = `context-menu.sub.${generateRandomID()}`;
+        const menu = new ContextMenu(this._providerElement, { items, anchor, position: "bottom-right", noBackdrop: true, id });
+
+        this._subMenuComponents.set(id, menu);
         return menu;
     }
     
@@ -44,7 +61,7 @@ class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuP
             e.stopPropagation();
 
             this.clearContextMenus();
-            this._createContextMenu(items, {
+            this.createContextMenu(items, {
                 x: e.clientX,
                 y: e.clientY
             }, "top-right");
@@ -53,6 +70,12 @@ class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuP
 
     public clearContextMenus() {
         this._clearComponents();
+        this.clearSubContextMenus();
+    }
+
+    public clearSubContextMenus() {
+        this._subMenuComponents.forEach((component) => component.dispose());
+        this._subMenuComponents.clear();
     }
 }
 

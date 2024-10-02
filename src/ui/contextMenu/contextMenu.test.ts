@@ -35,6 +35,14 @@ describe("context-menu-component-tests", () => {
             action: () => {
                 counter = 4;
             }
+        },
+        {
+            text: "Test 5",
+            subItems: [
+                {
+                    text: "Sub Item Test"
+                }
+            ]
         }
     ];
 
@@ -70,14 +78,15 @@ describe("context-menu-component-tests", () => {
                 case 2:
                     expect(itemElem.className).toBe("context-menu-item");
                     expect(itemElem.textContent).toBe("Test 3");
-                    expect(itemElem.querySelector("svg")).toBeDefined();
+                    expect(itemElem.getElementsByTagName("svg").length).toBe(1);
                     break;
                 case 3:
                     expect(itemElem.className).toBe("separator");
                     break;
                 case 4:
                     expect(itemElem.className).toBe("context-menu-item");
-                    expect(itemElem.textContent).toBe("Test 4");
+                    expect(itemElem.textContent).toBe("Test 5");
+                    expect(itemElem.getElementsByTagName("svg").length).toBe(1);
                     break;
                 default:
                     break;
@@ -106,8 +115,11 @@ describe("context-menu-component-tests", () => {
                     // separator cannot be clicked
                     break;
                 case 4:
-                    itemElem.click();
-                    expect(counter).toBe(4);
+                    // eslint-disable-next-line no-case-declarations
+                    const mouseEvent = new MouseEvent("mouseenter", { bubbles: true });
+
+                    itemElem.dispatchEvent(mouseEvent);
+                    expect(document.getElementById("context-menu-provider").childNodes.length).toBe(1);
                     break;
                 default:
                     break;

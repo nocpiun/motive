@@ -1,6 +1,6 @@
 import type { Anchor } from "@/ui/provider";
 
-import { createElement as createLucide, type IconNode } from "lucide";
+import { ChevronRight, createElement as createLucide, type IconNode } from "lucide";
 
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { generateRandomID } from "@/common/utils/utils";
@@ -25,6 +25,7 @@ export interface ContextMenuOptions {
     id?: string
     anchor: Anchor
     position: ContextMenuPosition
+    noBackdrop?: boolean
     items: ContextMenuItemInfo[]
 }
 
@@ -34,6 +35,7 @@ const defaultOptions: ContextMenuOptions = {
         y: 0
     },
     position: "bottom-right",
+    noBackdrop: false,
     items: []
 };
 
@@ -59,6 +61,7 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
         this._contextMenuElem = this._element.querySelector(".context-menu") as HTMLDivElement;
 
         if(this._options.id) this._element.id = this._options.id;
+        if(this._options.noBackdrop) this._element.classList.add("hidden");
 
         for(const info of this._options.items) {
             if(info.hidden) continue;
@@ -141,6 +144,8 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
     // events
     private _onClick = new Emitter();
 
+    private _subItems?: ContextMenuItemInfo[];
+
     public constructor(target: ComponentLike, _options?: ContextMenuItemOptions) {
         super(
             (
@@ -151,6 +156,13 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
                                 {_options.icon && createLucide(_options.icon)}
                             </div>
                             <button>{_options.text}</button>
+                            {
+                                (_options.subItems && _options.subItems.length > 0) && (
+                                    <div className="icon-wrapper">
+                                        {createLucide(ChevronRight)}
+                                    </div>
+                                )
+                            }
                         </>
                     )}
                 </div>
@@ -160,17 +172,33 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
             _options
         );
 
+        if(this._options.subItems && this._options.subItems.length > 0) this._subItems = this._options.subItems;
         if(this._options.separator) this._element.className = "separator";
         if(this._options.id) this._element.id = this._options.id;
 
-        /** @todo Register sub items */
-
         this._register(this._onClick);
+
+        if(this._subItems) {
+
+            this._register(this.onHover(() => {
+                contextMenuProvider.clearSubContextMenus();
+
+                const rect = this._element.getBoundingClientRect();
+                const parentRect = this._element.parentElement!.getBoundingClientRect();
+
+                contextMenuProvider.createSubContextMenu(this._subItems, {
+                    x: parentRect.x + parentRect.width,
+                    y: rect.y
+                });
+            }));
+        }
         
-        if(!this._options.separator) this._element.addEventListener("click", () => {
-            this._onClick.fire();
-            contextMenuProvider.clearContextMenus();
-        });
+        if(!this._options.separator && !this._subItems) {
+            this._element.addEventListener("click", () => {
+                this._onClick.fire();
+                contextMenuProvider.clearContextMenus();
+            });
+        }
     }
 
     public get id() {

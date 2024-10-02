@@ -22,6 +22,11 @@
     background-color: transparent;
     z-index: 2500;
 
+    &.hidden {
+        width: 0;
+        height: 0;
+    }
+
     .context-menu {
         position: relative;
         top: 0;
@@ -59,10 +64,13 @@
             }
 
             button {
+                flex: 1;
                 color: var(--mt-foreground);
                 font-size: 10pt;
                 border: none;
                 background-color: transparent;
+                text-align: left;
+                white-space: nowrap;
                 cursor: pointer;
             }
 

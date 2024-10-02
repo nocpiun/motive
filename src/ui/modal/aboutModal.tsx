@@ -25,19 +25,24 @@ export class AboutModal extends Modal {
                     },
                     { separator: true },
                     {
-                        text: "项目 Github 仓库",
-                        icon: SquareArrowOutUpRight,
-                        action: () => window.open("https://github.com/nocpiun/motive", "_blank")
-                    },
-                    {
-                        text: "作者 Github 主页",
-                        icon: SquareArrowOutUpRight,
-                        action: () => window.open("https://github.com/NriotHrreion", "_blank")
-                    },
-                    {
-                        text: "作者个人网站",
-                        icon: SquareArrowOutUpRight,
-                        action: () => window.open("https://nin.red", "_blank")
+                        text: "链接",
+                        subItems: [
+                            {
+                                text: "项目 Github 仓库",
+                                icon: SquareArrowOutUpRight,
+                                action: () => window.open("https://github.com/nocpiun/motive", "_blank")
+                            },
+                            {
+                                text: "作者 Github 主页",
+                                icon: SquareArrowOutUpRight,
+                                action: () => window.open("https://github.com/NriotHrreion", "_blank")
+                            },
+                            {
+                                text: "作者个人网站",
+                                icon: SquareArrowOutUpRight,
+                                action: () => window.open("https://nin.red", "_blank")
+                            }
+                        ]
                     }
                 ]
             },
