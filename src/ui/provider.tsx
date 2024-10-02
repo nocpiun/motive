@@ -2,6 +2,11 @@ import type { Component } from "./ui";
 
 import { Disposable } from "@/common/lifecycle";
 
+export interface Anchor {
+    x: number
+    y: number
+}
+
 const providerHolder: HTMLDivElement = <div class="provider-holder"/>;
 document.body.appendChild(providerHolder);
 

@@ -1,7 +1,9 @@
 import * as PIXI from "pixi.js";
+import { RotateCw } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
+import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 
 import "./canvas.less";
 
@@ -18,12 +20,14 @@ interface ICanvas extends IComponent {
 
     onLoad: Event<PIXI.Application>
     onClick: Event<PIXI.FederatedPointerEvent>
+    onRefresh: Event<void>
 }
 
 export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implements ICanvas {
     // events
     private _onLoad = new Emitter<PIXI.Application>();
     private _onClick = new Emitter<PIXI.FederatedPointerEvent>();
+    private _onRefresh = new Emitter();
 
     private readonly _app = new PIXI.Application();
     public readonly ratio: number = window.devicePixelRatio || 1;
@@ -49,6 +53,16 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
                 throw new Error("Unable to load PIXI.js and canvas.");
             }
         }
+
+        // Context Menu
+        
+        contextMenuProvider.registerContextMenu(this, [
+            {
+                text: "刷新画面",
+                icon: RotateCw,
+                action: () => this._onRefresh.fire()
+            }
+        ]);
 
         this._register(this._onLoad);
     }
@@ -95,5 +109,9 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
 
     public get onClick() {
         return this._onClick.event;
+    }
+
+    public get onRefresh() {
+        return this._onRefresh.event;
     }
 }

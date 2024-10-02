@@ -3,7 +3,7 @@ import { modalProvider } from "./modalProvider";
 
 /** @see https://github.com/jsdom/jsdom/issues/3294#issuecomment-1196577616 */
 beforeAll(() => {
-    HTMLDialogElement.prototype.showModal = jest.fn(function() {
+    HTMLDialogElement.prototype.show = jest.fn(function() {
         this.open = true;
     });
     HTMLDialogElement.prototype.close = jest.fn(function() {

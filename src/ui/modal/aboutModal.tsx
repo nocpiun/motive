@@ -1,6 +1,6 @@
 import type { ComponentLike } from "@/ui/ui";
 
-import { BookMarked, HandCoins } from "lucide";
+import { BookMarked, HandCoins, SquareArrowOutUpRight } from "lucide";
 
 import { version } from "@/common/global";
 
@@ -11,9 +11,41 @@ export class AboutModal extends Modal {
     public constructor(target: ComponentLike) {
         super(target, { id: "about", title: "关于" });
 
-        this._addFooterButton("donate", { text: "打赏", variant: "primary", icon: HandCoins }, "left", () => {
-            window.open("https://nin.red/donate", "_blank");
-        });
+        this._addFooterButton(
+            "donate",
+            {
+                text: "打赏",
+                variant: "primary",
+                icon: HandCoins,
+                contextMenuItems: [
+                    {
+                        text: "打赏",
+                        icon: HandCoins,
+                        action: () => window.open("https://github.com/sponsors/nocpiun", "_blank")
+                    },
+                    { separator: true },
+                    {
+                        text: "项目 Github 仓库",
+                        icon: SquareArrowOutUpRight,
+                        action: () => window.open("https://github.com/nocpiun/motive", "_blank")
+                    },
+                    {
+                        text: "作者 Github 主页",
+                        icon: SquareArrowOutUpRight,
+                        action: () => window.open("https://github.com/NriotHrreion", "_blank")
+                    },
+                    {
+                        text: "作者个人网站",
+                        icon: SquareArrowOutUpRight,
+                        action: () => window.open("https://nin.red", "_blank")
+                    }
+                ]
+            },
+            "left",
+            () => {
+                window.open("https://nin.red/donate", "_blank");
+            }
+        );
         this._addFooterButton("changelog", { text: "更新日志", variant: "secondary", icon: BookMarked });
 
         // UI

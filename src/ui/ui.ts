@@ -66,6 +66,7 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
 
         this._element.addEventListener("mouseenter", () => this._onHover.fire());
         this._element.addEventListener("mouseleave", () => this._onUnhover.fire());
+        this._element.addEventListener("contextmenu", (e) => e.preventDefault());
 
         this._register(this._onHover);
         this._register(this._onUnhover);

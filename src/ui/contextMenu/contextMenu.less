@@ -1,0 +1,82 @@
+:root {
+    // Context Menu Colors
+    --mt-context-menu-bg: var(--tw-color-gray-100);
+    --mt-context-menu-border: var(--tw-color-gray-200);
+    --mt-context-menu-item-hover-bg: var(--tw-color-gray-200);
+    --mt-context-menu-item-active-bg: var(--tw-color-gray-300);
+    --mt-context-menu-separator-color: var(--tw-color-gray-300);
+    
+    // Context Menu Properties
+    --mt-context-menu-border-width: 1px;
+    --mt-context-menu-border-radius: 6px;
+    --mt-context-menu-item-border-radius: calc(var(--mt-context-menu-border-radius) / 2);
+    --mt-context-menu-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.context-menu-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 2500;
+
+    .context-menu {
+        position: relative;
+        top: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: fit-content;
+        height: fit-content;
+        padding: 7px;
+        background-color: var(--mt-context-menu-bg);
+        border: var(--mt-context-menu-border-width) solid var(--mt-context-menu-border);
+        border-radius: var(--mt-context-menu-border-radius);
+        box-shadow: var(--mt-context-menu-shadow);
+        z-index: 3000;
+    
+        &-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 7px;
+            padding-right: 10px;
+            border-radius: var(--mt-context-menu-item-border-radius);
+            cursor: pointer;
+
+            .icon-wrapper {
+                display: flex;
+                align-items: center;
+                width: 17px;
+                height: 17px;
+                padding-left: 5px;
+                svg {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+
+            button {
+                color: var(--mt-foreground);
+                font-size: 10pt;
+                border: none;
+                background-color: transparent;
+                cursor: pointer;
+            }
+
+            &:hover {
+                background-color: var(--mt-context-menu-item-hover-bg);
+            }
+            &:active {
+                background-color: var(--mt-context-menu-item-active-bg);
+            }
+        }
+    
+        .separator {
+            margin: 2px 5px;
+            border-top: 1px solid var(--mt-context-menu-separator-color);
+        }
+    }
+}

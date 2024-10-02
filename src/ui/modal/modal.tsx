@@ -41,6 +41,8 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         super(
             (
                 <dialog className="modal-dialog" id={_options.id}>
+                    <div className="modal-dialog-backdrop"/>
+
                     <header className="modal-dialog-header">
                         <span className="modal-dialog-title">{_options.title}</span>
                         
@@ -80,12 +82,14 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
 
     public show() {
         this._element.classList.add("opened");
-        this._element.showModal();
+        document.getElementById("dialog-backdrop").classList.add("active");
+        this._element.show();
         this._onShow.fire();
     }
 
     public close() {
         this._element.classList.remove("opened");
+        document.getElementById("dialog-backdrop").classList.remove("active");
         this._element.close();
         this._onClose.fire();
     }

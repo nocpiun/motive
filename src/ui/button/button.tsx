@@ -1,4 +1,5 @@
 import type { HoverWidget } from "@/ui/hoverWidget/hoverWidget";
+import type { ContextMenuItemInfo } from "@/ui/contextMenu/contextMenu";
 
 import { createElement as createLucide, type IconNode } from "lucide";
 
@@ -7,6 +8,7 @@ import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { hoverProvider } from "@/ui/hoverWidget/hoverProvider";
 
 import "./button.less";
+import { contextMenuProvider } from "../contextMenu/contextMenuProvider";
 
 type ButtonVariant = "primary" | "secondary" | "success" | "danger";
 
@@ -18,12 +20,14 @@ export interface ButtonOptions {
     disabled?: boolean
     icon?: IconNode
     tooltip?: string
+    contextMenuItems?: ContextMenuItemInfo[]
     id?: string
 }
 
 const defaultOptions: ButtonOptions = {
     variant: "secondary",
-    disabled: false
+    disabled: false,
+    contextMenuItems: []
 };
 
 export interface IButton extends IComponent {
@@ -78,6 +82,10 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
         if(this._options.width) this._element.style.width = `${this._options.width}px`;
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
         if(this._options.id) this._element.id = this._options.id;
+
+        if(this._options.contextMenuItems && this._options.contextMenuItems.length > 0) {
+            contextMenuProvider.registerContextMenu(this, this._options.contextMenuItems);
+        }
 
         this._register(this._onClick);
         if(this._options.tooltip) {

@@ -1,4 +1,4 @@
-import type { Anchor } from "./hoverProvider";
+import type { Anchor } from "@/ui/provider";
 
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 

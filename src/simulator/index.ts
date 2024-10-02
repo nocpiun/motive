@@ -41,5 +41,9 @@ export class Motive extends Disposable {
 
             this._render.addObject(obj);
         }));
+
+        this._register(this._canvas.onRefresh(() => {
+            if(!this._render.isPaused) this._render.refresh();
+        }));
     }
 }

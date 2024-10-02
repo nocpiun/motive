@@ -22,6 +22,7 @@ import { Component, type ComponentLike, createElement, type IComponent } from "@
 import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
+import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 
 import "./panel.less";
 
@@ -49,7 +50,6 @@ interface IPanel extends IComponent {
 export class Panel extends Component<HTMLDivElement, PanelOptions> implements IPanel {
     private static readonly WITHDRAW_TIME = 1500; // ms
     private _renderer: Render | null = null;
-    private _controller: AbortController | null = new AbortController();
 
     // events
     private _onSelectedObjectChange = new Emitter<keyof ObjectNameMap>();
@@ -104,10 +104,41 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.board", text: "木板", icon: Cuboid, disabled: true }));
         this._switchers.push(new Switcher(switcherContainer, { id: "btn.obj.rope", text: "绳子", icon: Spline, disabled: true }));
 
+        // Context Menu
+        
+        contextMenuProvider.registerContextMenu(this, [
+            {
+                text: "刷新画面",
+                icon: RotateCw,
+                action: () => {
+                    if(this._renderer.isPaused) return;
+
+                    this._renderer.refresh();
+                    this._withdraw(false);
+                }
+            },
+            { separator: true },
+            {
+                text: "设置",
+                icon: Settings,
+                action: () => modalProvider.open("settings")
+            },
+            {
+                text: "管理",
+                icon: Box,
+                action: () => modalProvider.open("manager")
+            },
+            {
+                text: "关于 Motive",
+                icon: Info,
+                action: () => modalProvider.open("about")
+            }
+        ]);
+
         // Listeners
 
-        this._element.addEventListener("mouseenter", () => this._popUp(), { signal: this._controller.signal });
-        this._element.addEventListener("mouseleave", () => this._withdraw(), { signal: this._controller.signal });
+        this._element.addEventListener("mouseenter", () => this._popUp());
+        this._element.addEventListener("mouseleave", () => this._withdraw());
     }
 
     private _popUp(): void {
@@ -199,12 +230,5 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
 
     public get onSelectedObjectChange() {
         return this._onSelectedObjectChange.event;
-    }
-
-    public override dispose(): void {
-        this._controller.abort();
-        this._controller = null;
-
-        super.dispose();
     }
 }

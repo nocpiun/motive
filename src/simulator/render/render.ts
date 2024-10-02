@@ -56,7 +56,7 @@ export class Render extends Disposable implements IRender {
     private _container: PIXI.Container = new PIXI.Container({ x: 0, y: 0 });
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
 
-    private _isPaused: boolean = false;
+    public isPaused: boolean = false;
 
     public constructor(private _canvas: Canvas) {
         super();
@@ -109,19 +109,19 @@ export class Render extends Disposable implements IRender {
     }
 
     public pause() {
-        if(this._isPaused) return;
+        if(this.isPaused) return;
 
-        this._isPaused = true;
+        this.isPaused = true;
     }
 
     public unpause() {
-        if(!this._isPaused) return;
+        if(!this.isPaused) return;
 
-        this._isPaused = false;
+        this.isPaused = false;
     }
 
     public update(delta: number) {
-        if(this._isPaused) return;
+        if(this.isPaused) return;
 
         // Repaint the canvas
         this._container.removeChildren();

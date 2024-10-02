@@ -44,6 +44,10 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
     public constructor() {
         super("modal-provider");
 
+        document.body.appendChild(
+            <div className="modal-dialog-backdrop" id="dialog-backdrop"/>
+        );
+
         process.env.NODE_ENV === "test" && this._registerModal(TestModal);
         this._registerModal(SettingsModal);
         this._registerModal(ManagerModal);

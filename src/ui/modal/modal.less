@@ -12,14 +12,34 @@
     --mt-modal-dialog-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
+.modal-dialog-backdrop {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .1);
+    z-index: 1000;
+    &.active {
+        display: block;
+    }
+}
+
 dialog.modal-dialog {
     display: none;
     flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 20px;
     background-color: var(--mt-modal-dialog-bg);
     border: var(--mt-modal-dialog-border-width) solid var(--mt-modal-dialog-border);
     border-radius: var(--mt-modal-dialog-border-radius);
     box-shadow: var(--mt-modal-dialog-shadow);
+    z-index: 2000;
 
     &.opened {
         display: flex;
