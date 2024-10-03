@@ -115,11 +115,8 @@ describe("context-menu-component-tests", () => {
                     // separator cannot be clicked
                     break;
                 case 4:
-                    // eslint-disable-next-line no-case-declarations
-                    const mouseEvent = new MouseEvent("mouseenter", { bubbles: true });
-
-                    itemElem.dispatchEvent(mouseEvent);
-                    expect(document.getElementById("context-menu-provider").childNodes.length).toBe(1);
+                    itemElem.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+                    expect(itemElem.querySelector(".sub-context-menu-container").childNodes.length).toBe(1);
                     break;
                 default:
                     break;
