@@ -238,6 +238,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                     text: "选择",
                     action: () => switcher.select()
                 },
+                { separator: true },
                 {
                     text: "参数属性",
                     icon: Wrench,

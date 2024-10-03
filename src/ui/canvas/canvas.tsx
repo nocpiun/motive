@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { RotateCw } from "lucide";
+import { ArrowRightFromLine, MoveUpRight, RotateCw } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
@@ -61,6 +61,34 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
                 text: "刷新画面",
                 icon: RotateCw,
                 action: () => this._onRefresh.fire()
+            },
+            { separator: true },
+            {
+                text: "添加向量",
+                icon: MoveUpRight,
+                subItems: [
+                    {
+                        text: "速度",
+                        icon: MoveUpRight,
+                    },
+                    {
+                        text: "力",
+                        icon: ArrowRightFromLine,
+                    },
+                    {
+                        text: "test item",
+                        subItems: [
+                            {
+                                text: "test item",
+                                subItems: [
+                                    {
+                                        text: "hello world"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         ]);
 

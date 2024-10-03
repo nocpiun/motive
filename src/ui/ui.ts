@@ -4,8 +4,8 @@ import { Disposable, type IDisposable } from "@/common/lifecycle";
 export interface IComponent<E extends HTMLElement = HTMLElement> extends IDisposable {
     element: E
 
-    onHover: Event<void>
-    onUnhover: Event<void>
+    onHover: Event<MouseEvent>
+    onUnhover: Event<MouseEvent>
 }
 
 export type ComponentLike<E extends HTMLElement = HTMLElement> = E | Element | IComponent<E>;
@@ -34,8 +34,8 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
     protected _options: O;
 
     // events
-    private _onHover = new Emitter();
-    private _onUnhover = new Emitter();
+    private _onHover = new Emitter<MouseEvent>();
+    private _onUnhover = new Emitter<MouseEvent>();
 
     protected constructor(protected _element: E, target: ComponentLike, defaultOptions: O, options?: O) {
         super();
@@ -64,8 +64,8 @@ export abstract class Component<E extends HTMLElement = HTMLElement, O = any> ex
 
         this._element.setAttribute("data-component", "");
 
-        this._element.addEventListener("mouseenter", () => this._onHover.fire());
-        this._element.addEventListener("mouseleave", () => this._onUnhover.fire());
+        this._element.addEventListener("mouseenter", (e) => this._onHover.fire(e));
+        this._element.addEventListener("mouseleave", (e) => this._onUnhover.fire(e));
         this._element.addEventListener("contextmenu", (e) => e.preventDefault());
 
         this._register(this._onHover);

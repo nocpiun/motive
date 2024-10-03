@@ -29,8 +29,7 @@ export interface IContextMenuProvider extends IDisposable {
 }
 
 class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuProvider {
-    private _subMenuComponents: Map<string, ContextMenu> = new Map();
-
+    
     public constructor() {
         super("context-menu-provider");
     }
@@ -40,14 +39,6 @@ class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuP
         const menu = new ContextMenu(this._providerElement, { items, anchor, position, id });
 
         this._registerComponent(id, menu);
-        return menu;
-    }
-
-    public createSubContextMenu(items: ContextMenuItemInfo[], anchor: Anchor) {
-        const id = `context-menu.sub.${generateRandomID()}`;
-        const menu = new ContextMenu(this._providerElement, { items, anchor, position: "bottom-right", noBackdrop: true, id });
-
-        this._subMenuComponents.set(id, menu);
         return menu;
     }
     
@@ -70,12 +61,6 @@ class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuP
 
     public clearContextMenus() {
         this._clearComponents();
-        this.clearSubContextMenus();
-    }
-
-    public clearSubContextMenus() {
-        this._subMenuComponents.forEach((component) => component.dispose());
-        this._subMenuComponents.clear();
     }
 }
 

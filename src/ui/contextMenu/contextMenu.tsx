@@ -26,6 +26,7 @@ export interface ContextMenuOptions {
     anchor: Anchor
     position: ContextMenuPosition
     noBackdrop?: boolean
+    isSubMenu?: boolean
     items: ContextMenuItemInfo[]
 }
 
@@ -36,6 +37,7 @@ const defaultOptions: ContextMenuOptions = {
     },
     position: "bottom-right",
     noBackdrop: false,
+    isSubMenu: false,
     items: []
 };
 
@@ -44,7 +46,7 @@ export interface IContextMenu extends IComponent {
 }
 
 export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> implements IContextMenu {
-    private _contextMenuElem: HTMLDivElement;
+    public contextMenuElem: HTMLDivElement;
     
     public constructor(target: ComponentLike, _options?: ContextMenuOptions) {
         super(
@@ -58,7 +60,7 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
             _options
         );
 
-        this._contextMenuElem = this._element.querySelector(".context-menu") as HTMLDivElement;
+        this.contextMenuElem = this._element.querySelector(".context-menu") as HTMLDivElement;
 
         if(this._options.id) this._element.id = this._options.id;
         if(this._options.noBackdrop) this._element.classList.add("hidden");
@@ -71,49 +73,55 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
             : this._createItem(info);
         }
 
-        const width = this._contextMenuElem.clientWidth;
-        const height = this._contextMenuElem.clientHeight;
+        const width = this.contextMenuElem.clientWidth;
+        const height = this.contextMenuElem.clientHeight;
 
         switch(this._options.position) {
             case "top-left":
-                this._contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this._contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
+                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
                 break;
             case "top-right":
-                this._contextMenuElem.style.left = this._options.anchor.x +"px";
-                this._contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                this.contextMenuElem.style.left = this._options.anchor.x +"px";
+                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
                 break;
             case "bottom-left":
-                this._contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this._contextMenuElem.style.top = this._options.anchor.y +"px";
+                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
+                this.contextMenuElem.style.top = this._options.anchor.y +"px";
                 break;
             case "bottom-right":
-                this._contextMenuElem.style.left = this._options.anchor.x +"px";
-                this._contextMenuElem.style.top = this._options.anchor.y +"px";
+                this.contextMenuElem.style.left = this._options.anchor.x +"px";
+                this.contextMenuElem.style.top = this._options.anchor.y +"px";
                 break;
         }
 
         // Remove the context menu when the user clicks outside
         this._element.addEventListener("mousedown", (e) => {
-            if(e.target === this._element) contextMenuProvider.clearContextMenus();
+            if(e.target === this._element && !this._options.isSubMenu) {
+                contextMenuProvider.clearContextMenus();
+            }
         });
         window.addEventListener("blur", () => contextMenuProvider.clearContextMenus());
     }
 
     private _createItem(info: ContextMenuItemInfo): void {
-        const item = new ContextMenuItem(this._contextMenuElem, {
+        const item = new ContextMenuItem(this.contextMenuElem, {
             ...info,
-            id: `${this._options.id}.${generateRandomID()}`
+            id: `${this._options.id}.${generateRandomID()}`,
+            parentMenu: this
         });
 
         this._register(item);
-        if(info.action) this._register(item.onClick(() => info.action()));
+        if(info.action) {
+            this._register(item.onClick(() => info.action()));
+        }
     }
 
     private _createSeparator(): void {
-        const item = new ContextMenuItem(this._contextMenuElem, {
+        const item = new ContextMenuItem(this.contextMenuElem, {
             separator: true,
-            id: `${this._options.id}.${generateRandomID()}`
+            id: `${this._options.id}.${generateRandomID()}`,
+            parentMenu: this
         });
 
         this._register(item);
@@ -126,12 +134,14 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
 
 interface ContextMenuItemOptions extends Omit<ContextMenuItemInfo, "hidden" | "action"> {
     id?: string
+    parentMenu: ContextMenu
 }
 
 const itemDefaultOptions: ContextMenuItemOptions = {
     text: "",
     subItems: [],
-    separator: false
+    separator: false,
+    parentMenu: null
 };
 
 interface IContextMenuItem extends IComponent {
@@ -145,6 +155,8 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
     private _onClick = new Emitter();
 
     private _subItems?: ContextMenuItemInfo[];
+    private _subMenuContainer: HTMLDivElement;
+    private _subMenu: ContextMenu | null = null;
 
     public constructor(target: ComponentLike, _options?: ContextMenuItemOptions) {
         super(
@@ -163,6 +175,7 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
                                     </div>
                                 )
                             }
+                            <div className="sub-context-menu-container"/>
                         </>
                     )}
                 </div>
@@ -172,6 +185,8 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
             _options
         );
 
+        this._subMenuContainer = this._element.querySelector(".sub-context-menu-container");
+
         if(this._options.subItems && this._options.subItems.length > 0) this._subItems = this._options.subItems;
         if(this._options.separator) this._element.className = "separator";
         if(this._options.id) this._element.id = this._options.id;
@@ -179,25 +194,48 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
         this._register(this._onClick);
 
         if(this._subItems) {
-            this._register(this.onHover(() => {
-                contextMenuProvider.clearSubContextMenus();
-
+            this._register(this.onHover(() => this._createSubContextMenu()));
+            this._register(this.onUnhover((e) => {
                 const rect = this._element.getBoundingClientRect();
-                const parentRect = this._element.parentElement!.getBoundingClientRect();
+                const x = e.clientX - rect.left;
 
-                contextMenuProvider.createSubContextMenu(this._subItems, {
-                    x: parentRect.x + parentRect.width,
-                    y: rect.y
-                });
+                // Only when the mouse moves out from the right side of the menu,
+                // do not close the sub context menu
+                if(x <= rect.width) this._closeSubContextMenu();
             }));
         }
         
         if(!this._options.separator && !this._subItems) {
-            this._element.addEventListener("click", () => {
+            this._element.addEventListener("click", (e) => {
+                e.stopPropagation();
+
                 this._onClick.fire();
                 contextMenuProvider.clearContextMenus();
             });
         }
+    }
+
+    private _createSubContextMenu(): void {
+        if(this._subMenu) return;
+
+        const parentRect = this._options.parentMenu.contextMenuElem.getBoundingClientRect();
+
+        this._subMenu = new ContextMenu(this._subMenuContainer, {
+            items: this._subItems,
+            position: "bottom-right",
+            anchor: {
+                x: parentRect.width - this._element.offsetLeft,
+                y: 0
+            },
+            isSubMenu: true
+        });
+    }
+
+    private _closeSubContextMenu(): void {
+        if(!this._subMenu) return;
+
+        this._subMenu.dispose();
+        this._subMenu = null;
     }
 
     public get id() {

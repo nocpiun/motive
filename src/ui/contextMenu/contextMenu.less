@@ -44,6 +44,7 @@
         z-index: 3000;
     
         &-item {
+            position: relative;
             display: flex;
             align-items: center;
             padding: 2px 7px;
@@ -74,11 +75,18 @@
                 cursor: pointer;
             }
 
+            // .sub-context-menu-container {
+            //     //
+            // }
+
             &:hover {
                 background-color: var(--mt-context-menu-item-hover-bg);
             }
             &:active {
                 background-color: var(--mt-context-menu-item-active-bg);
+            }
+            &:has(.sub-context-menu-container .context-menu:hover) {
+                background-color: transparent;
             }
         }
     
