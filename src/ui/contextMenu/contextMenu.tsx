@@ -42,6 +42,8 @@ const defaultOptions: ContextMenuOptions = {
 };
 
 export interface IContextMenu extends IComponent {
+    setPosition(position: ContextMenuPosition): void
+
     id?: string
 }
 
@@ -73,27 +75,7 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
             : this._createItem(info);
         }
 
-        const width = this.contextMenuElem.clientWidth;
-        const height = this.contextMenuElem.clientHeight;
-
-        switch(this._options.position) {
-            case "top-left":
-                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
-                break;
-            case "top-right":
-                this.contextMenuElem.style.left = this._options.anchor.x +"px";
-                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
-                break;
-            case "bottom-left":
-                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this.contextMenuElem.style.top = this._options.anchor.y +"px";
-                break;
-            case "bottom-right":
-                this.contextMenuElem.style.left = this._options.anchor.x +"px";
-                this.contextMenuElem.style.top = this._options.anchor.y +"px";
-                break;
-        }
+        this.setPosition(this._options.position);
 
         // Remove the context menu when the user clicks outside
         this._element.addEventListener("mousedown", (e) => {
@@ -125,6 +107,40 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
         });
 
         this._register(item);
+    }
+
+    public setPosition(position: ContextMenuPosition) {
+        this._options.position = position;
+
+        const width = this.width;
+        const height = this.height;
+
+        switch(position) {
+            case "top-left":
+                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
+                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                break;
+            case "top-right":
+                this.contextMenuElem.style.left = this._options.anchor.x +"px";
+                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                break;
+            case "bottom-left":
+                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
+                this.contextMenuElem.style.top = this._options.anchor.y +"px";
+                break;
+            case "bottom-right":
+                this.contextMenuElem.style.left = this._options.anchor.x +"px";
+                this.contextMenuElem.style.top = this._options.anchor.y +"px";
+                break;
+        }
+    }
+
+    public get width() {
+        return this.contextMenuElem.clientWidth;
+    }
+
+    public get height() {
+        return this.contextMenuElem.clientHeight;
     }
 
     public get id() {

@@ -52,10 +52,30 @@ class ContextMenuProvider extends Provider<ContextMenu> implements IContextMenuP
             e.stopPropagation();
 
             this.clearContextMenus();
-            this.createContextMenu(items, {
+            
+            // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+            type TopOrBottom<P = ContextMenuPosition> = P extends `${infer A}-${infer _B}` ? A : never;
+            // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+            type LeftOrRight<P = ContextMenuPosition> = P extends `${infer _A}-${infer B}` ? B : never;
+            
+            // default: "top-right"
+            let a: TopOrBottom = "top";
+            let b: LeftOrRight = "right";
+            
+            const menu = this.createContextMenu(items, {
                 x: e.clientX,
                 y: e.clientY
-            }, "top-right");
+            }, `${a}-${b}`);
+            const { width, height } = menu;
+            
+            if(e.clientX + width > window.innerWidth) {
+                b = "left";
+            }
+            if(e.clientY - height < 0) {
+                a = "bottom";
+            }
+
+            menu.setPosition(`${a}-${b}`);
         });
     }
 

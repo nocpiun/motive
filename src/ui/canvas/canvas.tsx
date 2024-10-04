@@ -74,19 +74,6 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
                     {
                         text: "力",
                         icon: ArrowRightFromLine,
-                    },
-                    {
-                        text: "test item",
-                        subItems: [
-                            {
-                                text: "test item",
-                                subItems: [
-                                    {
-                                        text: "hello world"
-                                    }
-                                ]
-                            }
-                        ]
                     }
                 ]
             }
