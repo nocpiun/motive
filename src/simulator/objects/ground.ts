@@ -64,17 +64,15 @@ export class Ground extends CanvasObject<GroundHitbox> {
     private _initTexture(canvas: HTMLCanvasElement): void {
         const spacing = 10;
         const lineWidth = 2;
-        const length = 12;
-        const angle = Math.PI / 5;
+        const length = 13;
+        const angle = Math.PI / 4;
         const y = canvas.height - Ground.GROUND_HEIGHT;
 
         for(let x = 0; x < canvas.width; x += spacing) {
-            this.obj.addChild(
-                new PIXI.Graphics()
-                    .moveTo(x, y)
-                    .lineTo(x - length * Math.sin(angle), y + length * Math.cos(angle))
-                    .stroke({ width: lineWidth, color: colors["black"] })
-            );
+            (this.obj as PIXI.Graphics)
+                .moveTo(x, y)
+                .lineTo(x - length * Math.sin(angle), y + length * Math.cos(angle))
+                .stroke({ width: lineWidth, color: colors["black"] });
         }
     }
 
