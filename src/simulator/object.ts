@@ -128,14 +128,18 @@ export interface ObjectNameMap {
     "rope": any
 }
 
-const objMap = new Map<string, any>();
+const objMap = new Map<string, { new(...args: any): any } | any>();
 
-export function registerObject(id: string, obj: any): void {
+export function registerObject<O extends CanvasObject>(id: keyof ObjectNameMap, obj: { new(...args: any): O }): void {
     objMap.set(id, obj);
 }
 
-export function createObject<T extends keyof ObjectNameMap>(id: string, ...args: any[]): ObjectNameMap[T] {
+export function createObject<T extends keyof ObjectNameMap>(id: T, ...args: any): ObjectNameMap[T] | never {
     const objClass = objMap.get(id);
+
+    if(!objClass) {
+        throw new Error("Specified object doesn't exist.");
+    }
 
     return new objClass(...args);
 }
