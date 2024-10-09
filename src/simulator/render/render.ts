@@ -55,6 +55,7 @@ export class Render extends Disposable implements IRender {
     private _app: PIXI.Application;
     private _container: PIXI.Container = new PIXI.Container({ x: 0, y: 0 });
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
+    private _prerenderObjects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
 
     public isPaused: boolean = false;
 
@@ -93,6 +94,7 @@ export class Render extends Disposable implements IRender {
     }
 
     public addObject(obj: CanvasObject) {
+        this._prerenderObjects.push(obj);
         this._objects.push(obj);
     }
 
@@ -121,6 +123,16 @@ export class Render extends Disposable implements IRender {
     }
 
     public update(delta: number) {
+        // Pre-rendering stage
+        if(!this._prerenderObjects.isEmpty()) {
+            for(const obj of this._prerenderObjects) {
+                obj.update(delta, this._container);
+            }
+            
+            this._prerenderObjects.clear();
+        }
+
+        // Rendering stage
         if(this.isPaused) return;
 
         // Repaint the canvas
