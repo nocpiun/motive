@@ -19,18 +19,21 @@ export class Ground extends CanvasObject<GroundHitbox> {
     public constructor(canvas: HTMLCanvasElement) {
         super(
             new PIXI.Graphics()
-                .rect(0, 0, canvas.width, Ground.GROUND_HEIGHT)
-                .fill(colors["black"]),
+                .moveTo(0, canvas.height - Ground.GROUND_HEIGHT)
+                .lineTo(canvas.width, canvas.height - Ground.GROUND_HEIGHT)
+                .stroke({ width: 4, color: colors["black"] }),
             Infinity,
             Vector.Zero,
 
             new GroundHitbox({ x: 0, y: canvas.height - Ground.GROUND_HEIGHT })
         );
 
-        this.obj.position.set(0, canvas.height - Ground.GROUND_HEIGHT);
+        // Ground texture
+        this._initTexture(canvas);
 
         this._register(this.hitbox.onHit(({ obj }) => {
             if(obj instanceof Ball) {
+
                 // To prevent the object from going through the ground
                 obj.obj.y = this.hitbox.anchor.y - obj.radius;
                 obj.updateHitboxAnchor();
@@ -44,15 +47,35 @@ export class Ground extends CanvasObject<GroundHitbox> {
                     obj.velocity = vx;
                     obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
                 }
+
             } else if(obj instanceof Block) {
+
                 // To prevent the object from going through the ground
                 obj.obj.y = this.hitbox.anchor.y - obj.size;
                 obj.updateHitboxAnchor();
 
                 obj.velocity.y = 0;
                 obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
+
             }
         }));
+    }
+
+    private _initTexture(canvas: HTMLCanvasElement): void {
+        const spacing = 10;
+        const lineWidth = 2;
+        const length = 12;
+        const angle = Math.PI / 5;
+        const y = canvas.height - Ground.GROUND_HEIGHT;
+
+        for(let x = 0; x < canvas.width; x += spacing) {
+            this.obj.addChild(
+                new PIXI.Graphics()
+                    .moveTo(x, y)
+                    .lineTo(x - length * Math.sin(angle), y + length * Math.cos(angle))
+                    .stroke({ width: lineWidth, color: colors["black"] })
+            );
+        }
     }
 
     public override update(delta: number, container: PIXI.Container) {
