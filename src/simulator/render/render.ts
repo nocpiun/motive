@@ -49,6 +49,7 @@ interface IRender extends Renderable, IDisposable {
      * Let the system continue to run
      */
     unpause(): void
+    setMouseMode(enabled: boolean): void
 }
 
 export class Render extends Disposable implements IRender {
@@ -58,6 +59,7 @@ export class Render extends Disposable implements IRender {
     private _prerenderObjects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
 
     public isPaused: boolean = false;
+    public isMouseMode: boolean = false;
 
     public constructor(private _canvas: Canvas) {
         super();
@@ -120,6 +122,10 @@ export class Render extends Disposable implements IRender {
         if(!this.isPaused) return;
 
         this.isPaused = false;
+    }
+
+    public setMouseMode(enabled: boolean) {
+        this.isMouseMode = enabled;
     }
 
     public update(delta: number) {

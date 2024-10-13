@@ -47,6 +47,8 @@ export class Motive extends Disposable {
         }));
 
         this._register(this._canvas.onClick((e) => {
+            if(this._render.isMouseMode) return;
+
             const obj = createObject(this._selectedObjectId, e.x, e.y);
 
             this._render.addObject(obj);

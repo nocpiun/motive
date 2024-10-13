@@ -85,7 +85,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const toolbarLeftGroup = new ButtonGroup(toolbar);
         toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
         toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
-        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, () => {});
+        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, ({ isActive }) => this._renderer.setMouseMode(isActive));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: "暂停" }, ({ isActive }) => {
             isActive ? this._pauseRenderer() : this._unpauseRenderer();

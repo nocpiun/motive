@@ -27,6 +27,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         this.obj.position.set(x, y);
 
+        this._enableInteractivity();
         this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
@@ -79,6 +80,8 @@ export class Ball extends CanvasObject<RoundHitbox> {
     public override update(delta: number, container: PIXI.Container) {
         super.update(delta, container);
 
+        /** @todo */
+        // Something is wrong here.
         if(this.obj.y < Ground.GROUND_HEIGHT - this.radius) {
             this.removeForce("ground.support");
         }

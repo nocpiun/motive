@@ -5,6 +5,7 @@ import type { Ground } from "./objects/ground";
 import type { Ball } from "./objects/ball";
 import type { Block } from "./objects/block";
 
+import { Emitter, type Event } from "@/common/event";
 import { Disposable } from "@/common/lifecycle";
 import { generateRandomID } from "@/common/utils/utils";
 
@@ -51,11 +52,23 @@ interface ICanvasObject extends Renderable {
      * so that it matches the current position of the object.
      */
     updateHitboxAnchor(): void
+
+    onPointerDown: Event<PIXI.FederatedPointerEvent>
+    onPointerMove: Event<PointerEvent>
+    onPointerUp: Event<PointerEvent>
 }
 
 export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implements ICanvasObject {
+    // events
+    private _onPointerDown = new Emitter<PIXI.FederatedPointerEvent>();
+    private _onPointerMove = new Emitter<PointerEvent>();
+    private _onPointerUp = new Emitter<PointerEvent>();
+    
     private _forces: ForceCollection = new ForceCollection();
     private _onceForces: ForceCollection = new ForceCollection();
+
+    private _isInteractive: boolean = false;
+    private _isHeld: boolean = false;
 
     public constructor(
         public obj: PIXI.ContainerChild,
@@ -66,6 +79,41 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         super();
 
         this._register(this.hitbox);
+    }
+
+    protected _enableInteractivity(): void {
+        this.obj.interactive = true;
+        this._isInteractive = true;
+
+        this.obj.addEventListener("pointerdown", (e) => {
+            if(!this._isHeld) {
+                this._isHeld = true;
+
+                this.velocity = Vector.Zero;
+                this.obj.x = e.clientX;
+                this.obj.y = e.clientY;
+                this.updateHitboxAnchor();
+            }
+
+            this._onPointerDown.fire(e);
+        });
+
+        document.body.addEventListener("pointermove", (e) => {
+            if(!this._isHeld) return;
+
+            this.obj.x = e.clientX;
+            this.obj.y = e.clientY;
+            this.updateHitboxAnchor();
+
+            this._onPointerMove.fire(e);
+        });
+        
+        document.body.addEventListener("pointerup", (e) => {
+            if(!this._isHeld) return;
+
+            this._isHeld = false;
+            this._onPointerUp.fire(e);
+        });
     }
 
     public applyForce(key: string, force: Force) {
@@ -98,17 +146,37 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     public update(delta: number, container: PIXI.Container) {
-        const sumForce = Force.add(this._forces.getSum(), this._onceForces.getSum());
-        const accelerate = sumForce.getAccelerate(this.mass);
-        
-        this.velocity = Vector.add(this.velocity, accelerate);
-        this.obj.x += this.velocity.x * delta;
-        this.obj.y -= this.velocity.y * delta;
-
-        this.updateHitboxAnchor();
-        this._onceForces.clear();
+        if(!this._isHeld) {
+            const sumForce = Force.add(this._forces.getSum(), this._onceForces.getSum());
+            const accelerate = sumForce.getAccelerate(this.mass);
+            
+            this.velocity = Vector.add(this.velocity, accelerate);
+            this.obj.x += this.velocity.x * delta;
+            this.obj.y -= this.velocity.y * delta;
+    
+            this.updateHitboxAnchor();
+            this._onceForces.clear();
+        }
 
         container.addChild(this.obj);
+    }
+
+    public get onPointerDown() {
+        if(!this._isInteractive) throw new Error("This object is not interactive, so you cannot add listener(s) to interactive events.");
+
+        return this._onPointerDown.event;
+    }
+
+    public get onPointerMove() {
+        if(!this._isInteractive) throw new Error("This object is not interactive, so you cannot add listener(s) to interactive events.");
+
+        return this._onPointerMove.event;
+    }
+
+    public get onPointerUp() {
+        if(!this._isInteractive) throw new Error("This object is not interactive, so you cannot add listener(s) to interactive events.");
+
+        return this._onPointerUp.event;
     }
 
     public override dispose() {

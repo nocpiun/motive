@@ -33,6 +33,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
 
         this.obj.position.set(x, y);
 
+        this._enableInteractivity();
         this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
@@ -85,6 +86,8 @@ export class Block extends CanvasObject<ConvexHitbox> {
     public override update(delta: number, container: PIXI.Container) {
         super.update(delta, container);
 
+        /** @todo */
+        // Something is wrong here.
         if(this.obj.y < Ground.GROUND_HEIGHT - this.size / 2) {
             this.removeForce("ground.support");
         }
