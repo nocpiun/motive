@@ -1,5 +1,5 @@
 import type * as PIXI from "pixi.js";
-import type { Renderable } from "./render/render";
+import type { Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
 import type { Ball } from "./objects/ball";
@@ -71,6 +71,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _isHeld: boolean = false;
 
     public constructor(
+        protected _render: Render,
         public obj: PIXI.ContainerChild,
         public mass: number,
         public velocity: Vector,
@@ -145,7 +146,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         });
     }
 
-    public update(delta: number, container: PIXI.Container) {
+    public update(delta: number) {
         if(!this._isHeld) {
             const sumForce = Force.add(this._forces.getSum(), this._onceForces.getSum());
             const accelerate = sumForce.getAccelerate(this.mass);
@@ -158,7 +159,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             this._onceForces.clear();
         }
 
-        container.addChild(this.obj);
+        this._render.container.addChild(this.obj);
     }
 
     public get onPointerDown() {

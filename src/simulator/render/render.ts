@@ -1,8 +1,8 @@
 import type { Canvas } from "@/ui/canvas/canvas";
-import type { CanvasObject } from "@/simulator/object";
 
 import * as PIXI from "pixi.js";
 
+import { createObject, type CanvasObject } from "@/simulator/object";
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ground } from "@/simulator/objects/ground";
@@ -18,7 +18,7 @@ export interface Renderable {
      * @param delta The time passed since the last frame
      * @param container The parent container
      */
-    update(delta: number, container: PIXI.Container): void
+    update(delta: number): void
 }
 
 export interface Point {
@@ -27,12 +27,13 @@ export interface Point {
 }
 
 interface IRender extends Renderable, IDisposable {
+    container: PIXI.Container
+    canvas: Canvas
+
     /**
-     * Add an object to the system
-     * 
-     * @param obj The object to add
+     * Create and add an object to the system
      */
-    addObject(obj: CanvasObject): void
+    addObject(...args: Parameters<typeof createObject>): void
     /**
      * Clear all objects in the system
      */
@@ -54,36 +55,47 @@ interface IRender extends Renderable, IDisposable {
 
 export class Render extends Disposable implements IRender {
     private _app: PIXI.Application;
-    private _container: PIXI.Container = new PIXI.Container({ x: 0, y: 0 });
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
     private _prerenderObjects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
+    private _unremovableObjects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
+    public container = new PIXI.Container({ x: 0, y: 0 });
 
     public isPaused: boolean = false;
     public isMouseMode: boolean = false;
 
-    public constructor(private _canvas: Canvas) {
+    public constructor(public canvas: Canvas) {
         super();
 
-        this._register(this._canvas.onLoad((app: PIXI.Application) => {
+        this._register(this.canvas.onLoad((app: PIXI.Application) => {
             this._app = app;
 
             // Invisible background for interactions
-            const bg = new PIXI.Graphics().rect(0, 0, this._canvas.width, this._canvas.height).fill(colors["transparent"]);
+            const bg = new PIXI.Graphics().rect(0, 0, this.canvas.width, this.canvas.height).fill(colors["transparent"]);
             this._app.stage.addChild(bg);
             
             // Container
-            this._container.width = this._canvas.width;
-            this._container.height = this._canvas.height;
-            this._app.stage.addChild(this._container);
+            this.container.width = this.canvas.width;
+            this.container.height = this.canvas.height;
+            this._app.stage.addChild(this.container);
             
             this._init();
+            this._initObjects();
             this._initTimer();
         }));
     }
 
+    /**
+     * Initialize the whole renderer and the system when the renderer is created,
+     * adding something unremovable, such as ground etc.
+     * 
+     * This is an **one-time** method.
+     */
     private _init(): void {
-        this._objects.push(new Ground(this._app.canvas));
-        
+        this._unremovableObjects.push(new Ground(this));
+    }
+
+    /** Initialize the system every time after the renderer refreshed. */
+    private _initObjects(): void {
         // this._objects.push(new Ball(100, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(8, 0)));
         // this._objects.push(new Ball(100, 200, 15, 1, new Vector(1, 0)));
         // this._objects.push(new Ball(170, this._app.canvas.height - Ground.GROUND_HEIGHT - 15, 15, 1, new Vector(0, 0)));
@@ -95,12 +107,37 @@ export class Render extends Disposable implements IRender {
         });
     }
 
-    public addObject(obj: CanvasObject) {
+    private _renderObjectList(objList: LinkedNodes<CanvasObject>, delta: number, hitboxTest: boolean = true): void {
+        for(const obj of objList) {
+            obj.update(delta);
+
+            if(!hitboxTest) continue;
+
+            // Hitbox tests
+            for(const _obj of this._objects) {
+                if(_obj !== obj) {
+                    obj.hitbox.test(_obj);
+                }
+            }
+        }
+    }
+
+    public addObject(...args: Parameters<typeof createObject>) {
+        const [id, ...objArgs] = args;
+        const obj = createObject(id, this, ...objArgs);
+
         this._prerenderObjects.push(obj);
         this._objects.push(obj);
     }
 
     public clearObjects() {
+        this.container.removeChildren();
+
+        for(const obj of this._prerenderObjects) {
+            obj.dispose();
+        }
+        this._prerenderObjects.clear();
+
         for(const obj of this._objects) {
             obj.dispose();
         }
@@ -109,7 +146,7 @@ export class Render extends Disposable implements IRender {
 
     public refresh() {
         this.clearObjects();
-        this._init();
+        this._initObjects();
     }
 
     public pause() {
@@ -131,10 +168,7 @@ export class Render extends Disposable implements IRender {
     public update(delta: number) {
         // Pre-rendering stage
         if(!this._prerenderObjects.isEmpty()) {
-            for(const obj of this._prerenderObjects) {
-                obj.update(delta, this._container);
-            }
-            
+            this._renderObjectList(this._prerenderObjects, delta, false);
             this._prerenderObjects.clear();
         }
 
@@ -142,17 +176,9 @@ export class Render extends Disposable implements IRender {
         if(this.isPaused) return;
 
         // Repaint the canvas
-        this._container.removeChildren();
-
-        for(const obj of this._objects) {
-            obj.update(delta, this._container);
-
-            for(const _obj of this._objects) {
-                if(_obj !== obj) {
-                    obj.hitbox.test(_obj);
-                }
-            }
-        }
+        this.container.removeChildren();
+        this._renderObjectList(this._unremovableObjects, delta);
+        this._renderObjectList(this._objects, delta);
     }
 
     public override dispose() {

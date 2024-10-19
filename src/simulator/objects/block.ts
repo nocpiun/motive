@@ -1,3 +1,5 @@
+import type { Render } from "@/simulator/render/render";
+
 import * as PIXI from "pixi.js";
 
 import { CanvasObject, registerObject } from "@/simulator/object";
@@ -10,6 +12,8 @@ import { Ball } from "./ball";
 
 export class Block extends CanvasObject<ConvexHitbox> {
     public constructor(
+        render: Render,
+
         x: number,
         y: number,
         public size: number = 30,
@@ -17,12 +21,13 @@ export class Block extends CanvasObject<ConvexHitbox> {
         velocity: Vector = Vector.Zero
     ) {
         super(
+            render,
+            
             new PIXI.Graphics()
                 .rect(0, 0, size, size)
                 .fill(colors["wood"]),
             mass,
             velocity,
-
             new ConvexHitbox([
                 new Vector(size, 0),
                 new Vector(0, -size),
@@ -83,12 +88,10 @@ export class Block extends CanvasObject<ConvexHitbox> {
         }));
     }
 
-    public override update(delta: number, container: PIXI.Container) {
-        super.update(delta, container);
+    public override update(delta: number) {
+        super.update(delta);
 
-        /** @todo */
-        // Something is wrong here.
-        if(this.obj.y < Ground.GROUND_HEIGHT - this.size / 2) {
+        if(this.obj.y < this._render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
             this.removeForce("ground.support");
         }
     }

@@ -1,10 +1,11 @@
+import type { ObjectNameMap } from "./object";
+
 import { Box, Circle, Cuboid, Spline } from "lucide";
 
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
 import { Panel } from "@/ui/panel/panel";
 
-import { createObject, type ObjectNameMap } from "./object";
 import { Render } from "./render/render";
 
 export class Motive extends Disposable {
@@ -49,9 +50,7 @@ export class Motive extends Disposable {
         this._register(this._canvas.onClick((e) => {
             if(this._render.isMouseMode) return;
 
-            const obj = createObject(this._selectedObjectId, e.x, e.y);
-
-            this._render.addObject(obj);
+            this._render.addObject(this._selectedObjectId, e.x, e.y);
         }));
 
         this._register(this._canvas.onRefresh(() => {

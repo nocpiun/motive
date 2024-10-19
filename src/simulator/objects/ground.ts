@@ -1,3 +1,5 @@
+import type { Render } from "@/simulator/render/render";
+
 import * as PIXI from "pixi.js";
 
 import { CanvasObject, registerObject } from "@/simulator/object";
@@ -16,13 +18,14 @@ export class Ground extends CanvasObject<GroundHitbox> {
 
     public readonly normalVector: Vector = new Vector(0, 1);
 
-    public constructor(private _canvas: HTMLCanvasElement) {
+    public constructor(render: Render) {
         super(
+            render,
+
             new PIXI.Graphics(), // to be painted in _initTexture()
             Infinity,
             Vector.Zero,
-
-            new GroundHitbox({ x: 0, y: _canvas.height - Ground.GROUND_HEIGHT })
+            new GroundHitbox({ x: 0, y: render.canvas.height - Ground.GROUND_HEIGHT })
         );
 
         // Ground texture
@@ -59,32 +62,31 @@ export class Ground extends CanvasObject<GroundHitbox> {
     }
 
     private _initTexture(): void {
+        const canvasWidth = this._render.canvas.width;
+        const canvasHeight = this._render.canvas.height;
+
         const spacing = 10;
         const lineWidth = 2;
         const length = 13;
         const angle = Math.PI / 4;
-        const y = this._canvas.height - Ground.GROUND_HEIGHT;
+        const y = canvasHeight - Ground.GROUND_HEIGHT;
         const obj = this.obj as PIXI.Graphics;
+
+        // Horizontal line
+        obj.moveTo(0, canvasHeight - Ground.GROUND_HEIGHT)
+            .lineTo(canvasWidth, canvasHeight - Ground.GROUND_HEIGHT)
+            .stroke({ width: 4, color: colors["black"] });
         
         // Texture lines
-        for(let x = 0; x <= this._canvas.width; x += spacing) {
+        for(let x = 0; x <= canvasWidth; x += spacing) {
             obj.moveTo(x, y)
             .lineTo(x - length * Math.sin(angle), y + length * Math.cos(angle))
             .stroke({ width: lineWidth, color: colors["black"] });
         }
-
-        // Horizontal line
-        //
-        // NOTE: We must paint the horizontal line right after painting the texture lines
-        // Otherwise, the horizontal line will disappear when refreshing the renderer.
-        // This is weird.
-        obj.moveTo(0, this._canvas.height - Ground.GROUND_HEIGHT)
-            .lineTo(this._canvas.width, this._canvas.height - Ground.GROUND_HEIGHT)
-            .stroke({ width: 4, color: colors["black"] });
     }
 
-    public override update(delta: number, container: PIXI.Container) {
-        super.update(delta, container);
+    public override update(delta: number) {
+        super.update(delta);
     }
 }
 

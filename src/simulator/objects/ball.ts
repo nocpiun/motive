@@ -1,3 +1,5 @@
+import type { Render } from "@/simulator/render/render";
+
 import * as PIXI from "pixi.js";
 
 import { CanvasObject, registerObject } from "@/simulator/object";
@@ -9,6 +11,8 @@ import { Ground } from "./ground";
 
 export class Ball extends CanvasObject<RoundHitbox> {
     public constructor(
+        render: Render,
+
         x: number,
         y: number,
         public radius: number = 15,
@@ -16,12 +20,13 @@ export class Ball extends CanvasObject<RoundHitbox> {
         velocity: Vector = Vector.Zero
     ) {
         super(
+            render,
+
             new PIXI.Graphics()
                 .circle(0, 0, radius)
                 .fill(colors["black"]),
             mass,
             velocity,
-
             new RoundHitbox(radius, { x, y })
         );
 
@@ -77,12 +82,10 @@ export class Ball extends CanvasObject<RoundHitbox> {
         }));
     }
 
-    public override update(delta: number, container: PIXI.Container) {
-        super.update(delta, container);
+    public override update(delta: number) {
+        super.update(delta);
 
-        /** @todo */
-        // Something is wrong here.
-        if(this.obj.y < Ground.GROUND_HEIGHT - this.radius) {
+        if(this.obj.y < this._render.canvas.height - Ground.GROUND_HEIGHT - this.radius) {
             this.removeForce("ground.support");
         }
     }
