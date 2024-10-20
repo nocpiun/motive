@@ -90,6 +90,8 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this._isInteractive = true;
 
         this.obj.addEventListener("pointerdown", (e) => {
+            if(!this._render.isMouseMode) return;
+
             if(!this._isHeld) {
                 this._isHeld = true;
 
