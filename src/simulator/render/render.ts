@@ -2,12 +2,12 @@ import type { Canvas } from "@/ui/canvas/canvas";
 
 import * as PIXI from "pixi.js";
 
-import { createObject, type CanvasObject } from "@/simulator/object";
+import { createObject, type ObjectNameMap, type CanvasObject } from "@/simulator/object";
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ground } from "@/simulator/objects/ground";
 
-import { colors } from "./colors";
+import { type Color, colors } from "./colors";
 // import { Ball } from "@/simulator/objects/ball";
 // import { Vector } from "@/simulator/vector";
 
@@ -33,11 +33,12 @@ interface IRender extends Renderable, IDisposable {
     /**
      * Create and add an object to the system
      */
-    addObject(...args: Parameters<typeof createObject>): void
+    addObject(...args: Parameters<typeof createObject>): CanvasObject
     /**
      * Clear all objects in the system
      */
     clearObjects(): void
+    createText(text: string, x: number, y: number, color?: Color, size?: number, italic?: boolean): PIXI.Text
     /**
      * Set the whole system to the initial state
      */
@@ -122,12 +123,14 @@ export class Render extends Disposable implements IRender {
         }
     }
 
-    public addObject(...args: Parameters<typeof createObject>) {
+    public addObject<T extends keyof ObjectNameMap>(...args: Parameters<typeof createObject>): CanvasObject {
         const [id, ...objArgs] = args;
-        const obj = createObject(id, this, ...objArgs);
+        const obj = createObject<T>(id as T, this, ...objArgs);
 
         this._prerenderObjects.push(obj);
         this._objects.push(obj);
+
+        return obj;
     }
 
     public clearObjects() {
@@ -142,6 +145,19 @@ export class Render extends Disposable implements IRender {
             obj.dispose();
         }
         this._objects.clear();
+    }
+
+    public createText(text: string, x: number, y: number, color: Color = colors["black"], size: number = 18, italic: boolean = false) {
+        return new PIXI.Text({
+            text,
+            x, y,
+            style: {
+                fontFamily: italic ? "KaTeX-Italic" : "KaTeX-Regular",
+                fontSize: size,
+                fontWeight: "200",
+                fill: color
+            }
+        });
     }
 
     public refresh() {
@@ -179,6 +195,9 @@ export class Render extends Disposable implements IRender {
         this.container.removeChildren();
         this._renderObjectList(this._unremovableObjects, delta);
         this._renderObjectList(this._objects, delta);
+
+        // Display FPS
+        this.container.addChild(this.createText(`FPS: ${this._app.ticker.FPS.toFixed(2)}`, 10, 10));
     }
 
     public override dispose() {

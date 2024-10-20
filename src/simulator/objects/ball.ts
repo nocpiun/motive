@@ -92,6 +92,8 @@ export class Ball extends CanvasObject<RoundHitbox> {
         if(this.obj.y < this._render.canvas.height - Ground.GROUND_HEIGHT - this.radius) {
             this.removeForce("ground.support");
         }
+
+        this._drawName(0, 0);
     }
 }
 

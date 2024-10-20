@@ -20,23 +20,24 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.(ttf|otf|woff2?)$/,
+                type: "asset/resource",
+                dependency: { not: ["url"] }
+            },
+            {
                 test: /\.(js|mjs|ts)$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader"
-                }
+                loader: "babel-loader"
             },
             {
                 test: /\.(ts|tsx)$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: "ts-loader"
-                }
+                loader: "ts-loader"
             },
             {
                 test: /\.less$/,
                 use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
-            },
+            }
         ]
     },
     plugins: [

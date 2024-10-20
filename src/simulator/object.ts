@@ -11,12 +11,14 @@ import { generateRandomID } from "@/common/utils/utils";
 
 import { ForceCollection, Vector } from "./vector";
 import { Force } from "./force";
+import { colors } from "./render/colors";
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
     mass: number
     velocity: Vector
 
+    setName(name: string): void
     /**
      * Apply a force to the object
      * 
@@ -64,6 +66,8 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _onPointerMove = new Emitter<PointerEvent>();
     private _onPointerUp = new Emitter<PointerEvent & { velocity: Vector }>();
     
+    protected _name?: string;
+
     private _forces: ForceCollection = new ForceCollection();
     private _onceForces: ForceCollection = new ForceCollection();
 
@@ -142,6 +146,22 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             this._mouseMovingTime = null;
             this._mouseVelocity = null;
         });
+    }
+
+    public setName(name: string) {
+        this._name = name;
+    }
+
+    protected _drawName(x: number, y: number): void {
+        if(!this._name) return;
+
+        this.obj.removeChildren();
+
+        const nameText = this._render.createText(this._name, x, y, colors["white"], 20, true);
+        nameText.x -= nameText.width / 2;
+        nameText.y -= nameText.height / 2;
+
+        this.obj.addChild(nameText);
     }
 
     public applyForce(key: string, force: Force) {

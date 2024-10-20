@@ -5,6 +5,13 @@ import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 
+import KatexRegularTTF from "@/assets/fonts/KaTeX_Main-Regular.ttf";
+import KatexRegularWOFF from "@/assets/fonts/KaTeX_Main-Regular.woff";
+import KatexRegularWOFF2 from "@/assets/fonts/KaTeX_Main-Regular.woff2";
+import KatexItalicTTF from "@/assets/fonts/KaTeX_Main-Italic.ttf";
+import KatexItalicWOFF from "@/assets/fonts/KaTeX_Main-Italic.woff";
+import KatexItalicWOFF2 from "@/assets/fonts/KaTeX_Main-Italic.woff2";
+
 import "./canvas.less";
 
 export interface CanvasOptions {
@@ -83,19 +90,36 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
     }
 
     private async _init(): Promise<void> {
+        // Init PIXI
         await this._app.init(this._pixiOptions);
 
+        // Init canvas element
         this._element.appendChild(this._app.canvas);
         this._app.canvas.classList.add("motive-canvas");
         this._app.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
         this._adaptDPR();
 
+        // Load assets
+        PIXI.Assets.addBundle("fonts", {
+            katexRegular: {
+                src: [KatexRegularTTF, KatexRegularWOFF, KatexRegularWOFF2],
+                data: { family: "KaTeX-Regular" }
+            },
+            katexItalic: {
+                src: [KatexItalicTTF, KatexItalicWOFF, KatexItalicWOFF2],
+                data: { family: "KaTeX-Italic" }
+            }
+        });
+        await PIXI.Assets.loadBundle("fonts");
+
+        // Set up interactions
         this._app.stage.interactive = true;
         this._app.stage.on("click", (e) => {
             this._onClick.fire(e);
         });
 
+        // Ready
         this._onLoad.fire(this._app);
     }
 
