@@ -4,7 +4,6 @@ import { ArrowRightFromLine, MoveUpRight, RotateCw } from "lucide";
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
-
 import KatexRegularTTF from "@/assets/fonts/KaTeX_Main-Regular.ttf";
 import KatexRegularWOFF from "@/assets/fonts/KaTeX_Main-Regular.woff";
 import KatexRegularWOFF2 from "@/assets/fonts/KaTeX_Main-Regular.woff2";
