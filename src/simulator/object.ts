@@ -1,5 +1,5 @@
 import type * as PIXI from "pixi.js";
-import type { Render, Renderable } from "./render/render";
+import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
 import type { Ball } from "./objects/ball";
@@ -62,13 +62,16 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     // events
     private _onPointerDown = new Emitter<PIXI.FederatedPointerEvent>();
     private _onPointerMove = new Emitter<PointerEvent>();
-    private _onPointerUp = new Emitter<PointerEvent>();
+    private _onPointerUp = new Emitter<PointerEvent & { velocity: Vector }>();
     
     private _forces: ForceCollection = new ForceCollection();
     private _onceForces: ForceCollection = new ForceCollection();
 
     private _isInteractive: boolean = false;
     private _isHeld: boolean = false;
+    private _mousePoint: Point | null = null;
+    private _mouseMovingTime: number | null = null;
+    private _mouseVelocity: Vector | null = null;
 
     public constructor(
         protected _render: Render,
@@ -102,18 +105,40 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         document.body.addEventListener("pointermove", (e) => {
             if(!this._isHeld) return;
 
-            this.obj.x = e.clientX;
-            this.obj.y = e.clientY;
-            this.updateHitboxAnchor();
+            const x = e.clientX, y = e.clientY;
 
+            // Update position
+            this.obj.x = x;
+            this.obj.y = y;
+            this.updateHitboxAnchor();
+            
             this._onPointerMove.fire(e);
+
+            // Calculate velocity
+            if(!this._mousePoint) this._mousePoint = { x, y };
+            if(!this._mouseMovingTime) this._mouseMovingTime = Date.now();
+            this._mouseVelocity = Vector.multiplyScalar(
+                new Vector(this._mousePoint.x - x, y - this._mousePoint.y),
+                10 / (this._mouseMovingTime - Date.now())
+            );
+            
+            // Record mouse data
+            this._mousePoint = { x, y };
+            this._mouseMovingTime = Date.now();
         });
         
         document.body.addEventListener("pointerup", (e) => {
             if(!this._isHeld) return;
 
             this._isHeld = false;
-            this._onPointerUp.fire(e);
+            this._onPointerUp.fire({
+                ...e,
+                velocity: this._mouseVelocity ?? Vector.Zero
+            });
+
+            this._mousePoint = null;
+            this._mouseMovingTime = null;
+            this._mouseVelocity = null;
         });
     }
 

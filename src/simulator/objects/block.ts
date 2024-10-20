@@ -86,6 +86,10 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 this.velocity = Vector.add(vc, vd); // v1'
             }
         }));
+
+        this._register(this.onPointerUp(({ velocity }) => {
+            this.velocity = velocity;
+        }));
     }
 
     public override update(delta: number) {
