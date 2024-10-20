@@ -10,6 +10,8 @@ import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
 import { Ground } from "./ground";
 
 export class Ball extends CanvasObject<RoundHitbox> {
+    public static readonly id = "ball";
+
     public constructor(
         render: Render,
 
@@ -97,4 +99,4 @@ export class Ball extends CanvasObject<RoundHitbox> {
     }
 }
 
-registerObject("ball", Ball);
+registerObject(Ball.id, Ball);

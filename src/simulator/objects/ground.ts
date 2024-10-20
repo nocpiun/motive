@@ -12,6 +12,8 @@ import { Ball } from "./ball";
 import { Block } from "./block";
 
 export class Ground extends CanvasObject<GroundHitbox> {
+    public static readonly id = "ground";
+
     public static readonly GROUND_HEIGHT = 50;
     public static readonly DAMPING = 1;
     public static readonly STABLE_VELOCITY = 23;
@@ -90,4 +92,4 @@ export class Ground extends CanvasObject<GroundHitbox> {
     }
 }
 
-registerObject("ground", Ground);
+registerObject(Ground.id, Ground);

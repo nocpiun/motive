@@ -11,6 +11,7 @@ import { TestModal } from "./testModal";
 import { SettingsModal } from "./settingsModal";
 import { ManagerModal } from "./managerModal";
 import { AboutModal } from "./aboutModal";
+import { ObjectModal } from "./objectModal";
 
 export interface IModalProvider extends IDisposable {
     /**
@@ -52,12 +53,13 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
         this._registerModal(SettingsModal);
         this._registerModal(ManagerModal);
         this._registerModal(AboutModal);
+        this._registerModal(ObjectModal);
 
         this._register(this._onModalOpen);
         this._register(this._onModalClose);
     }
 
-    private _registerModal(modal: typeof Modal): void {
+    private _registerModal(modal: typeof Modal<any>): void {
         const instance = new modal(this._providerElement);
 
         this._registerComponent(instance.id, instance);
@@ -67,12 +69,12 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
         }));
     }
 
-    public open(id: string) {
+    public open(id: string, data?: any) {
         if(this._currentModalId) {
             this._getComponent(this._currentModalId).close();
         }
 
-        this._getComponent(id).show();
+        this._getComponent(id).show(data);
         this._currentModalId = id;
 
         this._onModalOpen.fire(id);

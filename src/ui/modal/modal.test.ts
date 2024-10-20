@@ -22,7 +22,7 @@ describe("modal-component-tests", () => {
     });
 
     it("modal-content", () => {
-        expect(modal.element.querySelector("span").textContent).toBe("Test Modal");
+        expect(modal.element.querySelector(".modal-dialog-title").textContent).toBe("Test Modal");
         
         expect(modal.element.querySelector(".footer-right-split").childNodes.length).toBe(1);
         expect(modal.element.querySelector(".footer-left-split").childNodes.length).toBe(1);
@@ -45,6 +45,12 @@ describe("modal-component-tests", () => {
         expect(counter).toBe(1);
     });
 
+    it("modal-set-title", () => {
+        modal.changeTitle();
+
+        expect(modal.element.querySelector(".modal-dialog-title").textContent).toBe("Changed Test Modal");
+    });
+
     it("modal-close", () => {
         let counter = 0;
 
@@ -57,6 +63,22 @@ describe("modal-component-tests", () => {
         expect(modal.element.open).toBeFalsy();
         expect(modal.element.classList.contains("opened")).toBeFalsy();
         expect(counter).toBe(1);
+    });
+
+    it("modal-show-with-data", () => {
+        let counter = 0;
+
+        modal.onShow(({ num }) => {
+            counter += num;
+        });
+
+        modal.show({ num: 10 });
+
+        expect(modal.element.open).toBeTruthy();
+        expect(modal.element.classList.contains("opened")).toBeTruthy();
+        expect(counter).toBe(10);
+
+        modal.close();
     });
 
     it("modal-dispose", () => {
@@ -81,6 +103,16 @@ describe("modal-provider-tests", () => {
 
         modalProvider.open("test"); // open modal twice times
         expect(modal.element.open).toBeTruthy();
+
+        modalProvider.closeAll();
+    });
+
+    it("open-specific-modal-with-data", () => {
+        modalProvider.open("test", { num: 10 });
+
+        const modal = modalProvider.getCurrentModal() as TestModal;
+        expect(modal.element.open).toBeTruthy();
+        expect(modal.data).toStrictEqual({ num: 10 });
     });
 
     it("close-all-modals", () => {

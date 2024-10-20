@@ -11,6 +11,8 @@ import { Ground } from "./ground";
 import { Ball } from "./ball";
 
 export class Block extends CanvasObject<ConvexHitbox> {
+    public static readonly id = "block";
+
     public constructor(
         render: Render,
 
@@ -103,4 +105,4 @@ export class Block extends CanvasObject<ConvexHitbox> {
     }
 }
 
-registerObject("block", Block);
+registerObject(Block.id, Block);

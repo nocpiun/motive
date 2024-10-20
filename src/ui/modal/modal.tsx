@@ -20,19 +20,19 @@ const defaultOptions: ModalOptions = {
     height: 400
 };
 
-export interface IModal extends IComponent {
+export interface IModal<D = any> extends IComponent {
     id: string
 
     show(): void
     close(): void
 
-    onShow: Event<void>
+    onShow: Event<D>
     onClose: Event<void>
 }
 
-export class Modal extends Component<HTMLDialogElement, ModalOptions> implements IModal {
+export class Modal<D = any> extends Component<HTMLDialogElement, ModalOptions> implements IModal<D> {
     // events
-    private _onShow = new Emitter();
+    private _onShow = new Emitter<D>();
     private _onClose = new Emitter();
 
     protected readonly _container: HTMLDivElement;
@@ -80,11 +80,11 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         return this._options.id;
     }
 
-    public show() {
+    public show(data?: D) {
         this._element.classList.add("opened");
         document.getElementById("dialog-backdrop").classList.add("active");
         this._element.show();
-        this._onShow.fire();
+        this._onShow.fire(data);
     }
 
     public close() {
@@ -92,6 +92,11 @@ export class Modal extends Component<HTMLDialogElement, ModalOptions> implements
         document.getElementById("dialog-backdrop").classList.remove("active");
         this._element.close();
         this._onClose.fire();
+    }
+
+    protected _setTitle(title: string): void {
+        this._options.title = title;
+        this._element.querySelector(".modal-dialog-title").textContent = title;
     }
 
     protected _addFooterButton(id: string, options: ButtonOptions, dock: "left" | "right" = "right", onClick?: Listener<PointerEvent>) {
