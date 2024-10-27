@@ -223,7 +223,9 @@ export class Render extends Disposable implements IRender {
         this._renderObjectList(this._objects, delta);
 
         // Display FPS
-        this.container.addChild(this.createText(`FPS: ${this._app.ticker.FPS.toFixed(2)}`, 10, 10));
+        if(process.env.NODE_ENV === "development") {
+            this.container.addChild(this.createText(`FPS: ${this._app.ticker.FPS.toFixed(2)}`, 10, 10));
+        }
     }
 
     public override dispose() {
