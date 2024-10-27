@@ -1,4 +1,5 @@
 import type * as PIXI from "pixi.js";
+import type { Node } from "@/common/utils/linkedNodes";
 import type { ObjectModal, ObjectSettingsList } from "@/ui/modal/objectModal";
 import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
@@ -19,6 +20,7 @@ interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
     mass: number
     velocity: Vector
+    nodePtr?: Node<CanvasObject> // for linked nodes to search for the object (This might be a bad practice)
 
     /**
      * Set the name of the object
@@ -86,8 +88,10 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _mouseMovingTime: number | null = null;
     private _mouseVelocity: Vector | null = null;
 
+    public nodePtr?: Node<CanvasObject>;
+
     public constructor(
-        protected _render: Render,
+        public render: Render,
         public obj: PIXI.ContainerChild,
         public mass: number,
         public velocity: Vector,
@@ -103,7 +107,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this._isInteractive = true;
 
         this.obj.addEventListener("pointerdown", (e) => {
-            if(!this._render.isMouseMode) return;
+            if(!this.render.isMouseMode) return;
 
             if(!this._isHeld) {
                 this._isHeld = true;
@@ -159,12 +163,14 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     protected _enableSettings<S extends ObjectSettingsList>(id: string, getItems: () => S): void {
         this.obj.addEventListener("rightclick", () => {
+            // To avoid dragging the object
+            // NOTE: This is a temporary solution
             this._isHeld = false;
             this._mousePoint = null;
             this._mouseMovingTime = null;
             this._mouseVelocity = null;
 
-            modalProvider.open("object-settings", { id, items: getItems() });
+            modalProvider.open("object-settings", { id, obj: this, items: getItems() });
             
             const modal = modalProvider.getCurrentModal() as ObjectModal;
             this._register(modal.onSave((data) => this._onSettingsSave.fire(data)));
@@ -184,7 +190,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
         this.obj.removeChildren();
 
-        const nameText = this._render.createText(this._name, x, y, colors["white"], 20, true);
+        const nameText = this.render.createText(this._name, x, y, colors["white"], 20, true);
         nameText.x -= nameText.width / 2;
         nameText.y -= nameText.height / 2;
 
@@ -241,7 +247,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             this._onceForces.clear();
         }
 
-        this._render.container.addChild(this.obj);
+        this.render.container.addChild(this.obj);
     }
 
     public get onPointerDown() {

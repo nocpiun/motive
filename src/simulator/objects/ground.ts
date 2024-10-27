@@ -64,8 +64,8 @@ export class Ground extends CanvasObject<GroundHitbox> {
     }
 
     private _initTexture(): void {
-        const canvasWidth = this._render.canvas.width;
-        const canvasHeight = this._render.canvas.height;
+        const canvasWidth = this.render.canvas.width;
+        const canvasHeight = this.render.canvas.height;
 
         const spacing = 10;
         const lineWidth = 2;

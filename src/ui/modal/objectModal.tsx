@@ -1,5 +1,6 @@
 import type { ComponentLike } from "@/ui/ui";
 import type { SwitcherOptions } from "@/ui/switcher/switcher";
+import type { CanvasObject } from "@/simulator/object";
 
 import { Check } from "lucide";
 
@@ -19,6 +20,7 @@ export type ObjectSettingsList = Record<string, ObjectSettingsItem>;
 
 interface ObjectModalData {
     id: string
+    obj: CanvasObject
     items: ObjectSettingsList
 }
 
@@ -38,10 +40,13 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
 
         this._addFooterButton("save", { text: "保存", variant: "success", icon: Check }, "right", () => this._save());
         this._addFooterButton("cancel", { text: "取消", variant: "secondary" }, "right", () => this.close());
+        this._addFooterButton("delete", { text: "删除物体", variant: "danger" }, "left", () => this._deleteObject());
 
         // UI
 
         this._listElem = this._container.appendChild(<div className="settings-list"/>);
+
+        this._register(this._onSave);
 
         this._register(this.onShow((data) => {
             this._data = data;
@@ -74,7 +79,7 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
                     defaultValue: typeof item.value === "number" ? item.value.toString() : item.value as string,
                     ...item.controlOptions as InputOptions
                 });
-                
+
                 input.onInput((newValue) => {
                     this._data.items[key].value = newValue;
                 });
@@ -95,6 +100,13 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
 
     private _save(): void {
         this._onSave.fire(this._data.items);
+        this.close();
+    }
+
+    private _deleteObject(): void {
+        const obj = this._data.obj;
+
+        obj.render.deleteObject(obj);
         this.close();
     }
 

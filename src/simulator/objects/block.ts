@@ -44,8 +44,19 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this._enableSettings(Ball.id, () => ({
             name: {
                 name: "名称",
-                value: this._name
+                value: this._name,
+                controlOptions: {
+                    type: "text",
+                    maxLength: 1
+                }
             },
+            mass: {
+                name: "质量",
+                value: this.mass,
+                controlOptions: {
+                    type: "number"
+                }
+            }
         }));
         this.applyGravity();
 
@@ -98,12 +109,17 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this._register(this.onPointerUp(({ velocity }) => {
             this.velocity = velocity;
         }));
+
+        this._register(this.onSettingsSave((settings) => {
+            this.setName(settings["name"].value);
+            this.setMass(settings["mass"].value);
+        }));
     }
 
     public override update(delta: number) {
         super.update(delta);
 
-        if(this.obj.y < this._render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
+        if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
             this.removeForce("ground.support");
         }
 

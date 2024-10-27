@@ -34,6 +34,7 @@ interface IRender extends Renderable, IDisposable {
      * Create and add an object to the system
      */
     addObject(...args: Parameters<typeof createObject>): CanvasObject
+    deleteObject(object: CanvasObject): void
     /**
      * Clear all objects in the system
      */
@@ -125,12 +126,17 @@ export class Render extends Disposable implements IRender {
 
     public addObject<T extends keyof ObjectNameMap>(...args: Parameters<typeof createObject>): CanvasObject {
         const [id, ...objArgs] = args;
-        const obj = createObject<T>(id as T, this, ...objArgs);
+        const obj = createObject<T>(id as T, this, ...objArgs) as CanvasObject;
 
         this._prerenderObjects.push(obj);
-        this._objects.push(obj);
+        obj.nodePtr = this._objects.push(obj);
 
         return obj;
+    }
+
+    public deleteObject(obj: CanvasObject) {
+        obj.dispose();
+        this._objects.remove(obj.nodePtr);
     }
 
     public clearObjects() {
