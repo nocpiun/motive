@@ -46,7 +46,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
                 if(vy.length > Ground.STABLE_VELOCITY) {
                     obj.velocity = Vector.add(vx, Vector.multiplyScalar(Vector.reverse(vy), Ground.DAMPING));
                 } else {
-                    obj.velocity = vx;
+                    obj.velocity.y = 0;
                     obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));
                 }
 
