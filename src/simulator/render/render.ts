@@ -222,9 +222,11 @@ export class Render extends Disposable implements IRender {
         this._renderObjectList(this._unremovableObjects, delta);
         this._renderObjectList(this._objects, delta);
 
-        // Display FPS
+        // Display Debug Info
         if(process.env.NODE_ENV === "development") {
             this.container.addChild(this.createText(`FPS: ${this._app.ticker.FPS.toFixed(2)}`, 10, 10));
+            this.container.addChild(this.createText(`Objects: ${this._objects.length}`, 10, 30));
+            if(this.isMouseMode) this.container.addChild(this.createText("MouseMode", 10, 50));
         }
     }
 

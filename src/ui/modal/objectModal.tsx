@@ -24,13 +24,18 @@ interface ObjectModalData {
     items: ObjectSettingsList
 }
 
+interface OnSaveListenerData {
+    obj: CanvasObject
+    items: ObjectSettingsList
+}
+
 interface IObjectModal {
-    onSave: Event<ObjectSettingsList>
+    onSave: Event<OnSaveListenerData>
 }
 
 export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal {
     // events
-    private _onSave = new Emitter<ObjectSettingsList>();
+    private _onSave = new Emitter<OnSaveListenerData>();
 
     private _data: ObjectModalData | null = null;
     private _listElem: HTMLDivElement;
@@ -99,7 +104,10 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
     }
 
     private _save(): void {
-        this._onSave.fire(this._data.items);
+        this._onSave.fire({
+            obj: this._data.obj,
+            items: this._data.items
+        });
         this.close();
     }
 

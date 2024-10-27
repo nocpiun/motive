@@ -179,7 +179,9 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             modalProvider.open("object-settings", { id, obj: this, items: getItems() });
             
             const modal = modalProvider.getCurrentModal() as ObjectModal;
-            this._register(modal.onSave((data) => this._onSettingsSave.fire(data)));
+            this._register(modal.onSave(({ obj, items }) => {
+                if(obj === this) this._onSettingsSave.fire(items);
+            }));
         });
     }
 

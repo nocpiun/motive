@@ -125,6 +125,9 @@ export class LinkedNodes<E> {
 
                 if(target === this._first) this._first = next;
                 if(target === this._last) this._last = prev;
+
+                this._size--;
+                
                 return;
             }
 
