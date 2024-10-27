@@ -41,8 +41,6 @@ export class Modal<D = any> extends Component<HTMLDialogElement, ModalOptions> i
         super(
             (
                 <dialog className="modal-dialog" id={_options.id}>
-                    <div className="modal-dialog-backdrop"/>
-
                     <header className="modal-dialog-header">
                         <span className="modal-dialog-title">{_options.title}</span>
                         

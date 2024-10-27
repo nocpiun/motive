@@ -35,6 +35,23 @@ export class Ball extends CanvasObject<RoundHitbox> {
         this.obj.position.set(x, y);
 
         this._enableInteractivity();
+        this._enableSettings(Ball.id, () => ({
+            name: {
+                name: "名称",
+                value: this._name,
+                controlOptions: {
+                    type: "text",
+                    maxLength: 1
+                }
+            },
+            mass: {
+                name: "质量",
+                value: this.mass,
+                controlOptions: {
+                    type: "number"
+                }
+            }
+        }));
         this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
@@ -85,6 +102,11 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         this._register(this.onPointerUp(({ velocity }) => {
             this.velocity = velocity;
+        }));
+
+        this._register(this.onSettingsSave((settings) => {
+            this.setName(settings["name"].value);
+            this.mass = settings["mass"].value;
         }));
     }
 

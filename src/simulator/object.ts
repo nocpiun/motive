@@ -1,4 +1,5 @@
 import type * as PIXI from "pixi.js";
+import type { ObjectModal, ObjectSettingsList } from "@/ui/modal/objectModal";
 import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
@@ -8,6 +9,7 @@ import type { Block } from "./objects/block";
 import { Emitter, type Event } from "@/common/event";
 import { Disposable } from "@/common/lifecycle";
 import { generateRandomID } from "@/common/utils/utils";
+import { modalProvider } from "@/ui/modal/modalProvider";
 
 import { ForceCollection, Vector } from "./vector";
 import { Force } from "./force";
@@ -18,6 +20,11 @@ interface ICanvasObject extends Renderable {
     mass: number
     velocity: Vector
 
+    /**
+     * Set the name of the object
+     * 
+     * @param name The name of the object
+     */
     setName(name: string): void
     /**
      * Apply a force to the object
@@ -58,6 +65,7 @@ interface ICanvasObject extends Renderable {
     onPointerDown: Event<PIXI.FederatedPointerEvent>
     onPointerMove: Event<PointerEvent>
     onPointerUp: Event<PointerEvent>
+    onSettingsSave: Event<ObjectSettingsList>
 }
 
 export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implements ICanvasObject {
@@ -65,6 +73,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _onPointerDown = new Emitter<PIXI.FederatedPointerEvent>();
     private _onPointerMove = new Emitter<PointerEvent>();
     private _onPointerUp = new Emitter<PointerEvent & { velocity: Vector }>();
+    private _onSettingsSave = new Emitter<ObjectSettingsList>();
     
     protected _name?: string;
 
@@ -148,10 +157,28 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         });
     }
 
+    protected _enableSettings<S extends ObjectSettingsList>(id: string, getItems: () => S): void {
+        this.obj.addEventListener("rightclick", () => {
+            this._isHeld = false;
+            this._mousePoint = null;
+            this._mouseMovingTime = null;
+            this._mouseVelocity = null;
+
+            modalProvider.open("object-settings", { id, items: getItems() });
+            
+            const modal = modalProvider.getCurrentModal() as ObjectModal;
+            this._register(modal.onSave((data) => this._onSettingsSave.fire(data)));
+        });
+    }
+
     public setName(name: string) {
         this._name = name;
     }
 
+    /**
+     * @param x Relative x position
+     * @param y Relative y position
+     */
     protected _drawName(x: number, y: number): void {
         if(!this._name) return;
 
@@ -225,6 +252,10 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         if(!this._isInteractive) throw new Error("This object is not interactive, so you cannot add listener(s) to interactive events.");
 
         return this._onPointerUp.event;
+    }
+
+    public get onSettingsSave() {
+        return this._onSettingsSave.event;
     }
 
     public override dispose() {

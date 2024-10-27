@@ -41,6 +41,12 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this.obj.position.set(x, y);
 
         this._enableInteractivity();
+        this._enableSettings(Ball.id, () => ({
+            name: {
+                name: "名称",
+                value: this._name
+            },
+        }));
         this.applyGravity();
 
         this._register(this.hitbox.onHit(({ obj, depth }) => {
