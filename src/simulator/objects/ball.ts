@@ -106,7 +106,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         this._register(this.onSettingsSave((settings) => {
             this.setName(settings["name"].value);
-            this.mass = settings["mass"].value;
+            this.setMass(settings["mass"].value);
         }));
     }
 

@@ -191,6 +191,14 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.obj.addChild(nameText);
     }
 
+    public setMass(mass: number) {
+        this.mass = mass;
+
+        // Update the gravity force
+        this.removeForce("gravity");
+        this.applyGravity();
+    }
+
     public applyForce(key: string, force: Force) {
         this._forces.add(key, force);
     }
