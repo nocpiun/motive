@@ -26,7 +26,7 @@ export class GroundHitbox extends Hitbox implements IGroundHitbox {
         if(hitbox instanceof RoundHitbox) {
             const distance = this.anchor.y - hitbox.anchor.y;
 
-            if(distance <= hitbox.radius) {
+            if(distance <= hitbox.radius * 2) {
                 this._onHit.fire({ obj, depth: hitbox.radius - distance });
             }
         } else if(obj instanceof Block) { // special type of ConvexHitbox
