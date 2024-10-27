@@ -40,7 +40,7 @@ export class AboutModal extends Modal {
                             {
                                 text: "作者个人网站",
                                 icon: SquareArrowOutUpRight,
-                                action: () => window.open("https://nin.red", "_blank")
+                                action: () => window.open("https://nocp.space", "_blank")
                             }
                         ]
                     }
@@ -48,7 +48,7 @@ export class AboutModal extends Modal {
             },
             "left",
             () => {
-                window.open("https://nin.red/donate", "_blank");
+                window.open("https://nocp.space/donate", "_blank");
             }
         );
         this._addFooterButton("changelog", { text: "更新日志", variant: "secondary", icon: BookMarked });
@@ -69,7 +69,7 @@ export class AboutModal extends Modal {
 
         this._container.appendChild(<div className="info-list-container"/>);
 
-        this._addInfoListItem("版本", version);
+        this._addInfoListItem("版本", version + (process.env.NODE_ENV === "development" ? " (dev)" : ""));
         this._addInfoListItem("Github 仓库", "nocpiun/motive", "https://github.com/nocpiun/motive");
         this._addInfoListItem("许可", "MPL-2.0 License");
     }
