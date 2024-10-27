@@ -34,11 +34,26 @@ interface IRender extends Renderable, IDisposable {
      * Create and add an object to the system
      */
     addObject(...args: Parameters<typeof createObject>): CanvasObject
+    /**
+     * Delete an object from the object list
+     * 
+     * @param object The object to delete
+     */
     deleteObject(object: CanvasObject): void
     /**
      * Clear all objects in the system
      */
     clearObjects(): void
+    /**
+     * Create a text object
+     * 
+     * @param text Text content
+     * @param x Position x
+     * @param y Position y
+     * @param color Text color
+     * @param size Text size
+     * @param italic Is the text italic
+     */
     createText(text: string, x: number, y: number, color?: Color, size?: number, italic?: boolean): PIXI.Text
     /**
      * Set the whole system to the initial state
@@ -52,6 +67,11 @@ interface IRender extends Renderable, IDisposable {
      * Let the system continue to run
      */
     unpause(): void
+    /**
+     * Toggle the mouse mode (on / off)
+     * 
+     * @param enabled Is the mouse mode enabled
+     */
     setMouseMode(enabled: boolean): void
 }
 

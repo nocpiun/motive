@@ -18,8 +18,9 @@ export interface IModalProvider extends IDisposable {
      * Open a modal by its ID
      * 
      * @param id Modal ID
+     * @param data Modal data
      */
-    open(id: string): void
+    open(id: string, data?: any): void
     /**
      * Close all modals
      */

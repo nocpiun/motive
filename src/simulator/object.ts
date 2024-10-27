@@ -29,6 +29,12 @@ interface ICanvasObject extends Renderable {
      */
     setName(name: string): void
     /**
+     * Set the mass of the object and update the gravity force
+     * 
+     * @param mass The mass of the object
+     */
+    setMass(mass: number): void
+    /**
      * Apply a force to the object
      * 
      * @param force The force to apply

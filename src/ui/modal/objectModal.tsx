@@ -86,7 +86,7 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
                 break;
             }
             case "switcher": {
-                //
+                /** @todo */
                 break;
             }
         }

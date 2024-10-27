@@ -35,6 +35,11 @@ export interface IButton extends IComponent {
     disabled: boolean
     id?: string
 
+    /**
+     * Set the button's icon
+     * 
+     * @param icon The new icon
+     */
     setIcon(icon: IconNode): void
     /**
      * Set the button's tooltip

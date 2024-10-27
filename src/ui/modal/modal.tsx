@@ -23,7 +23,13 @@ const defaultOptions: ModalOptions = {
 export interface IModal<D = any> extends IComponent {
     id: string
 
-    show(): void
+    /**
+     * Display the modal (with the specified data)
+     */
+    show(data?: D): void
+    /**
+     * Close the modal
+     */
     close(): void
 
     onShow: Event<D>
