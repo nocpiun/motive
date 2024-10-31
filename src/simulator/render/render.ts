@@ -224,9 +224,15 @@ export class Render extends Disposable implements IRender {
 
         // Display Debug Info
         if(process.env.NODE_ENV === "development") {
-            this.container.addChild(this.createText(`FPS: ${this._app.ticker.FPS.toFixed(2)}`, 10, 10));
-            this.container.addChild(this.createText(`Objects: ${this._objects.length}`, 10, 30));
-            if(this.isMouseMode) this.container.addChild(this.createText("MouseMode", 10, 50));
+            const infoList: string[] = [];
+
+            infoList.push(`FPS: ${this._app.ticker.FPS.toFixed(2)}`);
+            infoList.push(`Objects: ${this._objects.length}`);
+            if(this.isMouseMode) infoList.push("MouseMode");
+
+            for(let i = 0; i < infoList.length; i++) {
+                this.container.addChild(this.createText(infoList[i], 10, 10 + i * 20));
+            }
         }
     }
 

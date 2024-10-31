@@ -9,6 +9,8 @@ interface IForce extends IVector {
 }
 
 export class Force extends Vector implements IForce {
+    public static readonly Zero = new Force(0, 0);
+
     public constructor(x: number, y: number) {
         super(x, y);
     }
@@ -52,5 +54,70 @@ export class Force extends Vector implements IForce {
 
     public static override reverse(vector: Vector): Force {
         return new Force(-vector.x, -vector.y);
+    }
+}
+
+interface IForceCollection {
+    has(key: string): boolean
+    add(key: string, force: Force): void
+    get(key: string): Force
+    set(key: string, force: Force): void
+    remove(key: string): void
+    clear(): void
+    getSum(): Force
+}
+
+/**
+ * A collection storing multiple vectors with their keys
+ * 
+ * It is a wrapper of `Map<string, Vector>`.
+ * 
+ * **Note:** `ForceCollection` is unrelated to `VectorCollection`.
+ */
+export class ForceCollection implements IForceCollection {
+    private _map: Map<string, Force>;
+
+    public constructor(iterable?: Iterable<readonly [string, Force]>) {
+        this._map = new Map(iterable);
+    }
+
+    public has(key: string) {
+        return this._map.has(key);
+    }
+
+    public add(key: string, force: Force) {
+        this._map.set(key, force);
+    }
+
+    public get(key: string) {
+        return this._map.get(key);
+    }
+
+    public set(key: string, force: Force) {
+        // We shouldn't combine `set()` with `add()`,
+        // because this may lead to some chaotic issues.
+        if(!this._map.has(key)) throw new Error("Cannot set an inexistent force.");
+
+        this._map.set(key, force);
+    }
+
+    public remove(key: string) {
+        if(!this._map.has(key)) return;
+
+        this._map.delete(key);
+    }
+
+    public clear() {
+        this._map.clear();
+    }
+
+    public getSum() {
+        let sum = Force.Zero;
+
+        for(const force of this._map.values()) {
+            sum = Force.add(sum, force);
+        }
+
+        return sum;
     }
 }

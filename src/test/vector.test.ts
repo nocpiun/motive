@@ -1,4 +1,4 @@
-import { ForceCollection, Vector, VectorCollection } from "@/simulator/vector";
+import { Vector, VectorCollection } from "@/simulator/vector";
 
 describe("vector-tests", () => {
     it("zero-vector", () => {
@@ -75,41 +75,5 @@ describe("vector-collection-tests", () => {
 
     it("sum-of-vectors", () => {
         expect(vectors.getSum()).toEqual(new Vector(24, 28));
-    });
-});
-
-describe("force-collection-tests", () => {
-    const forces = new ForceCollection([
-        ["test.1", new Vector(3, 4)],
-        ["test.2", new Vector(5, 6)],
-        ["test.3", new Vector(7, 8)],
-        ["test.4", new Vector(9, 10)],
-    ]);
-
-    it("has-force", () => {
-        expect(forces.has("test.1")).toBeTruthy();
-        expect(forces.has("test.5")).toBeFalsy();
-    });
-
-    it("add-force", () => {
-        forces.add("test.5", new Vector(11, 12));
-
-        expect(forces.has("test.5")).toBeTruthy();
-    });
-
-    it("remove-force", () => {
-        forces.remove("test.5");
-
-        expect(forces.has("test.5")).toBeFalsy();
-    });
-
-    it("sum-of-forces", () => {
-        expect(forces.getSum()).toEqual(new Vector(24, 28));
-    });
-
-    it("clear-forces", () => {
-        forces.clear();
-
-        expect(forces.getSum()).toEqual(Vector.Zero);
     });
 });

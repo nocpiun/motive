@@ -9,11 +9,10 @@ import type { Block } from "./objects/block";
 
 import { Emitter, type Event } from "@/common/event";
 import { Disposable } from "@/common/lifecycle";
-import { generateRandomID } from "@/common/utils/utils";
 import { modalProvider } from "@/ui/modal/modalProvider";
 
-import { ForceCollection, Vector } from "./vector";
-import { Force } from "./force";
+import { Vector } from "./vector";
+import { Force, ForceCollection } from "./force";
 import { colors } from "./render/colors";
 
 interface ICanvasObject extends Renderable {
@@ -37,15 +36,10 @@ interface ICanvasObject extends Renderable {
     /**
      * Apply a force to the object
      * 
+     * @param key The key of the force
      * @param force The force to apply
      */
     applyForce(key: string, force: Force): void
-    /**
-     * Apply a one-time force to the object
-     * 
-     * @param force The force to apply
-     */
-    applyOnceForce(force: Force): void
     /**
      * Apply the gravity to the object
      * 
@@ -86,7 +80,6 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     protected _name?: string;
 
     private _forces: ForceCollection = new ForceCollection();
-    private _onceForces: ForceCollection = new ForceCollection();
 
     private _isInteractive: boolean = false;
     private _isHeld: boolean = false;
@@ -209,16 +202,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.mass = mass;
 
         // Update the gravity force
-        this.removeForce("gravity");
-        this.applyGravity();
+        this._forces.set("gravity", Force.gravity(this.mass));
     }
 
     public applyForce(key: string, force: Force) {
         this._forces.add(key, force);
-    }
-
-    public applyOnceForce(force: Force) {
-        this._onceForces.add(generateRandomID(), force);
     }
 
     public applyGravity() {
@@ -231,7 +219,6 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     public clearForces() {
         this._forces.clear();
-        this._onceForces.clear();
     }
 
     public updateHitboxAnchor(): void {
@@ -244,7 +231,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     public update(delta: number) {
         if(!this._isHeld) {
-            const sumForce = Force.add(this._forces.getSum(), this._onceForces.getSum());
+            const sumForce = this._forces.getSum();
             const accelerate = sumForce.getAccelerate(this.mass);
             
             this.velocity = Vector.add(this.velocity, accelerate);
@@ -252,7 +239,6 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             this.obj.y -= this.velocity.y * delta;
     
             this.updateHitboxAnchor();
-            this._onceForces.clear();
         }
 
         this.render.container.addChild(this.obj);
