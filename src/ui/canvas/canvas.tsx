@@ -40,8 +40,9 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
 
     private readonly _pixiOptions: Partial<PIXI.ApplicationOptions> = {
         backgroundColor: 0xffffff,
-        resizeTo: window,
-        antialias: true
+        antialias: true,
+        resolution: this.ratio,
+        resizeTo: this._element,
     };
 
     public constructor(target: ComponentLike, _options?: CanvasOptions) {
@@ -96,6 +97,9 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
         this._element.appendChild(this._app.canvas);
         this._app.canvas.classList.add("motive-canvas");
         this._app.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+        window.addEventListener("resize", () => {
+            this._adaptDPR();
+        });
 
         this._adaptDPR();
 

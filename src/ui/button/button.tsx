@@ -1,4 +1,4 @@
-import type { HoverWidget } from "@/ui/hoverWidget/hoverWidget";
+import type { HoverWidget, HoverWidgetPosition } from "@/ui/hoverWidget/hoverWidget";
 import type { ContextMenuItemInfo } from "@/ui/contextMenu/contextMenu";
 
 import { createElement as createLucide, type IconNode } from "lucide";
@@ -20,6 +20,7 @@ export interface ButtonOptions {
     disabled?: boolean
     icon?: IconNode
     tooltip?: string
+    tooltipPosition?: HoverWidgetPosition
     contextMenuItems?: ContextMenuItemInfo[]
     id?: string
 }
@@ -27,6 +28,7 @@ export interface ButtonOptions {
 const defaultOptions: ButtonOptions = {
     variant: "secondary",
     disabled: false,
+    tooltipPosition: "bottom-right",
     contextMenuItems: []
 };
 
@@ -99,8 +101,8 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
 
                 this._tooltipWidget = hoverProvider.createTextHoverWidget(this._options.tooltip, {
                     x: rect.left,
-                    y: rect.top,
-                }, "top-right");
+                    y: rect.top + rect.height,
+                }, this._options.tooltipPosition);
             }));
             this._register(this.onUnhover(() => {
                 hoverProvider.clearHoverWidgets();

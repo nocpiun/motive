@@ -61,6 +61,10 @@ export class Ground extends CanvasObject<GroundHitbox> {
 
             }
         }));
+
+        window.addEventListener("resize", () => {
+            this._initTexture();
+        });
     }
 
     private _initTexture(): void {
@@ -73,6 +77,8 @@ export class Ground extends CanvasObject<GroundHitbox> {
         const angle = Math.PI / 4;
         const y = canvasHeight - Ground.GROUND_HEIGHT;
         const obj = this.obj as PIXI.Graphics;
+
+        obj.clear();
 
         // Horizontal line
         obj.moveTo(0, canvasHeight - Ground.GROUND_HEIGHT)

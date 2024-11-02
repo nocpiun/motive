@@ -73,8 +73,8 @@ interface ICanvasObject extends Renderable {
 export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implements ICanvasObject {
     // events
     private _onPointerDown = new Emitter<PIXI.FederatedPointerEvent>();
-    private _onPointerMove = new Emitter<PointerEvent>();
-    private _onPointerUp = new Emitter<PointerEvent & { velocity: Vector }>();
+    private _onPointerMove = new Emitter<PIXI.FederatedPointerEvent>();
+    private _onPointerUp = new Emitter<PIXI.FederatedPointerEvent & { velocity: Vector }>();
     private _onSettingsSave = new Emitter<ObjectSettingsList>();
     
     protected _name?: string;
@@ -105,25 +105,28 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.obj.interactive = true;
         this._isInteractive = true;
 
-        this.obj.addEventListener("pointerdown", (e) => {
+        this.obj.on("pointerdown", (e) => {
             if(!this.render.isMouseMode) return;
 
             if(!this._isHeld) {
                 this._isHeld = true;
 
+                const position = this.render.container.toLocal(e.global);
+
                 this.velocity = Vector.Zero;
-                this.obj.x = e.clientX;
-                this.obj.y = e.clientY;
+                this.obj.x = position.x;
+                this.obj.y = position.y;
                 this.updateHitboxAnchor();
             }
 
             this._onPointerDown.fire(e);
         });
 
-        document.body.addEventListener("pointermove", (e) => {
+        this.render.stage.on("pointermove", (e) => {
             if(!this._isHeld) return;
 
-            const x = e.clientX, y = e.clientY;
+            const position = this.render.container.toLocal(e.global);
+            const x = position.x, y = position.y;
 
             // Update position
             this.obj.x = x;
@@ -145,12 +148,12 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             this._mouseMovingTime = Date.now();
         });
         
-        document.body.addEventListener("pointerup", (e) => {
+        this.render.stage.on("pointerup", (e) => {
             if(!this._isHeld) return;
 
             this._isHeld = false;
             this._onPointerUp.fire({
-                ...e,
+                ...e as any,
                 velocity: this._mouseVelocity ?? Vector.Zero
             });
 

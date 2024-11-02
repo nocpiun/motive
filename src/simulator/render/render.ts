@@ -27,6 +27,7 @@ export interface Point {
 }
 
 interface IRender extends Renderable, IDisposable {
+    stage: PIXI.Container
     container: PIXI.Container
     canvas: Canvas
 
@@ -104,6 +105,10 @@ export class Render extends Disposable implements IRender {
             this._initObjects();
             this._initTimer();
         }));
+    }
+
+    public get stage() {
+        return this._app.stage;
     }
 
     /**

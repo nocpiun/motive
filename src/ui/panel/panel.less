@@ -3,12 +3,6 @@
     --mt-panel-bg: var(--tw-color-gray-100);
     --mt-panel-border: var(--tw-color-gray-200);
     --mt-panel-toolbar-border: var(--tw-color-gray-300);
-
-    // Panel Properties
-    --mt-panel-border-radius: 12px;
-    --mt-panel-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --mt-panel-transition-fn: ease;
-    --mt-panel-transition-duration: .3s;
 }
 
 .panel {
@@ -18,15 +12,7 @@
     padding: 7px;
     background-color: var(--mt-panel-bg);
     border: 1px solid var(--mt-panel-border);
-    border-radius: var(--mt-panel-border-radius);
     overflow: hidden;
-    box-shadow: var(--mt-panel-shadow);
-    transition: transform var(--mt-panel-transition-fn) var(--mt-panel-transition-duration);
-    transform: translateY(100%);
-
-    &.panel-popped-up {
-        transform: translateY(0);
-    }
 
     &-toolbar {
         display: flex;

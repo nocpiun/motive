@@ -8,11 +8,9 @@ import {
     Info,
     MousePointer2,
     Pause,
-    Pin,
     Play,
     RotateCw,
     Settings,
-    X
 } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
@@ -27,14 +25,10 @@ import "./panel.less";
 type AvailableObjectNames = Exclude<keyof ObjectNameMap, "ground">;
 
 export interface PanelOptions {
-    width?: number
-    height?: number
+    
 }
 
-const defaultOptions: PanelOptions = {
-    width: 630,
-    height: 150
-};
+const defaultOptions: PanelOptions = { };
 
 interface IPanel extends IComponent {
     /**
@@ -49,21 +43,13 @@ interface IPanel extends IComponent {
 }
 
 export class Panel extends Component<HTMLDivElement, PanelOptions> implements IPanel {
-    private static readonly WITHDRAW_TIME = 1500; // ms
     private _renderer: Render | null = null;
 
     // events
     private _onSelectedObjectChange = new Emitter<keyof ObjectNameMap>();
     
-    private _isPoppedUp: boolean = false;
-    private _isPinned: boolean = false;
-    private _withdrawTimer: NodeJS.Timeout | null = null;
-
-    private _mouseModeButton: Button;
     private _refreshButton: Button;
     private _pauseSwitcher: Switcher;
-    private _pinSwitcher: Switcher;
-    private _closeButton: Button;
     private _switchers: Switcher[] = [];
 
     public constructor(target: ComponentLike, _options?: PanelOptions) {
@@ -74,9 +60,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             _options
         );
 
-        if(this._options.width) this._element.style.width = `${this._options.width}px`;
-        if(this._options.height) this._element.style.height = `${this._options.height}px`;
-
         // UI
 
         const toolbar = createElement("div", this);
@@ -85,18 +68,14 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const toolbarLeftGroup = new ButtonGroup(toolbar);
         toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
         toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
-        this._mouseModeButton = toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, ({ isActive }) => this._renderer.setMouseMode(isActive));
+        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, ({ isActive }) => this._renderer.setMouseMode(isActive));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
         this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: "暂停" }, ({ isActive }) => {
             isActive ? this._pauseRenderer() : this._unpauseRenderer();
         });
         
         const toolbarRightGroup = new ButtonGroup(toolbar);
-        toolbarRightGroup.addButton({ icon: Info, tooltip: "关于" }, () => modalProvider.open("about"));
-        this._pinSwitcher = toolbarRightGroup.addSwitcher({ icon: Pin, tooltip: "固定" }, ({ isActive }) => {
-            isActive ? this._pin() : this._unpin();
-        });
-        this._closeButton = toolbarRightGroup.addButton({ icon: X }, () => this._withdraw(false));
+        toolbarRightGroup.addButton({ icon: Info, tooltip: "关于", tooltipPosition: "top-left" }, () => modalProvider.open("about"));
 
         const switcherContainer = createElement("div", this);
         switcherContainer.classList.add("panel-switcher-container");
@@ -111,7 +90,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                     if(this._renderer.isPaused) return;
 
                     this._renderer.refresh();
-                    this._withdraw(false);
                 }
             },
             { separator: true },
@@ -131,53 +109,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 action: () => modalProvider.open("about")
             }
         ]);
-
-        // Listeners
-
-        this._element.addEventListener("mouseenter", () => this._popUp());
-        this._element.addEventListener("mouseleave", () => this._withdraw());
-    }
-
-    private _popUp(): void {
-        if(this._withdrawTimer) {
-            clearTimeout(this._withdrawTimer);
-            this._withdrawTimer = null;
-        }
-        if(this._isPoppedUp) return;
-        
-        this._isPoppedUp = true;
-        this._element.classList.add("panel-popped-up");
-    }
-
-    private _withdraw(shouldTimerSet: boolean = true): void {
-        if(!this._isPoppedUp || this._isPinned) return;
-
-        if(shouldTimerSet) {
-            this._withdrawTimer = setTimeout(() => {
-                this._isPoppedUp = false;
-                this._element.classList.remove("panel-popped-up");
-            }, Panel.WITHDRAW_TIME);
-        } else {
-            this._isPoppedUp = false;
-            this._element.classList.remove("panel-popped-up");
-        }
-    }
-
-    private _pin(): void {
-        if(this._isPinned) return;
-
-        this._isPinned = true;
-        this._popUp();
-        this._pinSwitcher.setTooltip("取消固定");
-        this._closeButton.disabled = true;
-    }
-
-    private _unpin(): void {
-        if(!this._isPinned) return;
-
-        this._isPinned = false;
-        this._pinSwitcher.setTooltip("固定");
-        this._closeButton.disabled = false;
     }
 
     private _pauseRenderer(): void {
@@ -200,9 +131,6 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         
         this._register(this._refreshButton.onClick(() => {
             this._renderer.refresh();
-        }));
-        this._register(this._mouseModeButton.onClick(() => {
-            this._withdraw(false);
         }));
 
         this._register(modalProvider.onModalOpen(() => this._pauseRenderer()));
