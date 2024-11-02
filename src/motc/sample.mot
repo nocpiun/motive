@@ -1,0 +1,24 @@
+#name Sample Map
+#description This is a sample description!
+#author NriotHrreion
+
+@objects {
+    ball {
+        id: ball1;
+        name: m;
+        mass: 5;
+    }
+
+    block {
+        id: block1;
+        name: M;
+        mass: 10;
+    }
+}
+
+@when {
+    3s {
+        delete ball1;
+        delete block1;
+    }
+}
