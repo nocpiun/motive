@@ -8,6 +8,7 @@ import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ground } from "@/simulator/objects/ground";
 
 import { type Color, colors } from "./colors";
+import { Emitter, Event } from "@/common/event";
 // import { Ball } from "@/simulator/objects/ball";
 // import { Vector } from "@/simulator/vector";
 
@@ -24,6 +25,11 @@ export interface Renderable {
 export interface Point {
     x: number
     y: number
+}
+
+interface OnRenderListenerData {
+    delta: number
+    fps: number
 }
 
 interface IRender extends Renderable, IDisposable {
@@ -74,9 +80,14 @@ interface IRender extends Renderable, IDisposable {
      * @param enabled Is the mouse mode enabled
      */
     setMouseMode(enabled: boolean): void
+
+    onRender: Event<OnRenderListenerData>
 }
 
 export class Render extends Disposable implements IRender {
+    // events
+    private _onRender = new Emitter<OnRenderListenerData>();
+
     private _app: PIXI.Application;
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
     private _prerenderObjects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
@@ -231,7 +242,6 @@ export class Render extends Disposable implements IRender {
         if(process.env.NODE_ENV === "development") {
             const infoList: string[] = [];
 
-            infoList.push(`FPS: ${this._app.ticker.FPS.toFixed(2)}`);
             infoList.push(`Objects: ${this._objects.length}`);
             if(this.isMouseMode) infoList.push("MouseMode");
 
@@ -239,6 +249,13 @@ export class Render extends Disposable implements IRender {
                 this.container.addChild(this.createText(infoList[i], 10, 10 + i * 20));
             }
         }
+
+        // Fire Event
+        this._onRender.fire({ delta, fps: this._app.ticker.FPS });
+    }
+
+    public get onRender() {
+        return this._onRender.event;
     }
 
     public override dispose() {

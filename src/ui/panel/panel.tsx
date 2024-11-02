@@ -19,6 +19,7 @@ import { ButtonGroup } from "@/ui/button/buttonGroup";
 import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
+import { getVersionString } from "@/common/global";
 
 import "./panel.less";
 
@@ -50,6 +51,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     
     private _refreshButton: Button;
     private _pauseSwitcher: Switcher;
+    private _fpsLabel: HTMLSpanElement;
     private _switchers: Switcher[] = [];
 
     public constructor(target: ComponentLike, _options?: PanelOptions) {
@@ -65,7 +67,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const toolbar = createElement("div", this);
         toolbar.classList.add("panel-toolbar");
 
-        const toolbarLeftGroup = new ButtonGroup(toolbar);
+        const leftSplit = createElement("div", toolbar);
+        leftSplit.classList.add("panel-toolbar-left-split");
+        const toolbarLeftGroup = new ButtonGroup(leftSplit);
         toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
         toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, ({ isActive }) => this._renderer.setMouseMode(isActive));
@@ -74,7 +78,12 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             isActive ? this._pauseRenderer() : this._unpauseRenderer();
         });
         
-        const toolbarRightGroup = new ButtonGroup(toolbar);
+        const rightSplit = createElement("div", toolbar);
+        rightSplit.classList.add("panel-toolbar-right-split");
+        this._fpsLabel = createElement("span", rightSplit);
+        const versionLabel = createElement("span", rightSplit);
+        versionLabel.textContent = getVersionString();
+        const toolbarRightGroup = new ButtonGroup(rightSplit);
         toolbarRightGroup.addButton({ icon: Info, tooltip: "关于", tooltipPosition: "top-left" }, () => modalProvider.open("about"));
 
         const switcherContainer = createElement("div", this);
@@ -128,6 +137,10 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     public linkRenderer(renderer: Render) {
         this._renderer = renderer;
         this._register(this._renderer);
+
+        this._register(this._renderer.onRender(({ fps }) => {
+            this._fpsLabel.textContent = `FPS: ${fps.toFixed(2)}`;
+        }));
         
         this._register(this._refreshButton.onClick(() => {
             this._renderer.refresh();

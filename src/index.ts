@@ -1,10 +1,10 @@
 import "@/style/main.less";
 
-import { version } from "./common/global";
+import { getVersionString } from "./common/global";
 import { Motive } from "./simulator";
 
 console.log(
-    `\n%cMotive%cv${version}${process.env.NODE_ENV === "development" ? " (dev)" : ""} | Nocpiun Org\n`+
+    `\n%cMotive%c${getVersionString()} | Nocpiun Org\n`+
     "%cA web-based physics simulator.\n\n"+
     "%cWebpage: https://motive.nocp.space\n"+
     "%cGithub Repo: https://github.com/nocpiun/motive\n\n"+
