@@ -6,9 +6,9 @@ import { createObject, type ObjectNameMap, type CanvasObject } from "@/simulator
 import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ground } from "@/simulator/objects/ground";
+import { Emitter, type Event } from "@/common/event";
 
 import { type Color, colors } from "./colors";
-import { Emitter, Event } from "@/common/event";
 // import { Ball } from "@/simulator/objects/ball";
 // import { Vector } from "@/simulator/vector";
 
