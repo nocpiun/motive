@@ -88,11 +88,13 @@ interface IRender extends Renderable, IDisposable {
     setWallMode(enabled: boolean): void
 
     onRender: Event<OnRenderListenerData>
+    onRefresh: Event<void>
 }
 
 export class Render extends Disposable implements IRender {
     // events
     private _onRender = new Emitter<OnRenderListenerData>();
+    private _onRefresh = new Emitter();
 
     private _app: PIXI.Application;
     private _objects: LinkedNodes<CanvasObject> = LinkedNodes.empty();
@@ -220,6 +222,8 @@ export class Render extends Disposable implements IRender {
     public refresh() {
         this.clearObjects();
         this._initObjects();
+        
+        this._onRefresh.fire();
     }
 
     public pause() {
@@ -276,6 +280,10 @@ export class Render extends Disposable implements IRender {
 
     public get onRender() {
         return this._onRender.event;
+    }
+
+    public get onRefresh() {
+        return this._onRefresh.event;
     }
 
     public override dispose() {

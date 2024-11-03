@@ -61,6 +61,10 @@ export class Ground extends CanvasObject<GroundHitbox> {
             }
         }));
 
+        this._register(this.render.onRefresh(() => {
+            this._initTexture();
+        }));
+
         window.addEventListener("resize", () => {
             this._initTexture();
         });
