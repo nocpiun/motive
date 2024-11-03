@@ -107,7 +107,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this._isInteractive = true;
 
         this.obj.on("pointerdown", (e) => {
-            if(!this.render.isMouseMode) return;
+            if(!this.render.isMouseMode || e.button === 2) return;
 
             if(!this._isHeld) {
                 this._isHeld = true;
@@ -165,7 +165,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     protected _enableSettings<S extends ObjectSettingsList>(id: string, getItems: () => S): void {
-        this.obj.addEventListener("rightclick", () => {
+        this.obj.on("rightclick", () => {
             // To avoid dragging the object
             // NOTE: This is a temporary solution
             this._isHeld = false;
