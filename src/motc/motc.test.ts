@@ -2,8 +2,9 @@ import { MOTC } from ".";
 
 describe("motc-tests", () => {
     // eslint-disable-next-line jest/no-disabled-tests
-    it.skip("parse", () => {
-        const sample = `#name Sample Map
+    it("parse", () => {
+        const sample = 
+`#name Sample Map
 #description This is a sample description!
 #author NriotHrreion
 
@@ -69,7 +70,6 @@ describe("motc-tests", () => {
                 }
             ]
         };
-
         expect(MOTC.parse(sample)).toStrictEqual(expectedResult);
     });
 });
