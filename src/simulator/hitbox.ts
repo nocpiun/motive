@@ -1,3 +1,4 @@
+import type { Canvas } from "@/ui/canvas/canvas";
 import type { CanvasObject } from "./object";
 import type { Point } from "./render/render";
 
@@ -18,6 +19,7 @@ export interface IHitbox extends IDisposable {
      * @param obj A target object to test
      */
     test(obj: CanvasObject): void
+    testWall(canvas: Canvas): "x" | "y" | null
     /**
      * Set a new anchor for the hitbox
      * 
@@ -47,6 +49,7 @@ export abstract class Hitbox extends Disposable implements IHitbox {
     }
 
     public abstract test(obj: CanvasObject): void;
+    public abstract testWall(canvas: Canvas): "x" | "y" | null;
 
     public setAnchor(anchor: Point) {
         this.anchor = anchor;

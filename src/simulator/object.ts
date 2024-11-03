@@ -58,6 +58,7 @@ interface ICanvasObject extends Renderable {
      * Clear all forces from the object
      */
     clearForces(): void
+    reverseVelocity(direction: "x" | "y", damping?: number): void
     /**
      * Update the anchor point of the hitbox,
      * so that it matches the current position of the object.
@@ -222,6 +223,17 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     public clearForces() {
         this._forces.clear();
+    }
+
+    public reverseVelocity(direction: "x" | "y", damping: number = 1) {
+        const n = new Vector(0, 1);
+
+        const vy = this.velocity.getComponent(n);
+        const vx = Vector.sub(this.velocity, vy);
+
+        direction === "y"
+        ? this.velocity = Vector.add(vx, Vector.multiplyScalar(Vector.reverse(vy), damping))
+        : this.velocity = Vector.add(vy, Vector.multiplyScalar(Vector.reverse(vx), damping));
     }
 
     public updateHitboxAnchor(): void {

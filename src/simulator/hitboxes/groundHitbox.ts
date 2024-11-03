@@ -37,4 +37,8 @@ export class GroundHitbox extends Hitbox implements IGroundHitbox {
             }
         }
     }
+
+    public testWall(): null {
+        return null;
+    }
 }

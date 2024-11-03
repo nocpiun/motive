@@ -15,7 +15,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly id = "ground";
 
     public static readonly GROUND_HEIGHT = 50;
-    public static readonly DAMPING = 1;
+    public static readonly DAMPING = .9;
     public static readonly STABLE_VELOCITY = 5;
 
     public readonly normalVector: Vector = new Vector(0, 1);
@@ -41,10 +41,9 @@ export class Ground extends CanvasObject<GroundHitbox> {
                 obj.updateHitboxAnchor();
 
                 const vy = obj.velocity.getComponent(this.normalVector);
-                const vx = Vector.sub(obj.velocity, vy);
 
                 if(vy.length > Ground.STABLE_VELOCITY) {
-                    obj.velocity = Vector.add(vx, Vector.multiplyScalar(Vector.reverse(vy), Ground.DAMPING));
+                    obj.reverseVelocity("y", Ground.DAMPING);
                 } else {
                     obj.velocity.y = 0;
                     obj.applyForce("ground.support", Force.reverse(Force.gravity(obj.mass)));

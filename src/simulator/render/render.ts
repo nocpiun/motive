@@ -80,6 +80,12 @@ interface IRender extends Renderable, IDisposable {
      * @param enabled Is the mouse mode enabled
      */
     setMouseMode(enabled: boolean): void
+    /**
+     * Toggle the wall mode (on / off)
+     * 
+     * @param enabled Is the wall mode enabled
+     */
+    setWallMode(enabled: boolean): void
 
     onRender: Event<OnRenderListenerData>
 }
@@ -96,6 +102,7 @@ export class Render extends Disposable implements IRender {
 
     public isPaused: boolean = false;
     public isMouseMode: boolean = false;
+    public isWallMode: boolean = true;
 
     public constructor(public canvas: Canvas) {
         super();
@@ -156,6 +163,14 @@ export class Render extends Disposable implements IRender {
                 if(_obj !== obj) {
                     obj.hitbox.test(_obj);
                 }
+            }
+
+            // Test wall
+            if(!this.isWallMode) return;
+
+            const hitDirection = obj.hitbox.testWall(this.canvas);
+            if(hitDirection) {
+                obj.reverseVelocity(hitDirection);
             }
         }
     }
@@ -223,6 +238,10 @@ export class Render extends Disposable implements IRender {
         this.isMouseMode = enabled;
     }
 
+    public setWallMode(enabled: boolean) {
+        this.isWallMode = enabled;
+    }
+
     public update(delta: number) {
         // Pre-rendering stage
         if(!this._prerenderObjects.isEmpty()) {
@@ -244,6 +263,7 @@ export class Render extends Disposable implements IRender {
 
             infoList.push(`Objects: ${this._objects.length}`);
             if(this.isMouseMode) infoList.push("MouseMode");
+            if(this.isWallMode) infoList.push("WallMode");
 
             for(let i = 0; i < infoList.length; i++) {
                 this.container.addChild(this.createText(infoList[i], 10, 10 + i * 20));

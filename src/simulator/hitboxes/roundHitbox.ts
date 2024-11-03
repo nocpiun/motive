@@ -1,5 +1,6 @@
 import type { Point } from "@/simulator/render/render";
 import type { CanvasObject } from "@/simulator/object";
+import type { Canvas } from "@/ui/canvas/canvas";
 
 import { Hitbox, type IHitbox } from "@/simulator/hitbox";
 import { getPointDistance } from "@/common/utils/utils";
@@ -37,5 +38,15 @@ export class RoundHitbox extends Hitbox implements IRoundHitbox {
                 this._onHit.fire({ obj, depth: radiusSum - distance });
             }
         }
+    }
+
+    public testWall(canvas: Canvas) {
+        if(this.anchor.y <= 0) {
+            return "y";
+        } else if(this.anchor.x <= 0 || this.anchor.x + 2 * this.radius >= canvas.width) {
+            return "x";
+        }
+
+        return null;
     }
 }
