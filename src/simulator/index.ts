@@ -23,10 +23,10 @@ export class Motive extends Disposable {
     }
 
     private _init(): void {
-        this._panel = new Panel(this._root);
-
         this._canvas = new Canvas(this._root);
         this._render = new Render(this._canvas);
+        
+        this._panel = new Panel(this._root);
         
         // Register object switchers
         this._panel.addObjectSwitcher("ball", "小球", Circle, false, true);
