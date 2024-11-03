@@ -30,12 +30,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 .fill(colors["wood"]),
             mass,
             velocity,
-            new ConvexHitbox([
-                new Vector(size, 0),
-                new Vector(0, -size),
-                new Vector(-size, 0),
-                new Vector(0, size),
-            ], { x: x - size / 2, y: y - size / 2 })
+            new ConvexHitbox(size, size, { x: x - size / 2, y: y - size / 2 })
         );
 
         this.obj.position.set(x, y);

@@ -5,8 +5,6 @@ import type { Canvas } from "@/ui/canvas/canvas";
 import { Hitbox, type IHitbox } from "@/simulator/hitbox";
 import { getPointDistance } from "@/common/utils/utils";
 
-import { ConvexHitbox } from "./convexHitbox";
-
 interface IRoundHitbox extends IHitbox {
     radius: number
 }
@@ -28,9 +26,7 @@ export class RoundHitbox extends Hitbox implements IRoundHitbox {
             return;
         }
 
-        if(hitbox instanceof ConvexHitbox) {
-            //
-        } else if(hitbox instanceof RoundHitbox) {
+        if(hitbox instanceof RoundHitbox) {
             const distance = getPointDistance(this.anchor, hitbox.anchor);
             const radiusSum = this.radius + hitbox.radius;
 
