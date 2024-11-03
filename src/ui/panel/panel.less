@@ -3,6 +3,9 @@
     --mt-panel-bg: var(--tw-color-gray-100);
     --mt-panel-border: var(--tw-color-gray-200);
     --mt-panel-toolbar-border: var(--tw-color-gray-300);
+
+    // Panel Properties
+    --mt-panel-shadow: 0 -5px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .panel {
@@ -13,6 +16,7 @@
     background-color: var(--mt-panel-bg);
     border: 1px solid var(--mt-panel-border);
     overflow: hidden;
+    box-shadow: var(--mt-panel-shadow);
 
     &-toolbar {
         display: flex;

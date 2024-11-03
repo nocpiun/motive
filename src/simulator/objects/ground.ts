@@ -14,7 +14,7 @@ import { Block } from "./block";
 export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly id = "ground";
 
-    public static readonly GROUND_HEIGHT = 50;
+    public static readonly GROUND_HEIGHT = 25;
     public static readonly DAMPING = .9;
     public static readonly STABLE_VELOCITY = 5;
 
