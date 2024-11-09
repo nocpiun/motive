@@ -12,6 +12,7 @@ import { SettingsModal } from "./settingsModal";
 import { ManagerModal } from "./managerModal";
 import { AboutModal } from "./aboutModal";
 import { ObjectModal } from "./objectModal";
+import { ImportModal } from "./importModal";
 
 export interface IModalProvider extends IDisposable {
     /**
@@ -55,6 +56,7 @@ class ModalProvider extends Provider<Modal> implements IModalProvider {
         this._registerModal(ManagerModal);
         this._registerModal(AboutModal);
         this._registerModal(ObjectModal);
+        this._registerModal(ImportModal);
 
         this._register(this._onModalOpen);
         this._register(this._onModalClose);

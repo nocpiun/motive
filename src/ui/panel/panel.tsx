@@ -6,12 +6,14 @@ import {
     type IconNode,
     Box,
     BrickWall,
+    FilePlus2,
     Info,
     MousePointer2,
     Pause,
     Play,
     RotateCw,
     Settings,
+    Share,
 } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
@@ -86,6 +88,8 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const versionLabel = createElement("span", rightSplit);
         versionLabel.textContent = getVersionString();
         const toolbarRightGroup = new ButtonGroup(rightSplit);
+        toolbarRightGroup.addButton({ icon: Share, tooltip: "导出" }, () => {});
+        toolbarRightGroup.addButton({ icon: FilePlus2, tooltip: "导入" }, () => modalProvider.open("import"));
         toolbarRightGroup.addButton({ icon: Info, tooltip: "关于", tooltipPosition: "top-left" }, () => modalProvider.open("about"));
 
         const switcherContainer = createElement("div", this);
