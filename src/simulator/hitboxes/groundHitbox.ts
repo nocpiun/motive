@@ -6,11 +6,15 @@ import { Block } from "@/simulator/objects/block";
 
 import { RoundHitbox } from "./roundHitbox";
 
-interface IGroundHitbox extends IHitbox {
+interface OnHitListenerData {
+    depth: number
+}
+
+interface IGroundHitbox extends IHitbox<OnHitListenerData> {
     
 }
 
-export class GroundHitbox extends Hitbox implements IGroundHitbox {
+export class GroundHitbox extends Hitbox<OnHitListenerData> implements IGroundHitbox {
     public constructor(anchor: Point) { // anchor = (0, canvas.height - GROUND_HEIGHT)
         super(anchor);
     }

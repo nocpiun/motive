@@ -85,18 +85,36 @@ export class Ball extends CanvasObject<RoundHitbox> {
                 const massSum = this.mass + obj.mass;
                 /** *m1 - m2* */
                 const massDiff = this.mass - obj.mass;
+
+                const vx1 = this.velocity.getComponent(new Vector(1, 0));
+                const vy1 = this.velocity.getComponent(new Vector(0, 1));
+                const vx2 = obj.velocity.getComponent(new Vector(1, 0));
+                const vy2 = obj.velocity.getComponent(new Vector(0, 1));
+
+                // X direction
     
                 /** *((m2 - m1) v2) / (m1 + m2)* */
-                const va = Vector.multiplyScalar(obj.velocity, -massDiff / massSum);
+                const vxa = Vector.multiplyScalar(vx2, -massDiff / massSum);
                 /** *(2 m1 v1) / (m1 + m2)* */
-                const vb = Vector.multiplyScalar(this.velocity, (2 * this.mass) / massSum);
+                const vxb = Vector.multiplyScalar(vx1, (2 * this.mass) / massSum);
                 /** *((m1 - m2) v1) / (m1 + m2)* */
-                const vc = Vector.multiplyScalar(this.velocity, massDiff / massSum);
+                const vxc = Vector.multiplyScalar(vx1, massDiff / massSum);
                 /** *(2 m2 v2) / (m1 + m2)* */
-                const vd = Vector.multiplyScalar(obj.velocity, (2 * obj.mass) / massSum);
+                const vxd = Vector.multiplyScalar(vx2, (2 * obj.mass) / massSum);
+
+                // Y direction
+
+                /** *((m2 - m1) v2) / (m1 + m2)* */
+                const vya = Vector.multiplyScalar(vy2, -massDiff / massSum);
+                /** *(2 m1 v1) / (m1 + m2)* */
+                const vyb = Vector.multiplyScalar(vy1, (2 * this.mass) / massSum);
+                /** *((m1 - m2) v1) / (m1 + m2)* */
+                const vyc = Vector.multiplyScalar(vy1, massDiff / massSum);
+                /** *(2 m2 v2) / (m1 + m2)* */
+                const vyd = Vector.multiplyScalar(vy2, (2 * obj.mass) / massSum);
     
-                obj.velocity = Vector.add(va, vb); // v2'
-                this.velocity = Vector.add(vc, vd); // v1'
+                obj.velocity = Vector.add(Vector.add(vxa, vxb), Vector.add(vya, vyb)); // v2'
+                this.velocity = Vector.add(Vector.add(vxc, vxd), Vector.add(vyc, vyd)); // v1'
             }
         }));
 

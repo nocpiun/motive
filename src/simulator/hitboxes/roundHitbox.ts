@@ -5,11 +5,16 @@ import type { Canvas } from "@/ui/canvas/canvas";
 import { Hitbox, type IHitbox } from "@/simulator/hitbox";
 import { getPointDistance } from "@/common/utils/utils";
 
-interface IRoundHitbox extends IHitbox {
+interface OnHitListenerData {
+    depth: number
+}
+
+interface IRoundHitbox extends IHitbox<OnHitListenerData> {
     radius: number
 }
 
-export class RoundHitbox extends Hitbox implements IRoundHitbox {
+export class RoundHitbox extends Hitbox<OnHitListenerData> implements IRoundHitbox {
+    
     public constructor(public radius: number, anchor: Point) {
         super(anchor);
 
