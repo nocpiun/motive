@@ -59,7 +59,6 @@ export class Force extends Vector implements IForce {
 
 interface IForceCollection {
     has(key: string): boolean
-    add(key: string, force: Force): void
     get(key: string): Force
     set(key: string, force: Force): void
     remove(key: string): void
@@ -86,21 +85,11 @@ export class ForceCollection implements IForceCollection {
         return this._map.has(key);
     }
 
-    public add(key: string, force: Force) {
-        if(this.has(key)) throw new Error("Cannot add an existing force.");
-
-        this._map.set(key, force);
-    }
-
     public get(key: string) {
         return this._map.get(key);
     }
 
     public set(key: string, force: Force) {
-        // We shouldn't combine `set()` with `add()`,
-        // because this may lead to some chaotic issues.
-        if(!this.has(key)) throw new Error("Cannot set an inexistent force.");
-
         this._map.set(key, force);
     }
 

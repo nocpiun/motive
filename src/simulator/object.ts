@@ -200,7 +200,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     public applyGravity() {
-        this.forces.add("gravity", Force.gravity(this.mass));
+        this.forces.set("gravity", Force.gravity(this.mass));
     }
 
     public reverseVelocity(direction: "x" | "y", damping: number = 1) {

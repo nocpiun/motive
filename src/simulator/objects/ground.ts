@@ -46,7 +46,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
                     obj.reverseVelocity("y", Ground.DAMPING);
                 } else {
                     obj.velocity.y = 0;
-                    obj.forces.add("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
+                    obj.forces.set("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
                 }
 
             } else if(obj instanceof Block) {
@@ -56,7 +56,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
                 obj.updateHitboxAnchor();
 
                 obj.velocity.y = 0;
-                obj.forces.add("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
+                obj.forces.set("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
 
             }
         }));
