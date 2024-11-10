@@ -13,7 +13,7 @@ describe("motc-tests", () => {
         id: ball1;
         name: m;
         mass: 5;
-    }
+    },
 
     block {
         id: block1;

@@ -1,6 +1,8 @@
 import type { MOT } from "./types";
 
 export class MOTC {
+    private static _debug: boolean = true;
+
     private _mot: MOT = {
         metadata: {},
         chunks: []
@@ -15,30 +17,65 @@ export class MOTC {
     }
 
     public static parse(src: string): MOT {
-        let lines = src.split("\n");
-        let tempKeyword: string = "";
+        const lines = src.split("\n");
+
+        //临时变量
+        let name_ = "";
+        let val_ = "";
+
+        let record:boolean = false;
+        let loop:boolean = true;
+
+        let keyword:string = "";
+        let level:number = 0;
+
+        let name:string = "Unnamed";
+        let author:string = "";
+        let description:string = "";
         
-        let record: boolean = false;
-        let record_2: boolean = false;
-
-        let objects:string[] = [];
-
         let block:string = "";
-        let block2:string = "";
+        let objectBlock:string = "";
+        let whenBlock:string = "";
 
-        let blocks:string[] = [];
-        let blocks2:string[] = [];
+        let objectsMap:{[key:string]:string} = {};
+        let whensMap:{[key:string]:string} = {};
 
+        // @objects 和 @when 的检测
         for (let line of lines) {
+            if (/^@objects/.test(line)) {
+                keyword = "objects";
+
+                if (MOTC._debug) {
+                    console.log("object found");
+                }
+            }
+            if (/^@when/.test(line)) {
+                keyword = "when";
+                
+                if (MOTC._debug) {
+                    console.log("when found");
+                }
+            }
+
             for (let str of line) {
                 if (str === "}") {
-                    if (record_2) {
-                        record_2 = false;
-                    } else {
-                        record = false;
-                        blocks.push(block);
-                        block = "";
+                    level -= 1;
+                }
+
+                if (record && level === 0) {
+                    record = false;
+
+                    if (MOTC._debug) {
+                        console.log("block: " + block);
                     }
+
+                    if (keyword === "objects") {
+                        objectBlock = block;
+                    }
+                    if (keyword === "when") {
+                        whenBlock = block;
+                    }
+                    block = "";
                 }
 
                 if (record && str !== " ") {
@@ -46,86 +83,103 @@ export class MOTC {
                 }
 
                 if (str === "{") {
-                    if (record) {
-                        record_2 = true;
-                    } else {
-                        record = true;
-                    }
-                }
-
-
-            }
-        }
-
-        for (let str of block) {
-            if (str === "}") {
-                if (record_2) {
-                    record_2 = false;
-                } else {
-                    record = false;
-                    blocks2.push(block2);
-                    block2 = ""
-                }
-            }
-
-            if (record && str !== " ") {
-                block2 += str;
-            }
-
-            if (str === "{") {
-                if (record) {
-                    record_2 = true;
-                } else {
+                    level += 1;
                     record = true;
                 }
             }
-
-
         }
 
-        console.log(blocks + "\n");
-        console.log(blocks2)
+        let objects = objectBlock.split(",");
+        let whens = whenBlock.split(",");
 
-        for (let line of lines) {
+        // @object 内部的检测
+        for (let str of objects) {
             if (!record) {
-                switch (true) {
-                    case /^#name/.test(line):
-                        let name = line.slice(6);
-                        tempKeyword = "name";
-
-                        console.log(line);
-                        console.log("keyword \"name\" found!");
-                        console.log(tempKeyword);
-                        console.log("Arg - name: " + name + "\n");
-                        break;
-                    case /^#description/.test(line):
-                        let description = line.slice(13);
-                        tempKeyword = "description";
-                        
-                        console.log(line);
-                        console.log("Keyword \"description\" found!");
-                        console.log(tempKeyword);
-                        console.log("Arg - description: " + description + "\n");
-                        break;
-                    case /^#author/.test(line):
-                        let author = line.slice(8);
-                        tempKeyword = "author";
-                        
-                        console.log(line);
-                        console.log("Keyword \"author\" found!");
-                        console.log(tempKeyword);
-                        console.log("Arg - author: " + author + "\n");
-                        break;
-                    case /^@objects/.test(line) && /{/.test(line):
-                        tempKeyword = "objects";
-                        record = true;
-
-                        console.log(line);
-                        console.log("Keyword \"objects\" found!");
-                        console.log(tempKeyword);
-                        break;
-                }
+                name_ += str;
             }
+
+            if (str === "}") {
+                level -= 1;
+            }
+
+            if (record && level === 0) {
+                record = false;
+
+                if (MOTC._debug) {
+                    console.log("\nname_: " + name_ + "\nval_: " + val_)
+                }
+
+                objectsMap[name_] = val_;
+                name_ = "";
+                val_ = "";
+
+                break;
+            }
+
+            if (record) {
+                val_ += str
+            }
+
+            if (str === "{") {
+                level += 1;
+                record = true;
+            }
+        }
+
+        // @when 内部的检测
+        for (let str of whens) {
+            if (!record) {
+                name_ += str;
+            }
+
+            if (str === "}") {
+                level -= 1;
+            }
+
+            if (record && level === 0) {
+                record = false;
+
+                if (MOTC._debug) {
+                    console.log("\nname_: " + name_ + "\nval_: " + val_)
+                }
+
+                whensMap[name_] = val_;
+                name_ = "";
+                val_ = "";
+
+                break;
+            }
+
+            if (record) {
+                val_ += str
+            }
+
+            if (str === "{") {
+                level += 1;
+                record = true;
+            }
+        }
+    
+        // 元信息关键字的检测
+        for (let line of lines) {
+            switch (true) {
+                case /^#name/.test(line):
+                    keyword = "name";
+                    name = line.slice(6);
+                    break;
+                case /^#author/.test(line):
+                    keyword = "author";
+                    author = line.slice(8);
+                    break;
+                case /^#description/.test(line):
+                    keyword = "description";
+                    description = line.slice(13);
+                    break;
+            }
+        }            
+        
+        if (MOTC._debug) {
+            console.log(`name: ` + name + "\nauthor: " + author + "\ndescription: " + description + "\nobjectBlock: " + objectBlock + "\nwhenBlock: " + whenBlock + "\nobjectsMap: " + objectsMap + "\nwhensMap: " + whensMap);
         }
 
         return new MOTC(src)._tokenize();
