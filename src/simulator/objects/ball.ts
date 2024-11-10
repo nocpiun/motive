@@ -132,7 +132,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
         super.update(delta);
 
         if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.radius) {
-            this.removeForce("ground.support");
+            this.forces.remove("ground.support");
         }
 
         this._drawName(0, 0);

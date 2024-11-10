@@ -133,7 +133,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
         super.update(delta);
 
         if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
-            this.removeForce("ground.support");
+            this.forces.remove("ground.support");
         }
 
         this._drawName(this.size / 2, this.size / 2);

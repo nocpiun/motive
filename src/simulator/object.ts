@@ -10,10 +10,11 @@ import type { Block } from "./objects/block";
 import { Emitter, type Event } from "@/common/event";
 import { Disposable } from "@/common/lifecycle";
 import { modalProvider } from "@/ui/modal/modalProvider";
+import { generateRandomID } from "@/common/utils/utils";
 
 import { Vector } from "./vector";
 import { Force, ForceCollection } from "./force";
-import { colors } from "./render/colors";
+import { type Color, colors } from "./render/colors";
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
@@ -34,30 +35,18 @@ interface ICanvasObject extends Renderable {
      */
     setMass(mass: number): void
     /**
-     * Apply a force to the object
-     * 
-     * @param key The key of the force
-     * @param force The force to apply
-     */
-    applyForce(key: string, force: Force): void
-    /**
      * Apply the gravity to the object
      * 
      * *G = mg*
      */
     applyGravity(): void
     /**
-     * Remove a specified force from the object
+     * Reverse the velocity of the specified direction
      * 
-     * If the given key doesn't exist, do nothing.
-     * 
-     * @param key The key of the force
+     * @param direction The direction to reverse
+     * @param damping The damping value
+     * @default damping 1
      */
-    removeForce(key: string): void
-    /**
-     * Clear all forces from the object
-     */
-    clearForces(): void
     reverseVelocity(direction: "x" | "y", damping?: number): void
     /**
      * Update the anchor point of the hitbox,
@@ -79,8 +68,9 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _onSettingsSave = new Emitter<ObjectSettingsList>();
     
     protected _name?: string;
+    public readonly id: string = generateRandomID();
 
-    private _forces: ForceCollection = new ForceCollection();
+    public forces: ForceCollection = new ForceCollection();
 
     private _isInteractive: boolean = false;
     private _isHeld: boolean = false;
@@ -190,12 +180,12 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
      * @param x Relative x position
      * @param y Relative y position
      */
-    protected _drawName(x: number, y: number): void {
+    protected _drawName(x: number, y: number, color: Color = colors["white"]): void {
         if(!this._name) return;
 
         this.obj.removeChildren();
 
-        const nameText = this.render.createText(this._name, x, y, colors["white"], 20, true);
+        const nameText = this.render.createText(this._name, x, y, color, 20, true);
         nameText.x -= nameText.width / 2;
         nameText.y -= nameText.height / 2;
 
@@ -206,23 +196,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.mass = mass;
 
         // Update the gravity force
-        this._forces.set("gravity", Force.gravity(this.mass));
-    }
-
-    public applyForce(key: string, force: Force) {
-        this._forces.add(key, force);
+        this.forces.set("gravity", Force.gravity(this.mass));
     }
 
     public applyGravity() {
-        this._forces.add("gravity", Force.gravity(this.mass));
-    }
-
-    public removeForce(key: string) {
-        this._forces.remove(key);
-    }
-
-    public clearForces() {
-        this._forces.clear();
+        this.forces.add("gravity", Force.gravity(this.mass));
     }
 
     public reverseVelocity(direction: "x" | "y", damping: number = 1) {
@@ -246,7 +224,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     public update(delta: number) {
         if(!this._isHeld) {
-            const sumForce = this._forces.getSum();
+            const sumForce = this.forces.getSum();
             const accelerate = sumForce.getAccelerate(this.mass);
             
             this.velocity = Vector.add(this.velocity, accelerate);
@@ -282,7 +260,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     public override dispose() {
-        this.clearForces();
+        this.forces.clear();
         this.velocity = Vector.Zero;
         this.obj.destroy();
         

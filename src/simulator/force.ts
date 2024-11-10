@@ -65,6 +65,7 @@ interface IForceCollection {
     remove(key: string): void
     clear(): void
     getSum(): Force
+    getComponent(n: Vector): Force
 }
 
 /**
@@ -86,6 +87,8 @@ export class ForceCollection implements IForceCollection {
     }
 
     public add(key: string, force: Force) {
+        if(this.has(key)) throw new Error("Cannot add an existing force.");
+
         this._map.set(key, force);
     }
 
@@ -96,13 +99,13 @@ export class ForceCollection implements IForceCollection {
     public set(key: string, force: Force) {
         // We shouldn't combine `set()` with `add()`,
         // because this may lead to some chaotic issues.
-        if(!this._map.has(key)) throw new Error("Cannot set an inexistent force.");
+        if(!this.has(key)) throw new Error("Cannot set an inexistent force.");
 
         this._map.set(key, force);
     }
 
     public remove(key: string) {
-        if(!this._map.has(key)) return;
+        if(!this.has(key)) return;
 
         this._map.delete(key);
     }
@@ -119,5 +122,9 @@ export class ForceCollection implements IForceCollection {
         }
 
         return sum;
+    }
+
+    public getComponent(n: Vector) {
+        return this.getSum().getComponent(n) as Force;
     }
 }
