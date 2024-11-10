@@ -1,6 +1,6 @@
 import type { ObjectNameMap } from "./object";
 
-import { Box, Circle, Cuboid, Spline } from "lucide";
+import { Box, Circle, Cuboid, Grid2X2, Radius, Shell, Slash, Spline, TriangleRight } from "lucide";
 
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
@@ -32,7 +32,12 @@ export class Motive extends Disposable {
         this._panel.addObjectSwitcher("ball", "小球", Circle, false, true);
         this._panel.addObjectSwitcher("block", "木块", Box);
         this._panel.addObjectSwitcher("board", "木板", Cuboid, true);
-        this._panel.addObjectSwitcher("rope", "绳子", Spline, true);
+        this._panel.addObjectSwitcher("slope", "斜面", TriangleRight, true);
+        this._panel.addObjectSwitcher("rope", "绳", Spline, true);
+        this._panel.addObjectSwitcher("pole", "杆", Slash, true);
+        this._panel.addObjectSwitcher("spring", "弹簧", Shell, true);
+        this._panel.addObjectSwitcher("arc", "圆弧", Radius, true);
+        this._panel.addObjectSwitcher("fixed", "固定物", Grid2X2, true);
 
         // Initialize the control panel
         this._panel.linkRenderer(this._render);

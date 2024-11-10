@@ -273,7 +273,12 @@ export interface ObjectNameMap {
     "ball": Ball
     "block": Block
     "board": any
+    "slope": any
     "rope": any
+    "pole": any
+    "spring": any
+    "arc": any
+    "fixed": any
 }
 
 const objMap = new Map<string, { new(...args: any): any } | any>();
