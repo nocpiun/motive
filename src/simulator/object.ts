@@ -224,6 +224,10 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
 
     public update(delta: number) {
         if(!this._isHeld) {
+            for(const [, force] of this.forces) {
+                force.update(this);
+            }
+
             const sumForce = this.forces.getSum();
             const accelerate = sumForce.getAccelerate(this.mass);
             

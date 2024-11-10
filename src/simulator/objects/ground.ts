@@ -7,6 +7,7 @@ import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { GroundHitbox } from "@/simulator/hitboxes/groundHitbox";
 import { Force } from "@/simulator/force";
+import { SupportForce } from "@/simulator/forces/supportForce";
 
 import { Ball } from "./ball";
 import { Block } from "./block";
@@ -16,6 +17,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
 
     public static readonly GROUND_HEIGHT = 25;
     public static readonly DAMPING = .9;
+    public static readonly FRICTION = .5; // mu
     public static readonly STABLE_VELOCITY = 5;
 
     public readonly normalVector: Vector = new Vector(0, 1);
@@ -46,7 +48,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
                     obj.reverseVelocity("y", Ground.DAMPING);
                 } else {
                     obj.velocity.y = 0;
-                    obj.forces.set("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
+                    obj.forces.set("ground.support", SupportForce.from(Force.reverse(obj.forces.getComponent(new Vector(0, 1))), this));
                 }
 
             } else if(obj instanceof Block) {
@@ -56,7 +58,7 @@ export class Ground extends CanvasObject<GroundHitbox> {
                 obj.updateHitboxAnchor();
 
                 obj.velocity.y = 0;
-                obj.forces.set("ground.support", Force.reverse(obj.forces.getComponent(new Vector(0, 1))));
+                obj.forces.set("ground.support", SupportForce.from(Force.reverse(obj.forces.getComponent(new Vector(0, 1))), this));
 
             }
         }));

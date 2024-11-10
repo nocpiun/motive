@@ -1,11 +1,13 @@
+import type { CanvasObject } from "./object";
+
 import { gravity as g } from "@/common/global";
 
 import { Vector, type IVector } from "./vector";
 
-interface IForce extends IVector {
+export interface IForce extends IVector {
     getAccelerate(mass: number): Vector
     setSize(size: number): void
-    setToZero(): void
+    update(self: CanvasObject): void
 }
 
 export class Force extends Vector implements IForce {
@@ -28,9 +30,7 @@ export class Force extends Vector implements IForce {
         this.y = size * sin;
     }
 
-    public setToZero() {
-        this.x = this.y = 0;
-    }
+    public update(_self: CanvasObject) { }
 
     public static gravity(mass: number): Force {
         return new Force(0, -mass * g);
@@ -62,6 +62,7 @@ interface IForceCollection {
     get(key: string): Force
     set(key: string, force: Force): void
     remove(key: string): void
+    removeForce(force: Force): void
     clear(): void
     getSum(): Force
     getComponent(n: Vector): Force
@@ -99,6 +100,15 @@ export class ForceCollection implements IForceCollection {
         this._map.delete(key);
     }
 
+    public removeForce(target: Force) {
+        for(const [key, force] of this) {
+            if(target === force) {
+                this.remove(key);
+                return;
+            }
+        }
+    }
+
     public clear() {
         this._map.clear();
     }
@@ -115,5 +125,9 @@ export class ForceCollection implements IForceCollection {
 
     public getComponent(n: Vector) {
         return this.getSum().getComponent(n) as Force;
+    }
+
+    *[Symbol.iterator](): Iterator<[string, Force]> {
+        for(const item of this._map) yield item;
     }
 }

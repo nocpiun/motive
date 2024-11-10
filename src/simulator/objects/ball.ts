@@ -7,8 +7,6 @@ import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
 
-import { Ground } from "./ground";
-
 export class Ball extends CanvasObject<RoundHitbox> {
     public static readonly id = "ball";
 
@@ -130,10 +128,6 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
     public override update(delta: number) {
         super.update(delta);
-
-        if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.radius) {
-            this.forces.remove("ground.support");
-        }
 
         this._drawName(0, 0);
     }

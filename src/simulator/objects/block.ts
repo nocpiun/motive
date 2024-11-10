@@ -7,7 +7,6 @@ import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { ConvexHitbox } from "@/simulator/hitboxes/convexHitbox";
 
-import { Ground } from "./ground";
 import { Ball } from "./ball";
 
 export class Block extends CanvasObject<ConvexHitbox> {
@@ -131,10 +130,6 @@ export class Block extends CanvasObject<ConvexHitbox> {
 
     public override update(delta: number) {
         super.update(delta);
-
-        if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
-            this.forces.remove("ground.support");
-        }
 
         this._drawName(this.size / 2, this.size / 2);
     }
