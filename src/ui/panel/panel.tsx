@@ -23,6 +23,7 @@ import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 import { getVersionString } from "@/common/global";
+import { $ } from "@/common/i18n";
 
 import "./panel.less";
 
@@ -73,12 +74,12 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const leftSplit = createElement("div", toolbar);
         leftSplit.classList.add("panel-toolbar-left-split");
         const toolbarLeftGroup = new ButtonGroup(leftSplit);
-        toolbarLeftGroup.addButton({ icon: Settings, tooltip: "设置" }, () => modalProvider.open("settings"));
-        toolbarLeftGroup.addButton({ icon: Box, tooltip: "管理" }, () => modalProvider.open("manager"));
-        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: "鼠标模式" }, ({ isActive }) => this._renderer.setMouseMode(isActive));
-        toolbarLeftGroup.addSwitcher({ icon: BrickWall, tooltip: "边界墙", defaultValue: true }, ({ isActive }) => this._renderer.setWallMode(isActive));
-        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: "刷新" });
-        this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: "暂停" }, ({ isActive }) => {
+        toolbarLeftGroup.addButton({ icon: Settings, tooltip: $("panel.tooltip.settings") }, () => modalProvider.open("settings"));
+        toolbarLeftGroup.addButton({ icon: Box, tooltip: $("panel.tooltip.manager") }, () => modalProvider.open("manager"));
+        toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: $("panel.tooltip.mouse-mode") }, ({ isActive }) => this._renderer.setMouseMode(isActive));
+        toolbarLeftGroup.addSwitcher({ icon: BrickWall, tooltip: $("panel.tooltip.wall"), defaultValue: true }, ({ isActive }) => this._renderer.setWallMode(isActive));
+        this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: $("panel.tooltip.refresh") });
+        this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: $("panel.tooltip.pause") }, ({ isActive }) => {
             isActive ? this._pauseRenderer() : this._unpauseRenderer();
         });
         
@@ -88,9 +89,9 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const versionLabel = createElement("span", rightSplit);
         versionLabel.textContent = getVersionString();
         const toolbarRightGroup = new ButtonGroup(rightSplit);
-        toolbarRightGroup.addButton({ icon: Share, tooltip: "导出" }, () => {});
-        toolbarRightGroup.addButton({ icon: FilePlus2, tooltip: "导入" }, () => modalProvider.open("import"));
-        toolbarRightGroup.addButton({ icon: Info, tooltip: "关于", tooltipPosition: "top-left" }, () => modalProvider.open("about"));
+        toolbarRightGroup.addButton({ icon: Share, tooltip: $("panel.tooltip.export") }, () => {});
+        toolbarRightGroup.addButton({ icon: FilePlus2, tooltip: $("panel.tooltip.import") }, () => modalProvider.open("import"));
+        toolbarRightGroup.addButton({ icon: Info, tooltip: $("panel.tooltip.about"), tooltipPosition: "top-left" }, () => modalProvider.open("about"));
 
         const switcherContainer = createElement("div", this);
         switcherContainer.classList.add("panel-switcher-container");
@@ -129,14 +130,14 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     private _pauseRenderer(): void {
         this._renderer.pause();
         this._pauseSwitcher.setIcon(Play);
-        this._pauseSwitcher.setTooltip("继续");
+        this._pauseSwitcher.setTooltip($("panel.tooltip.unpause"));
         this._refreshButton.disabled = true;
     }
 
     private _unpauseRenderer(): void {
         this._renderer.unpause();
         this._pauseSwitcher.setIcon(Pause);
-        this._pauseSwitcher.setTooltip("暂停");
+        this._pauseSwitcher.setTooltip($("panel.tooltip.pause"));
         this._refreshButton.disabled = false;
     }
 

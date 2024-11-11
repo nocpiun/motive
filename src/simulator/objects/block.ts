@@ -6,6 +6,7 @@ import { CanvasObject, registerObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { ConvexHitbox } from "@/simulator/hitboxes/convexHitbox";
+import { $ } from "@/common/i18n";
 
 import { Ball } from "./ball";
 
@@ -37,7 +38,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this._enableInteractivity();
         this._enableSettings(Ball.id, () => ({
             name: {
-                name: "名称",
+                name: $("modal.object.block.name"),
                 value: this._name,
                 controlOptions: {
                     type: "text",
@@ -45,7 +46,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 }
             },
             mass: {
-                name: "质量",
+                name: $("modal.object.block.mass"),
                 value: this.mass,
                 controlOptions: {
                     type: "number"

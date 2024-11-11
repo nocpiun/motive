@@ -6,6 +6,7 @@ import { CanvasObject, registerObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { RoundHitbox } from "@/simulator/hitboxes/roundHitbox";
+import { $ } from "@/common/i18n";
 
 export class Ball extends CanvasObject<RoundHitbox> {
     public static readonly id = "ball";
@@ -35,7 +36,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
         this._enableInteractivity();
         this._enableSettings(Ball.id, () => ({
             name: {
-                name: "名称",
+                name: $("modal.object.ball.name"),
                 value: this._name,
                 controlOptions: {
                     type: "text",
@@ -43,7 +44,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
                 }
             },
             mass: {
-                name: "质量",
+                name: $("modal.object.ball.mass"),
                 value: this.mass,
                 controlOptions: {
                     type: "number"

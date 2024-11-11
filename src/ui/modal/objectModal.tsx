@@ -6,6 +6,7 @@ import { Check } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Input, type InputOptions } from "@/ui/input/input";
+import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
 
@@ -43,9 +44,9 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
     public constructor(target: ComponentLike) {
         super(target, { id: "object-settings", title: "" });
 
-        this._addFooterButton("save", { text: "保存", variant: "success", icon: Check }, "right", () => this._save());
-        this._addFooterButton("cancel", { text: "取消", variant: "secondary" }, "right", () => this.close());
-        this._addFooterButton("delete", { text: "删除物体", variant: "danger" }, "left", () => this._deleteObject());
+        this._addFooterButton("save", { text: $("modal.object.save"), variant: "success", icon: Check }, "right", () => this._save());
+        this._addFooterButton("cancel", { text: $("modal.object.cancel"), variant: "secondary" }, "right", () => this.close());
+        this._addFooterButton("delete", { text: $("modal.object.delete"), variant: "danger" }, "left", () => this._deleteObject());
 
         // UI
 

@@ -4,10 +4,11 @@ import type { Button } from "@/ui/button/button";
 import { Import } from "lucide";
 
 import { MOTC } from "@/motc";
+import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
 
-const inputLabelText = "选择 / 拖拽 mot 文件";
+const inputLabelText = $("modal.import.label");
 
 export class ImportModal extends Modal {
     private _rawMot: string | null = null;
@@ -18,10 +19,10 @@ export class ImportModal extends Modal {
     private _inputElem: HTMLInputElement;
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "import", title: "导入文件" });
+        super(target, { id: "import", title: $("modal.import.title") });
 
-        this._loadButton = this._addFooterButton("load", { text: "导入", variant: "success", icon: Import, disabled: true }, "right", () => this._loadFile());
-        this._clearButton = this._addFooterButton("clear", { text: "清除", disabled: true }, "right", () => this._clear());
+        this._loadButton = this._addFooterButton("load", { text: $("modal.import.load"), variant: "success", icon: Import, disabled: true }, "right", () => this._loadFile());
+        this._clearButton = this._addFooterButton("clear", { text: $("modal.import.clear"), disabled: true }, "right", () => this._clear());
 
         // UI
 

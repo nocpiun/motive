@@ -1,0 +1,44 @@
+{
+    "app.name": "Motive",
+
+    "modal.about.title": "关于",
+    "modal.about.donate": "打赏",
+    "modal.about.donate.links": "链接",
+    "modal.about.donate.links.repo": "项目 Github 仓库",
+    "modal.about.donate.links.homepage": "作者 Github 主页",
+    "modal.about.donate.links.website": "作者个人网站",
+    "modal.about.changelog": "更新日志",
+    "modal.about.version": "版本",
+    "modal.about.repo": "Github 仓库",
+    "modal.about.license": "许可",
+
+    "modal.import.title": "导入文件",
+    "modal.import.label": "选择 / 拖拽 mot 文件",
+    "modal.import.load": "导入",
+    "modal.import.clear": "清除",
+
+    "modal.manager.title": "管理",
+
+    "modal.settings.title": "设置",
+    "modal.settings.save": "保存",
+    "modal.settings.cancel": "取消",
+
+    "modal.object.save": "保存",
+    "modal.object.cancel": "取消",
+    "modal.object.delete": "删除物体",
+    "modal.object.ball.name": "名称",
+    "modal.object.ball.mass": "质量",
+    "modal.object.block.name": "名称",
+    "modal.object.block.mass": "质量",
+
+    "panel.tooltip.settings": "设置",
+    "panel.tooltip.manager": "管理",
+    "panel.tooltip.mouse-mode": "鼠标模式",
+    "panel.tooltip.wall": "边界墙",
+    "panel.tooltip.refresh": "刷新",
+    "panel.tooltip.pause": "暂停",
+    "panel.tooltip.unpause": "继续",
+    "panel.tooltip.export": "导出",
+    "panel.tooltip.import": "导入",
+    "panel.tooltip.about": "关于"
+}
