@@ -1,5 +1,16 @@
+import { ReplaceAll } from "lucide";
 import type { MOT } from "./types";
 
+declare global {
+    interface String {
+        replaceAll(searchValue: string | RegExp, replaceValue: string): string;
+    }
+}
+  
+String.prototype.replaceAll = function(searchValue, replaceValue) {
+    return this.replace(new RegExp(searchValue, 'g'), replaceValue);
+};
+  
 export class MOTC {
     private static _debug: boolean = true;
 
@@ -37,52 +48,54 @@ export class MOTC {
         let objectBlock:string = "";
         let whenBlock:string = "";
 
-        let objectsMap:{[key:string]:string} = {};
-        let whensMap:{[key:string]:string} = {};
+        let objectsMap = new Map<string, Map<string, string>>();
+        let whensMap = new Map<string, Map<string, string>>();
 
         // @objects 和 @when 的检测
-        for (let line of lines) {
-            if (/^@objects/.test(line)) {
+        for(let line of lines) {
+            line = line.replaceAll("  ", "");
+
+            if(/^@objects/.test(line)) {
                 keyword = "objects";
 
-                if (MOTC._debug) {
+                if(MOTC._debug) {
                     console.log("object found");
                 }
             }
-            if (/^@when/.test(line)) {
+            if(/^@when/.test(line)) {
                 keyword = "when";
                 
-                if (MOTC._debug) {
+                if(MOTC._debug) {
                     console.log("when found");
                 }
             }
 
-            for (let str of line) {
-                if (str === "}") {
+            for(let str of line) {
+                if(str === "}") {
                     level -= 1;
                 }
 
-                if (record && level === 0) {
+                if(record && level === 0) {
                     record = false;
 
-                    if (MOTC._debug) {
+                    if(MOTC._debug) {
                         console.log("block: " + block);
                     }
 
-                    if (keyword === "objects") {
+                    if(keyword === "objects") {
                         objectBlock = block;
                     }
-                    if (keyword === "when") {
+                    if(keyword === "when") {
                         whenBlock = block;
                     }
                     block = "";
                 }
 
-                if (record && str !== " ") {
+                if(record) {
                     block += str;
                 }
 
-                if (str === "{") {
+                if(str === "{") {
                     level += 1;
                     record = true;
                 }
@@ -91,78 +104,101 @@ export class MOTC {
 
         let objects = objectBlock.split(",");
         let whens = whenBlock.split(",");
+        let elementMap = new Map<string, string>();
 
         // @object 内部的检测
-        for (let str of objects) {
-            if (!record) {
-                name_ += str;
-            }
-
-            if (str === "}") {
-                level -= 1;
-            }
-
-            if (record && level === 0) {
-                record = false;
-
-                if (MOTC._debug) {
-                    console.log("\nname_: " + name_ + "\nval_: " + val_)
+        for(let singleObject of objects) {
+            for(let str of singleObject) {
+                if(!record && str !== "{" && str !== " ") {
+                    name_ += str;
                 }
 
-                objectsMap[name_] = val_;
-                name_ = "";
-                val_ = "";
+                if(str === "}") {
+                    level -= 1;
+                }
 
-                break;
-            }
+                if(record && level === 0) {
+                    record = false;
 
-            if (record) {
-                val_ += str
-            }
+                    for(let element of val_.split(";")) {
+                        if(element !== "") {
+                            elementMap.set(element.split(":")[0], element.split(":")[1])
+                        }
+                    }
 
-            if (str === "{") {
-                level += 1;
-                record = true;
-            }
+                    objectsMap.set(name_, elementMap);
+
+                    if(MOTC._debug) {
+                        console.log("\nname_: " + name_ + "\nval_: " + val_);
+                    }
+
+                    elementMap.clear();
+                    name_ = "";
+                    val_ = "";
+
+                    break;
+                }
+
+                if(record) {
+                    val_ += str
+                }
+
+                if(str === "{") {
+                    level += 1;
+                    record = true;
+                }
+            }            
         }
 
         // @when 内部的检测
-        for (let str of whens) {
-            if (!record) {
-                name_ += str;
-            }
-
-            if (str === "}") {
-                level -= 1;
-            }
-
-            if (record && level === 0) {
-                record = false;
-
-                if (MOTC._debug) {
-                    console.log("\nname_: " + name_ + "\nval_: " + val_)
+        for(let singleWhen of whens) {
+            for(let str of singleWhen) {
+                if(!record && str !== "{" && str !== " ") {
+                    name_ += str;
                 }
+    
+                if(str === "}") {
+                    level -= 1;
+                }
+    
+                if(record && level === 0) {
+                    record = false;
+    
+                    for(let element of val_.split(";")) {
+                        if(element !== "") {
+                            elementMap.set(element.split(":")[0], element.split(":")[1])
+                        }
+                    }
 
-                whensMap[name_] = val_;
-                name_ = "";
-                val_ = "";
+                    whensMap.set(name_, elementMap);
 
-                break;
-            }
+    
+                    if(MOTC._debug) {
+                        console.log("\nname_: " + name_ + "\nval_: " + val_ + "\nelementMap: " + elementMap.entries() + "\nwhensMap: " + whensMap.entries());
+                    }
 
-            if (record) {
-                val_ += str
-            }
-
-            if (str === "{") {
-                level += 1;
-                record = true;
+                    elementMap.clear();
+                    whensMap[name_] = val_;
+                    name_ = "";
+                    val_ = "";
+    
+                    break;
+                }
+    
+                if(record) {
+                    val_ += str
+                }
+    
+                if(str === "{") {
+                    level += 1;
+                    record = true;
+                }
             }
         }
     
         // 元信息关键字的检测
-        for (let line of lines) {
-            switch (true) {
+        for(let line of lines) {
+            switch(true) {
                 case /^#name/.test(line):
                     keyword = "name";
                     name = line.slice(6);
@@ -178,7 +214,7 @@ export class MOTC {
             }
         }            
         
-        if (MOTC._debug) {
+        if(MOTC._debug) {
             console.log(`name: ` + name + "\nauthor: " + author + "\ndescription: " + description + "\nobjectBlock: " + objectBlock + "\nwhenBlock: " + whenBlock + "\nobjectsMap: " + objectsMap + "\nwhensMap: " + whensMap);
         }
 
