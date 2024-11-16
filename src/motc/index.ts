@@ -1,223 +1,133 @@
-import { ReplaceAll } from "lucide";
+/* eslint-disable no-unused-vars */
 import type { MOT } from "./types";
 
-declare global {
-    interface String {
-        replaceAll(searchValue: string | RegExp, replaceValue: string): string;
-    }
+enum Flag {
+    LEFT_BRACE = 123, // {
+    RIGHT_BRACE = 125, // }
+    COLON = 58, // :
+    COMMA = 44, // ,
+    SEMICOLON = 59, // ;
+    HASH = 35, // #
+    AT = 64, // @
+    SPACE = 32, //  
+    NEWLINE = 10, // \n
 }
-  
-String.prototype.replaceAll = function(searchValue, replaceValue) {
-    return this.replace(new RegExp(searchValue, 'g'), replaceValue);
-};
-  
-export class MOTC {
-    private static _debug: boolean = true;
 
+export class MOTC {
     private _mot: MOT = {
         metadata: {},
         chunks: []
     };
 
+    private _ptr: number = 0;
+
+    private _atMetaName: boolean = false;
+    private _atMetaData: boolean = false;
+    private _atChunkName: boolean = false;
+    private _atChunk: boolean = false;
+    private _atScopeName: boolean = false;
+    private _atScope: boolean = false;
+    private _atPropertyName: boolean = false;
+    private _atPropertyValue: boolean = false;
+    private _tempString: string = ""; // currently pointed string
+    private _tempKeyword: string = ""; // currently pointed keyword
+
     private constructor(private _src: string) { }
 
     private _tokenize(): MOT {
-        /** @todo */
+        for(this._ptr; this._ptr < this._src.length; this._ptr++) {
+            const char = this._src[this._ptr];
+            const code = this._getCharCode(this._ptr);
+
+            switch(code) {
+                case Flag.LEFT_BRACE:
+                    if(this._atChunk && !this._atScopeName) {
+                        this._atScopeName = true;
+                    } else if(this._atChunk && this._atScope) {
+                        this._atPropertyName = true;
+                    }
+                    break;
+                case Flag.RIGHT_BRACE:
+                    if(this._atScope) {
+                        this._atScope = false;
+                    }
+                    break;
+                case Flag.HASH:
+                    this._atMetaName = true;
+                    break;
+                case Flag.AT:
+                    this._atChunkName = true;
+                    break;
+                case Flag.COLON:
+                    if(this._atPropertyName) {
+                        this._atPropertyName = false;
+                        this._atPropertyValue = true;
+                    }
+                    break;
+                case Flag.SPACE:
+                    if(this._atMetaData) {
+                        this._tempString += char;
+                        continue;
+                    }
+
+                    if(this._atMetaName) {
+                        this._atMetaName = false;
+                        this._addMeta(this._tempKeyword as any, "");
+                        this._atMetaData = true;
+                    } else if(this._atChunkName) {
+                        this._atChunkName = false;
+                        this._atChunk = true;
+                    } else if(this._atScopeName) {
+                        this._atScopeName = false;
+                        this._atScope = true;
+                    }
+                    break;
+                case Flag.NEWLINE:
+                    if(this._atMetaData) {
+                        this._addMeta(this._tempKeyword as any, this._tempString);
+                        this._resetTemp();
+                    }
+                    
+                    this._resetStatus();
+                    break;
+                default:
+                    if(this._atMetaName) {
+                        this._tempKeyword += char;
+                    } else {
+                        this._tempString += char;
+                    }
+                    break;
+            }
+        }
 
         return this._mot;
     }
 
+    private _resetStatus(): void {
+        this._atMetaName = false;
+        this._atMetaData = false;
+        this._atChunkName = false;
+        this._atChunk = false;
+        this._atScopeName = false;
+        this._atScope = false;
+        this._atPropertyName = false;
+        this._atPropertyValue = false;
+    }
+
+    private _resetTemp(): void {
+        this._tempString = "";
+        this._tempKeyword = "";
+    }
+
+    private _addMeta(key: keyof MOT["metadata"], value: string): void {
+        this._mot.metadata[key] = value;
+    }
+
+    private _getCharCode(index: number): number {
+        return this._src[index].charCodeAt(0);
+    }
+
     public static parse(src: string): MOT {
-        const lines = src.split("\n");
-
-        //临时变量
-        let name_ = "";
-        let val_ = "";
-
-        let record:boolean = false;
-        let loop:boolean = true;
-
-        let keyword:string = "";
-        let level:number = 0;
-
-        let name:string = "Unnamed";
-        let author:string = "";
-        let description:string = "";
-        
-        let block:string = "";
-        let objectBlock:string = "";
-        let whenBlock:string = "";
-
-        let objectsMap = new Map<string, Map<string, string>>();
-        let whensMap = new Map<string, Map<string, string>>();
-
-        // @objects 和 @when 的检测
-        for(let line of lines) {
-            line = line.replaceAll("  ", "");
-
-            if(/^@objects/.test(line)) {
-                keyword = "objects";
-
-                if(MOTC._debug) {
-                    console.log("object found");
-                }
-            }
-            if(/^@when/.test(line)) {
-                keyword = "when";
-                
-                if(MOTC._debug) {
-                    console.log("when found");
-                }
-            }
-
-            for(let str of line) {
-                if(str === "}") {
-                    level -= 1;
-                }
-
-                if(record && level === 0) {
-                    record = false;
-
-                    if(MOTC._debug) {
-                        console.log("block: " + block);
-                    }
-
-                    if(keyword === "objects") {
-                        objectBlock = block;
-                    }
-                    if(keyword === "when") {
-                        whenBlock = block;
-                    }
-                    block = "";
-                }
-
-                if(record) {
-                    block += str;
-                }
-
-                if(str === "{") {
-                    level += 1;
-                    record = true;
-                }
-            }
-        }
-
-        let objects = objectBlock.split(",");
-        let whens = whenBlock.split(",");
-        let elementMap = new Map<string, string>();
-
-        // @object 内部的检测
-        for(let singleObject of objects) {
-            for(let str of singleObject) {
-                if(!record && str !== "{" && str !== " ") {
-                    name_ += str;
-                }
-
-                if(str === "}") {
-                    level -= 1;
-                }
-
-                if(record && level === 0) {
-                    record = false;
-
-                    for(let element of val_.split(";")) {
-                        if(element !== "") {
-                            elementMap.set(element.split(":")[0], element.split(":")[1])
-                        }
-                    }
-
-                    objectsMap.set(name_, elementMap);
-
-                    if(MOTC._debug) {
-                        console.log("\nname_: " + name_ + "\nval_: " + val_);
-                    }
-
-                    elementMap.clear();
-                    name_ = "";
-                    val_ = "";
-
-                    break;
-                }
-
-                if(record) {
-                    val_ += str
-                }
-
-                if(str === "{") {
-                    level += 1;
-                    record = true;
-                }
-            }            
-        }
-
-        // @when 内部的检测
-        for(let singleWhen of whens) {
-            for(let str of singleWhen) {
-                if(!record && str !== "{" && str !== " ") {
-                    name_ += str;
-                }
-    
-                if(str === "}") {
-                    level -= 1;
-                }
-    
-                if(record && level === 0) {
-                    record = false;
-    
-                    for(let element of val_.split(";")) {
-                        if(element !== "") {
-                            elementMap.set(element.split(":")[0], element.split(":")[1])
-                        }
-                    }
-
-                    whensMap.set(name_, elementMap);
-
-    
-                    if(MOTC._debug) {
-                        console.log("\nname_: " + name_ + "\nval_: " + val_ + "\nelementMap: " + elementMap.entries() + "\nwhensMap: " + whensMap.entries());
-                    }
-
-                    elementMap.clear();
-                    whensMap[name_] = val_;
-                    name_ = "";
-                    val_ = "";
-    
-                    break;
-                }
-    
-                if(record) {
-                    val_ += str
-                }
-    
-                if(str === "{") {
-                    level += 1;
-                    record = true;
-                }
-            }
-        }
-    
-        // 元信息关键字的检测
-        for(let line of lines) {
-            switch(true) {
-                case /^#name/.test(line):
-                    keyword = "name";
-                    name = line.slice(6);
-                    break;
-                case /^#author/.test(line):
-                    keyword = "author";
-                    author = line.slice(8);
-                    break;
-                case /^#description/.test(line):
-                    keyword = "description";
-                    description = line.slice(13);
-                    break;
-            }
-        }            
-        
-        if(MOTC._debug) {
-            console.log(`name: ` + name + "\nauthor: " + author + "\ndescription: " + description + "\nobjectBlock: " + objectBlock + "\nwhenBlock: " + whenBlock + "\nobjectsMap: " + objectsMap + "\nwhensMap: " + whensMap);
-        }
-
         return new MOTC(src)._tokenize();
     }
 }

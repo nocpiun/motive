@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface MOT {
     metadata: {
         name?: string
@@ -8,20 +9,23 @@ export interface MOT {
     chunks: Chunk[]
 }
 
-type ChunkName = "objects" | "when";
+export enum ChunkType {
+    OBJECTS = "objects",
+    WHEN = "when"
+}
 
 export interface Chunk {
-    name: ChunkName
+    name: ChunkType
     members: Scope[]
 }
 
 export interface ObjectsChunk extends Chunk {
-    name: "objects"
+    name: ChunkType.OBJECTS
     members: ObjectScope[]
 }
 
 export interface WhenChunk extends Chunk {
-    name: "when"
+    name: ChunkType.WHEN
     members: TimeScope[]
 }
 
@@ -42,9 +46,12 @@ export interface Property {
     value: string
 }
 
-type StatementVerb = "move" | "delete";
+export enum StatementType {
+    MOVE = "move",
+    DELETE = "delete"
+}
 
 export interface Statement {
-    verb: StatementVerb
+    verb: StatementType
     args: string[]
 }

@@ -1,7 +1,6 @@
 import { MOTC } from ".";
 
 describe("motc-tests", () => {
-    // eslint-disable-next-line jest/no-disabled-tests
     it("parse", () => {
         const sample = 
 `#name Sample Map
@@ -10,22 +9,22 @@ describe("motc-tests", () => {
 
 @objects {
     ball {
-        id: ball1;
-        name: m;
-        mass: 5;
-    },
+        id: ball1
+        name: m
+        mass: 5
+    }
 
     block {
-        id: block1;
-        name: M;
-        mass: 10;
+        id: block1
+        name: M
+        mass: 10
     }
 }
 
 @when {
     3s {
-        delete ball1;
-        delete block1;
+        delete ball1
+        delete block1
     }
 }`;
         const expectedResult = {
