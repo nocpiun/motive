@@ -15,31 +15,31 @@ export class AboutModal extends Modal {
         this._addFooterButton(
             "donate",
             {
-                text: $("modal.about.donate"),
+                text: $("modal.about.ctx.donate"),
                 variant: "primary",
                 icon: HandCoins,
                 contextMenuItems: [
                     {
-                        text: $("modal.about.donate"),
+                        text: $("modal.about.ctx.donate"),
                         icon: HandCoins,
                         action: () => window.open("https://github.com/sponsors/nocpiun", "_blank")
                     },
                     { separator: true },
                     {
-                        text: $("modal.about.donate.links"),
+                        text: $("modal.about.ctx.donate.links"),
                         subItems: [
                             {
-                                text: $("modal.about.donate.links.repo"),
+                                text: $("modal.about.ctx.donate.links.repo"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://github.com/nocpiun/motive", "_blank")
                             },
                             {
-                                text: $("modal.about.donate.links.homepage"),
+                                text: $("modal.about.ctx.donate.links.homepage"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://github.com/NriotHrreion", "_blank")
                             },
                             {
-                                text: $("modal.about.donate.links.website"),
+                                text: $("modal.about.ctx.donate.links.website"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://nocp.space", "_blank")
                             }

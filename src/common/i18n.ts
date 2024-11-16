@@ -18,6 +18,12 @@ export function setLang(lang: string): void {
     storage.setItem(langStorageKey, lang);
 }
 
+/**
+ * I18n string getter
+ * 
+ * @param key The key of the locale string
+ * @returns {string} The locale string
+ */
 export function i18n(key: string): string {
     const lang = getLang();
     const locale = getLocale(lang);

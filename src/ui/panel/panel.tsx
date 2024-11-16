@@ -100,7 +100,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         
         contextMenuProvider.registerContextMenu(this, [
             {
-                text: "刷新画面",
+                text: $("panel.ctx.refresh"),
                 icon: RotateCw,
                 action: () => {
                     if(this._renderer.isPaused) return;
@@ -110,17 +110,17 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             },
             { separator: true },
             {
-                text: "设置",
+                text: $("panel.ctx.settings"),
                 icon: Settings,
                 action: () => modalProvider.open("settings")
             },
             {
-                text: "管理",
+                text: $("panel.ctx.manager"),
                 icon: Box,
                 action: () => modalProvider.open("manager")
             },
             {
-                text: "关于 Motive",
+                text: $("panel.ctx.about"),
                 icon: Info,
                 action: () => modalProvider.open("about")
             }
@@ -185,7 +185,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             defaultValue,
             contextMenuItems: [
                 {
-                    text: "选择",
+                    text: $("panel.button.ctx.select"),
                     action: () => switcher.select()
                 }
             ]

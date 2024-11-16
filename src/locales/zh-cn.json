@@ -2,15 +2,15 @@
     "app.name": "Motive",
 
     "modal.about.title": "关于",
-    "modal.about.donate": "打赏",
-    "modal.about.donate.links": "链接",
-    "modal.about.donate.links.repo": "项目 Github 仓库",
-    "modal.about.donate.links.homepage": "作者 Github 主页",
-    "modal.about.donate.links.website": "作者个人网站",
     "modal.about.changelog": "更新日志",
     "modal.about.version": "版本",
     "modal.about.repo": "Github 仓库",
     "modal.about.license": "许可",
+    "modal.about.ctx.donate": "打赏",
+    "modal.about.ctx.donate.links": "链接",
+    "modal.about.ctx.donate.links.repo": "项目 Github 仓库",
+    "modal.about.ctx.donate.links.homepage": "作者 Github 主页",
+    "modal.about.ctx.donate.links.website": "作者个人网站",
 
     "modal.import.title": "导入文件",
     "modal.import.label": "选择 / 拖拽 mot 文件",
@@ -40,5 +40,25 @@
     "panel.tooltip.unpause": "继续",
     "panel.tooltip.export": "导出",
     "panel.tooltip.import": "导入",
-    "panel.tooltip.about": "关于"
+    "panel.tooltip.about": "关于",
+    "panel.ctx.refresh": "刷新画面",
+    "panel.ctx.settings": "设置",
+    "panel.ctx.manager": "管理",
+    "panel.ctx.about": "关于 Motive",
+    "panel.button.ctx.select": "选择",
+
+    "canvas.ctx.refresh": "刷新画面",
+    "canvas.ctx.vector": "添加向量",
+    "canvas.ctx.vector.velocity": "速度",
+    "canvas.ctx.vector.force": "力",
+
+    "obj.ball": "小球",
+    "obj.block": "木块",
+    "obj.board": "木板",
+    "obj.slope": "斜面",
+    "obj.rope": "绳",
+    "obj.pole": "杆",
+    "obj.spring": "弹簧",
+    "obj.arc": "圆弧",
+    "obj.fixed": "固定物"
 }
