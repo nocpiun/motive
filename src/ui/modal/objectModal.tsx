@@ -2,7 +2,7 @@ import type { ComponentLike } from "@/ui/ui";
 import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { CanvasObject } from "@/simulator/object";
 
-import { Check } from "lucide";
+import { Check, SlidersHorizontal, Trash2 } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Input, type InputOptions } from "@/ui/input/input";
@@ -42,11 +42,11 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
     private _listElem: HTMLDivElement;
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "object-settings", title: "" });
+        super(target, { id: "object-settings", title: "", icon: SlidersHorizontal });
 
         this._addFooterButton("save", { text: $("modal.object.save"), variant: "success", icon: Check }, "right", () => this._save());
         this._addFooterButton("cancel", { text: $("modal.object.cancel"), variant: "secondary" }, "right", () => this.close());
-        this._addFooterButton("delete", { text: $("modal.object.delete"), variant: "danger" }, "left", () => this._deleteObject());
+        this._addFooterButton("delete", { text: $("modal.object.delete"), variant: "danger", icon: Trash2 }, "left", () => this._deleteObject());
 
         // UI
 

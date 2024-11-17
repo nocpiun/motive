@@ -51,12 +51,26 @@ dialog.modal-dialog {
         align-items: center;
         padding: 5px;
 
-        .modal-dialog-title {
+        .modal-dialog-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin: 0;
             padding-left: 4px;
-            font-size: 18pt;
-            font-weight: bold;
-            font-family: NotoSans-Medium var(--mt-fonts);
+            .icon-wrapper {
+                width: 24px;
+                height: 24px;
+                padding-top: 2px;
+                svg {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+            .modal-dialog-title {
+                font-size: 18pt;
+                font-weight: bold;
+                font-family: NotoSans-Medium, var(--mt-fonts);
+            }
         }
 
         .modal-dialog-close-button {
@@ -189,7 +203,7 @@ dialog.modal-dialog {
                 .file-input-label {
                     color: var(--tw-color-gray-500);
                     font-weight: bold;
-                    font-family: NotoSans-Medium var(--mt-fonts);
+                    font-family: NotoSans-Medium, var(--mt-fonts);
                     &.active {
                         color: var(--mt-foreground);
                     }

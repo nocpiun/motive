@@ -1,6 +1,6 @@
 import type { ComponentLike } from "@/ui/ui";
 
-import { BookMarked, HandCoins, SquareArrowOutUpRight } from "lucide";
+import { BookMarked, HandCoins, Info, SquareArrowOutUpRight } from "lucide";
 
 import { getVersionString, version } from "@/common/global";
 import { $ } from "@/common/i18n";
@@ -10,7 +10,7 @@ import { Modal } from "./modal";
 export class AboutModal extends Modal {
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "about", title: $("modal.about.title") });
+        super(target, { id: "about", title: $("modal.about.title"), icon: Info });
 
         this._addFooterButton(
             "donate",

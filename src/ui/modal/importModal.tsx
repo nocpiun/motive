@@ -19,7 +19,7 @@ export class ImportModal extends Modal {
     private _inputElem: HTMLInputElement;
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "import", title: $("modal.import.title") });
+        super(target, { id: "import", title: $("modal.import.title"), icon: Import });
 
         this._loadButton = this._addFooterButton("load", { text: $("modal.import.load"), variant: "success", icon: Import, disabled: true }, "right", () => this._loadFile());
         this._clearButton = this._addFooterButton("clear", { text: $("modal.import.clear"), disabled: true }, "right", () => this._clear());

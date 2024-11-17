@@ -37,6 +37,8 @@ export class FrictionForce extends Force implements IFrictionForce {
             this.x = friction.x;
             this.y = friction.y;
 
+            // If in the next frame, the friction force will cause the velocity of the object reverse,
+            // then set the friction and the velocity to 0.
             const frictionAccelerate = Force.from(friction).getAccelerate(self.mass);
             if(Vector.multiply(Vector.add(velocityComponent, frictionAccelerate), velocityComponent) <= 0) {
                 this.x = this.y = 0;
