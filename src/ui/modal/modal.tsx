@@ -50,7 +50,7 @@ export class Modal<D = any> extends Component<HTMLDialogElement, ModalOptions> i
                 <dialog className="modal-dialog" id={_options.id}>
                     <header className="modal-dialog-header">
                         <div className="modal-dialog-title-container">
-                            {_options.icon && <span className="icon-wrapper">
+                            {_options.icon && <span className="modal-dialog-icon">
                                 {createLucide(_options.icon)}
                             </span>}
                             <span className="modal-dialog-title">{_options.title}</span>

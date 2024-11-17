@@ -22,6 +22,7 @@ describe("modal-component-tests", () => {
     });
 
     it("modal-content", () => {
+        expect(modal.element.querySelector(".modal-dialog-icon").childNodes.length).toBe(1);
         expect(modal.element.querySelector(".modal-dialog-title").textContent).toBe("Test Modal");
         
         expect(modal.element.querySelector(".footer-right-split").childNodes.length).toBe(1);
