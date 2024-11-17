@@ -28,7 +28,7 @@ export function i18n(key: string): string {
     const lang = getLang();
     const locale = getLocale(lang);
 
-    return locale[key];
+    return locale[key] ?? key;
 }
 
 export { i18n as $ };
