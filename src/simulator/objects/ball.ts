@@ -37,7 +37,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
         this._enableSettings(Ball.id, () => ({
             name: {
                 name: $("modal.object.ball.name"),
-                value: this._name,
+                value: this.name,
                 controlOptions: {
                     type: "text",
                     maxLength: 1
@@ -47,7 +47,8 @@ export class Ball extends CanvasObject<RoundHitbox> {
                 name: $("modal.object.ball.mass"),
                 value: this.mass,
                 controlOptions: {
-                    type: "number"
+                    type: "number",
+                    minValue: 0
                 }
             }
         }));

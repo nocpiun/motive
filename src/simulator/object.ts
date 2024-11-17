@@ -1,6 +1,8 @@
 import type * as PIXI from "pixi.js";
 import type { Node } from "@/common/utils/linkedNodes";
-import type { ObjectModal, ObjectSettingsList } from "@/ui/modal/objectModal";
+import type { ObjectModal } from "@/ui/modal/objectModal";
+import type { InputOptions } from "@/ui/input/input";
+import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
@@ -15,6 +17,15 @@ import { generateRandomID } from "@/common/utils/utils";
 import { Vector } from "./vector";
 import { Force, ForceCollection } from "./force";
 import { type Color, colors } from "./render/colors";
+
+export interface ObjectSettingsItem<V = any> {
+    name: string
+    value: V
+    type?: "input" | "switcher"
+    controlOptions?: Omit<InputOptions, "defaultValue"> | Omit<SwitcherOptions, "defaultValue">
+}
+
+export type ObjectSettingsList = Record<string, ObjectSettingsItem>;
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
@@ -53,6 +64,8 @@ interface ICanvasObject extends Renderable {
      * so that it matches the current position of the object.
      */
     updateHitboxAnchor(): void
+    getSettingsList(): ObjectSettingsList
+    applySettings(settings: ObjectSettingsList): void
 
     onPointerDown: Event<PIXI.FederatedPointerEvent>
     onPointerMove: Event<PointerEvent>
@@ -67,8 +80,9 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _onPointerUp = new Emitter<PIXI.FederatedPointerEvent & { velocity: Vector }>();
     private _onSettingsSave = new Emitter<ObjectSettingsList>();
     
-    protected _name?: string;
+    public name?: string;
     public readonly id: string = generateRandomID();
+    private _settingsListGetter: (() => ObjectSettingsList) | null = null;
 
     public forces: ForceCollection = new ForceCollection();
 
@@ -155,6 +169,8 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     protected _enableSettings<S extends ObjectSettingsList>(id: string, getItems: () => S): void {
+        this._settingsListGetter = getItems;
+
         this.obj.on("rightclick", () => {
             // To avoid dragging the object
             // NOTE: This is a temporary solution
@@ -167,13 +183,13 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             
             const modal = modalProvider.getCurrentModal() as ObjectModal;
             this._register(modal.onSave(({ obj, items }) => {
-                if(obj === this) this._onSettingsSave.fire(items);
+                if(obj === this) this.applySettings(items);
             }));
         });
     }
 
     public setName(name: string) {
-        this._name = name;
+        this.name = name;
     }
 
     /**
@@ -181,11 +197,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
      * @param y Relative y position
      */
     protected _drawName(x: number, y: number, color: Color = colors["white"]): void {
-        if(!this._name) return;
+        if(!this.name) return;
 
         this.obj.removeChildren();
 
-        const nameText = this.render.createText(this._name, x, y, color, 20, true);
+        const nameText = this.render.createText(this.name, x, y, color, 20, true);
         nameText.x -= nameText.width / 2;
         nameText.y -= nameText.height / 2;
 
@@ -220,6 +236,16 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             x: bound.x,
             y: bound.y
         });
+    }
+
+    public getSettingsList() {
+        if(!this._settingsListGetter) throw new Error("This object doesn't have any settings.");
+
+        return this._settingsListGetter();
+    }
+
+    public applySettings(settings: ObjectSettingsList) {
+        this._onSettingsSave.fire(settings);
     }
 
     public update(delta: number) {

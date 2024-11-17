@@ -75,7 +75,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         leftSplit.classList.add("panel-toolbar-left-split");
         const toolbarLeftGroup = new ButtonGroup(leftSplit);
         toolbarLeftGroup.addButton({ icon: Settings, tooltip: $("panel.tooltip.settings") }, () => modalProvider.open("settings"));
-        toolbarLeftGroup.addButton({ icon: Box, tooltip: $("panel.tooltip.manager") }, () => modalProvider.open("manager"));
+        toolbarLeftGroup.addButton({ icon: Box, tooltip: $("panel.tooltip.manager") }, () => modalProvider.open("manager", { objects: this._renderer.getObjects() }));
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: $("panel.tooltip.mouse-mode") }, ({ isActive }) => this._renderer.setMouseMode(isActive));
         toolbarLeftGroup.addSwitcher({ icon: BrickWall, tooltip: $("panel.tooltip.wall"), defaultValue: true }, ({ isActive }) => this._renderer.setWallMode(isActive));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: $("panel.tooltip.refresh") });

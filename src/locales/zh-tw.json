@@ -18,6 +18,10 @@
     "modal.import.clear": "清除",
 
     "modal.manager.title": "管理",
+    "modal.manager.save": "保存",
+    "modal.manager.apply": "應用",
+    "modal.manager.cancel": "取消",
+    "modal.manager.clear": "清除所有物體",
 
     "modal.settings.title": "設定",
     "modal.settings.save": "保存",

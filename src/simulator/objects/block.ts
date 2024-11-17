@@ -39,7 +39,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this._enableSettings(Ball.id, () => ({
             name: {
                 name: $("modal.object.block.name"),
-                value: this._name,
+                value: this.name,
                 controlOptions: {
                     type: "text",
                     maxLength: 1
@@ -49,7 +49,8 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 name: $("modal.object.block.mass"),
                 value: this.mass,
                 controlOptions: {
-                    type: "number"
+                    type: "number",
+                    minValue: 0
                 }
             }
         }));

@@ -13,6 +13,7 @@ export interface InputOptions {
     height?: number
     disabled?: boolean
     maxLength?: number
+    minValue?: number // number type input only
     maxValue?: number // number type input only
     id?: string
 }
@@ -23,6 +24,7 @@ const defaultOptions: InputOptions = {
     defaultValue: "",
     disabled: false,
     maxLength: Infinity,
+    minValue: -Infinity,
     maxValue: Infinity
 };
 
@@ -100,7 +102,7 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
                 const num = Number(value);
 
                 if(isNaN(num)) return false;
-                if(num > this._options.maxValue) return false;
+                if(num < this._options.minValue || num > this._options.maxValue) return false;
 
                 return true;
             }

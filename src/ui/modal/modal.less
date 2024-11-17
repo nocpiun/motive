@@ -1,3 +1,5 @@
+@import "@/style/mixin.less";
+
 :root {
     // Modal Dialog Colors
     --mt-modal-dialog-bg: var(--tw-color-gray-100);
@@ -110,6 +112,61 @@ dialog.modal-dialog {
         }
     }
 
+    &#manager .modal-dialog-body {
+        display: flex;
+        gap: 5px;
+        // see https://blog.darkthread.net/blog/css-flexbox-n-overflow/
+        height: 0;
+
+        .object-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 150px;
+            margin: 10px 0;
+            padding: 10px;
+            padding-right: 15px;
+            border-right: 1px solid var(--tw-color-gray-200);
+            overflow-y: auto;
+            .scrollbar-style();
+            &-item {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 4px 7px;
+                border: 1px solid var(--tw-color-gray-200);
+                border-radius: 6px;
+                cursor: pointer;
+                .object-name {
+                    font-size: 12pt;
+                    font-weight: bold;
+                }
+                .object-id {
+                    color: var(--mt-foreground-secondary);
+                    font-size: 10pt;
+                }
+                &.active {
+                    border-color: var(--tw-color-gray-300);
+                    background-color: var(--tw-color-gray-200);
+                }
+            }
+        }
+        .object-settings-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin: 10px 0;
+            padding: 10px;
+            padding-left: 15px;
+            .settings-list-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    }
+
     &#about .modal-dialog-body {
         display: flex;
         flex-direction: column;
@@ -180,6 +237,7 @@ dialog.modal-dialog {
             &-item {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
             }
         }
     }

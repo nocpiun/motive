@@ -1,6 +1,5 @@
 import type { ComponentLike } from "@/ui/ui";
-import type { SwitcherOptions } from "@/ui/switcher/switcher";
-import type { CanvasObject } from "@/simulator/object";
+import type { CanvasObject, ObjectSettingsItem, ObjectSettingsList } from "@/simulator/object";
 
 import { Check, SlidersHorizontal, Trash2 } from "lucide";
 
@@ -9,15 +8,6 @@ import { Input, type InputOptions } from "@/ui/input/input";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
-
-export interface ObjectSettingsItem<V = any> {
-    name: string
-    value: V
-    type?: "input" | "switcher"
-    controlOptions?: Omit<InputOptions, "defaultValue"> | Omit<SwitcherOptions, "defaultValue">
-}
-
-export type ObjectSettingsList = Record<string, ObjectSettingsItem>;
 
 interface ObjectModalData {
     id: string
@@ -57,7 +47,7 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
         this._register(this.onShow((data) => {
             this._data = data;
 
-            this._setTitle(data.id);
+            this._setTitle($("obj."+ data.id));
 
             for(const [key, item] of Object.entries(data.items)) {
                 this._addItem(key, item);
