@@ -8,6 +8,8 @@ export function initI18n(): void {
     if(!storage.getItem(langStorageKey)) {
         setLang(defaultLang);
     }
+
+    document.documentElement.lang = getLang();
 }
 
 export function getLang(): string {

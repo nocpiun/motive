@@ -17,6 +17,7 @@ export interface IVector {
      * @param n A unit normal vector
      */
     getComponent(n: Vector): Vector
+    isZero(): boolean
     get length(): number
 }
 
@@ -42,6 +43,10 @@ export class Vector implements IVector {
     public getComponent(n: Vector): Vector {
         // v' = (n·v) * n (when |n| = 1)
         return Vector.multiplyScalar(n, n.multiply(this));
+    }
+
+    public isZero(): boolean {
+        return this.x === 0 && this.y === 0;
     }
 
     public get length(): number {

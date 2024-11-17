@@ -2,6 +2,7 @@ import type { CanvasObject } from "@/simulator/object";
 import type { SupportForce } from "./supportForce";
 
 import { Force, type IForce } from "@/simulator/force";
+import { Vector } from "@/simulator/vector";
 
 interface IFrictionForce extends IForce {
     origin: CanvasObject
@@ -12,17 +13,49 @@ export class FrictionForce extends Force implements IFrictionForce {
 
     private readonly _maxStaticFrictionSize: number;
 
-    private constructor(support: SupportForce, private readonly friction: number) {
+    private constructor(private _support: SupportForce, private readonly _friction: number) {
         super(0, 0);
 
-        this.origin = support.origin;
-        this._maxStaticFrictionSize = support.length * this.friction;
+        this.origin = this._support.origin;
+        this._maxStaticFrictionSize = this._support.length * this._friction; // f = N * μ
     }
 
     public override update(self: CanvasObject) {
         super.update(self);
+        
+        if(self.velocity.isZero()) {
+            this.x = this.y = 0;
+            return;
+        }
 
-        /** @todo */
+        const vertical = new Vector(-this._support.y, this._support.x).getUnitVector();
+        const velocityComponent = self.velocity.getComponent(vertical);
+
+        if(!velocityComponent.isZero()) { // Dynamic friction
+            const friction = Vector.multiplyScalar(Vector.reverse(velocityComponent).getUnitVector(), this._maxStaticFrictionSize);
+
+            this.x = friction.x;
+            this.y = friction.y;
+
+            const frictionAccelerate = Force.from(friction).getAccelerate(self.mass);
+            if(Vector.multiply(Vector.add(velocityComponent, frictionAccelerate), velocityComponent) <= 0) {
+                this.x = this.y = 0;
+                self.velocity.x = self.velocity.y = 0;
+            }
+        } else { // Static friction
+            const forceComponent = self.forces.getComponent(vertical);
+            const friction = Vector.reverse(forceComponent);
+
+            if(friction.length <= this._maxStaticFrictionSize) {
+                this.x = friction.x;
+                this.y = friction.y;
+            } else { // Max static friction
+                const maxFriction = Vector.multiplyScalar(friction.getUnitVector(), this._maxStaticFrictionSize);
+
+                this.x = maxFriction.x;
+                this.y = maxFriction.y;
+            }
+        }
     }
 
     /** @deprecated */
