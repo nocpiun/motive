@@ -6,7 +6,7 @@ export interface MOT {
         author?: string
     }
 
-    chunks: Chunk[]
+    chunks: IChunk[]
 }
 
 export enum ChunkType {
@@ -14,30 +14,30 @@ export enum ChunkType {
     WHEN = "when"
 }
 
-export interface Chunk {
+export interface IChunk {
     name: ChunkType
-    members: Scope[]
+    members: IScope[]
 }
 
-export interface ObjectsChunk extends Chunk {
+export interface IObjectsChunk extends IChunk {
     name: ChunkType.OBJECTS
-    members: ObjectScope[]
+    members: IObjectScope[]
 }
 
-export interface WhenChunk extends Chunk {
+export interface IWhenChunk extends IChunk {
     name: ChunkType.WHEN
-    members: TimeScope[]
+    members: ITimeScope[]
 }
 
-export interface Scope {
+export interface IScope {
     name: string
 }
 
-export interface ObjectScope extends Scope {
+export interface IObjectScope extends IScope {
     properties: Property[]
 }
 
-export interface TimeScope extends Scope {
+export interface ITimeScope extends IScope {
     statements: Statement[]
 }
 

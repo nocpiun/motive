@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
-import type { MOT } from "./types";
+import type { Scope, ObjectScope } from "./scope";
+
+import { ChunkType, type MOT } from "./types";
+import { type Chunk, ObjectsChunk, WhenChunk } from "./chunk";
 
 enum Flag {
     LEFT_BRACE = 123, // {
@@ -29,8 +32,13 @@ export class MOTC {
     private _atScope: boolean = false;
     private _atPropertyName: boolean = false;
     private _atPropertyValue: boolean = false;
+    private _atStatementName: boolean = false;
+    private _atStatementValue: boolean = false;
+
     private _tempString: string = ""; // currently pointed string
     private _tempKeyword: string = ""; // currently pointed keyword
+    private _tempChunk: Chunk | null = null; // currently pointed chunk
+    private _tempScope: Scope | null = null; // currently pointed scope
 
     private constructor(private _src: string) { }
 
@@ -41,15 +49,24 @@ export class MOTC {
 
             switch(code) {
                 case Flag.LEFT_BRACE:
-                    if(this._atChunk && !this._atScopeName) {
+                    if(this._atChunk && !this._atScopeName && !this._atScope) {
                         this._atScopeName = true;
                     } else if(this._atChunk && this._atScope) {
-                        this._atPropertyName = true;
+                        switch(this._tempChunk.name) {
+                            case ChunkType.OBJECTS:
+                                this._atPropertyName = true;
+                                break;
+                            case ChunkType.WHEN:
+                                this._atStatementName = true;
+                                break;
+                        }
                     }
                     break;
                 case Flag.RIGHT_BRACE:
                     if(this._atScope) {
                         this._atScope = false;
+                        this._atPropertyValue = false;
+                        this._tempScope = null;
                     }
                     break;
                 case Flag.HASH:
@@ -76,9 +93,13 @@ export class MOTC {
                         this._atMetaData = true;
                     } else if(this._atChunkName) {
                         this._atChunkName = false;
+                        this._tempChunk = this._addChunk(this._tempKeyword as any);
+                        this._tempKeyword = "";
                         this._atChunk = true;
-                    } else if(this._atScopeName) {
+                    } else if(this._atScopeName && this._tempKeyword.length > 0) {
                         this._atScopeName = false;
+                        this._tempScope = this._tempChunk.addScope(this._tempKeyword);
+                        this._tempKeyword = "";
                         this._atScope = true;
                     }
                     break;
@@ -86,14 +107,24 @@ export class MOTC {
                     if(this._atMetaData) {
                         this._addMeta(this._tempKeyword as any, this._tempString);
                         this._resetTemp();
+                        this._resetStatus();
+                    } else if(this._atPropertyValue) {
+                        this._atPropertyValue = false;
+                        (this._tempScope as ObjectScope).addProperty(this._tempKeyword, this._tempString);
+                        this._tempKeyword = this._tempString = "";
+                        this._atPropertyName = true;
                     }
-                    
-                    this._resetStatus();
                     break;
-                default:
-                    if(this._atMetaName) {
+                default: // Other characters
+                    if(
+                        this._atMetaName ||
+                        this._atChunkName ||
+                        this._atScopeName ||
+                        this._atPropertyName ||
+                        this._atStatementName
+                    ) {
                         this._tempKeyword += char;
-                    } else {
+                    } else if(this._atMetaData || this._atPropertyValue) {
                         this._tempString += char;
                     }
                     break;
@@ -112,15 +143,35 @@ export class MOTC {
         this._atScope = false;
         this._atPropertyName = false;
         this._atPropertyValue = false;
+        this._atStatementName = false;
+        this._atStatementValue = false;
     }
 
     private _resetTemp(): void {
         this._tempString = "";
         this._tempKeyword = "";
+        this._tempChunk = null;
+        this._tempScope = null;
     }
 
     private _addMeta(key: keyof MOT["metadata"], value: string): void {
         this._mot.metadata[key] = value;
+    }
+
+    private _addChunk(name: ChunkType): Chunk {
+        let chunk: Chunk;
+
+        switch(name) {
+            case ChunkType.OBJECTS:
+                chunk = new ObjectsChunk();
+                break;
+            case ChunkType.WHEN:
+                chunk = new WhenChunk();
+                break;
+        }
+
+        this._mot.chunks.push(chunk);
+        return chunk;
     }
 
     private _getCharCode(index: number): number {
