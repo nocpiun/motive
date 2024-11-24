@@ -1,30 +1,30 @@
 import { MOTC } from ".";
 
 describe("motc-tests", () => {
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip("parse", () => {
-        const sample = `#name Sample Map
+    it("parse", () => {
+        const sample = 
+`#name Sample Map
 #description This is a sample description!
 #author NriotHrreion
 
 @objects {
     ball {
-        id: ball1;
-        name: m;
-        mass: 5;
+        id: ball1
+        name: m
+        mass: 5
     }
 
     block {
-        id: block1;
-        name: M;
-        mass: 10;
+        id: block1
+        name: M
+        mass: 10
     }
 }
 
 @when {
     3s {
-        delete ball1;
-        delete block1;
+        delete ball1
+        delete block1
     }
 }`;
         const expectedResult = {
@@ -42,7 +42,7 @@ describe("motc-tests", () => {
                             properties: [
                                 { key: "id", value: "ball1" },
                                 { key: "name", value: "m" },
-                                { key: "mass", value: 5 }
+                                { key: "mass", value: "5" }
                             ]
                         },
                         {
@@ -50,7 +50,7 @@ describe("motc-tests", () => {
                             properties: [
                                 { key: "id", value: "block1" },
                                 { key: "name", value: "M" },
-                                { key: "mass", value: 10 }
+                                { key: "mass", value: "10" }
                             ]
                         }
                     ]
@@ -59,7 +59,7 @@ describe("motc-tests", () => {
                     name: "when",
                     members: [
                         {
-                            time: "3s",
+                            name: "3s",
                             statements: [
                                 { verb: "delete", args: ["ball1"] },
                                 { verb: "delete", args: ["block1"] }
@@ -69,7 +69,6 @@ describe("motc-tests", () => {
                 }
             ]
         };
-
-        expect(MOTC.parse(sample)).toStrictEqual(expectedResult);
+        expect(MOTC.parse(sample)).toEqual(expectedResult);
     });
 });

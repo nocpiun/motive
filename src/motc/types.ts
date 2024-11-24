@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface MOT {
     metadata: {
         name?: string
@@ -5,35 +6,38 @@ export interface MOT {
         author?: string
     }
 
-    chunks: Chunk[]
+    chunks: IChunk[]
 }
 
-type ChunkName = "objects" | "when";
-
-export interface Chunk {
-    name: ChunkName
-    members: Scope[]
+export enum ChunkType {
+    OBJECTS = "objects",
+    WHEN = "when"
 }
 
-export interface ObjectsChunk extends Chunk {
-    name: "objects"
-    members: ObjectScope[]
+export interface IChunk {
+    name: ChunkType
+    members: IScope[]
 }
 
-export interface WhenChunk extends Chunk {
-    name: "when"
-    members: TimeScope[]
+export interface IObjectsChunk extends IChunk {
+    name: ChunkType.OBJECTS
+    members: IObjectScope[]
 }
 
-export interface Scope {
+export interface IWhenChunk extends IChunk {
+    name: ChunkType.WHEN
+    members: ITimeScope[]
+}
+
+export interface IScope {
     name: string
 }
 
-export interface ObjectScope extends Scope {
+export interface IObjectScope extends IScope {
     properties: Property[]
 }
 
-export interface TimeScope extends Scope {
+export interface ITimeScope extends IScope {
     statements: Statement[]
 }
 
@@ -42,9 +46,12 @@ export interface Property {
     value: string
 }
 
-type StatementVerb = "move" | "delete";
+export enum StatementType {
+    MOVE = "move",
+    DELETE = "delete"
+}
 
 export interface Statement {
-    verb: StatementVerb
+    verb: StatementType
     args: string[]
 }
