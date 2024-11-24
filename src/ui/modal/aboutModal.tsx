@@ -1,44 +1,45 @@
 import type { ComponentLike } from "@/ui/ui";
 
-import { BookMarked, HandCoins, SquareArrowOutUpRight } from "lucide";
+import { BookMarked, HandCoins, Info, SquareArrowOutUpRight } from "lucide";
 
 import { getVersionString, version } from "@/common/global";
+import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
 
 export class AboutModal extends Modal {
 
     public constructor(target: ComponentLike) {
-        super(target, { id: "about", title: "关于" });
+        super(target, { id: "about", title: $("modal.about.title"), icon: Info });
 
         this._addFooterButton(
             "donate",
             {
-                text: "打赏",
+                text: $("modal.about.ctx.donate"),
                 variant: "primary",
                 icon: HandCoins,
                 contextMenuItems: [
                     {
-                        text: "打赏",
+                        text: $("modal.about.ctx.donate"),
                         icon: HandCoins,
                         action: () => window.open("https://github.com/sponsors/nocpiun", "_blank")
                     },
                     { separator: true },
                     {
-                        text: "链接",
+                        text: $("modal.about.ctx.donate.links"),
                         subItems: [
                             {
-                                text: "项目 Github 仓库",
+                                text: $("modal.about.ctx.donate.links.repo"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://github.com/nocpiun/motive", "_blank")
                             },
                             {
-                                text: "作者 Github 主页",
+                                text: $("modal.about.ctx.donate.links.homepage"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://github.com/NriotHrreion", "_blank")
                             },
                             {
-                                text: "作者个人网站",
+                                text: $("modal.about.ctx.donate.links.website"),
                                 icon: SquareArrowOutUpRight,
                                 action: () => window.open("https://nocp.space", "_blank")
                             }
@@ -51,14 +52,14 @@ export class AboutModal extends Modal {
                 window.open("https://nocp.space/donate", "_blank");
             }
         );
-        this._addFooterButton("changelog", { text: "更新日志", variant: "secondary", icon: BookMarked });
+        this._addFooterButton("changelog", { text: $("modal.about.changelog"), variant: "secondary", icon: BookMarked });
 
         // UI
 
         this._container.appendChild(
             <div className="basic-info-container">
                 <div className="title-container">
-                    <h2>Motive</h2>
+                    <h2>{$("app.name")}</h2>
                     <span className="version-number">v{version}</span>
                 </div>
                 <div className="copyright-container">
@@ -69,9 +70,9 @@ export class AboutModal extends Modal {
 
         this._container.appendChild(<div className="info-list-container"/>);
 
-        this._addInfoListItem("版本", getVersionString());
-        this._addInfoListItem("Github 仓库", "nocpiun/motive", "https://github.com/nocpiun/motive");
-        this._addInfoListItem("许可", "MPL-2.0 License");
+        this._addInfoListItem($("modal.about.version"), getVersionString());
+        this._addInfoListItem($("modal.about.repo"), "nocpiun/motive", "https://github.com/nocpiun/motive");
+        this._addInfoListItem($("modal.about.license"), "MPL-2.0 License");
     }
 
     private _addInfoListItem(name: string, content: string, link?: string): void {

@@ -1,10 +1,21 @@
 import type { ObjectNameMap } from "./object";
 
-import { Box, Circle, Cuboid, Spline } from "lucide";
+import {
+    Box,
+    Circle,
+    Cuboid,
+    Grid2X2,
+    Radius,
+    Shell,
+    Slash,
+    Spline,
+    TriangleRight
+} from "lucide";
 
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
 import { Panel } from "@/ui/panel/panel";
+import { $ } from "@/common/i18n";
 
 import { Render } from "./render/render";
 
@@ -23,16 +34,21 @@ export class Motive extends Disposable {
     }
 
     private _init(): void {
-        this._panel = new Panel(this._root);
-
         this._canvas = new Canvas(this._root);
         this._render = new Render(this._canvas);
         
+        this._panel = new Panel(this._root);
+        
         // Register object switchers
-        this._panel.addObjectSwitcher("ball", "小球", Circle, false, true);
-        this._panel.addObjectSwitcher("block", "木块", Box);
-        this._panel.addObjectSwitcher("board", "木板", Cuboid, true);
-        this._panel.addObjectSwitcher("rope", "绳子", Spline, true);
+        this._panel.addObjectSwitcher("ball", $("obj.ball"), Circle, false, true);
+        this._panel.addObjectSwitcher("block", $("obj.block"), Box);
+        this._panel.addObjectSwitcher("board", $("obj.board"), Cuboid, true);
+        this._panel.addObjectSwitcher("slope", $("obj.slope"), TriangleRight, true);
+        this._panel.addObjectSwitcher("rope", $("obj.rope"), Spline, true);
+        this._panel.addObjectSwitcher("pole", $("obj.pole"), Slash, true);
+        this._panel.addObjectSwitcher("spring", $("obj.spring"), Shell, true);
+        this._panel.addObjectSwitcher("arc", $("obj.arc"), Radius, true);
+        this._panel.addObjectSwitcher("fixed", $("obj.fixed"), Grid2X2, true);
 
         // Initialize the control panel
         this._panel.linkRenderer(this._render);

@@ -1,0 +1,18 @@
+.scrollbar-style() {
+    &::-webkit-scrollbar {
+        width: 5px;
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-track {
+        padding-left: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--tw-color-gray-400);
+        border-radius: 2px;
+        &:hover {
+            background-color: var(--tw-color-gray-500);
+        }
+    }
+}

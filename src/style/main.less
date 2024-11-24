@@ -1,5 +1,6 @@
 @import "./fonts.less";
 @import "./vars.less";
+@import "./mixin.less";
 
 body {
     margin: 0;
@@ -13,16 +14,17 @@ body {
         flex-direction: column;
         box-sizing: border-box;
 
-        .panel {
-            min-height: 90px;
-        }
-
         .motive-canvas-container {
             flex: 1;
             display: flex;
             canvas.motive-canvas {
                 flex: 1;
             }
+        }
+
+        .panel {
+            min-height: 120px;
+            z-index: 1;
         }
     }
 

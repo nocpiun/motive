@@ -2,7 +2,7 @@ import "@/style/main.less";
 
 import { getVersionString } from "./common/global";
 import { Motive } from "./simulator";
-import { MOTC } from "./motc";
+import { initI18n } from "./common/i18n";
 
 console.log(
     `\n%cMotive%c${getVersionString()} | Nocpiun Org\n`+
@@ -18,34 +18,8 @@ console.log(
     "font-family: Consolas;font-size: 8pt;color: white"
 );
 
+initI18n();
+
 const root = document.getElementById("root");
 
 new Motive(root);
-
-const sample = 
-`#name Sample Map
-#description This is a sample description!
-#author NriotHrreion
-
-@objects {
-    ball {
-        id: ball1
-        name: m
-        mass: 5
-    }
-
-    block {
-        id: block1
-        name: M
-        mass: 10
-    }
-}
-
-@when {
-    3s {
-        delete ball1
-        delete block1
-    }
-}`;
-
-console.log(MOTC.parse(sample));

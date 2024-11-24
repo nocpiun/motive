@@ -6,8 +6,8 @@ import { CanvasObject, registerObject } from "@/simulator/object";
 import { colors } from "@/simulator/render/colors";
 import { Vector } from "@/simulator/vector";
 import { ConvexHitbox } from "@/simulator/hitboxes/convexHitbox";
+import { $ } from "@/common/i18n";
 
-import { Ground } from "./ground";
 import { Ball } from "./ball";
 
 export class Block extends CanvasObject<ConvexHitbox> {
@@ -30,12 +30,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 .fill(colors["wood"]),
             mass,
             velocity,
-            new ConvexHitbox([
-                new Vector(size, 0),
-                new Vector(0, -size),
-                new Vector(-size, 0),
-                new Vector(0, size),
-            ], { x: x - size / 2, y: y - size / 2 })
+            new ConvexHitbox(size, size, { x: x - size / 2, y: y - size / 2 })
         );
 
         this.obj.position.set(x, y);
@@ -43,24 +38,25 @@ export class Block extends CanvasObject<ConvexHitbox> {
         this._enableInteractivity();
         this._enableSettings(Ball.id, () => ({
             name: {
-                name: "名称",
-                value: this._name,
+                name: $("modal.object.block.name"),
+                value: this.name,
                 controlOptions: {
                     type: "text",
                     maxLength: 1
                 }
             },
             mass: {
-                name: "质量",
+                name: $("modal.object.block.mass"),
                 value: this.mass,
                 controlOptions: {
-                    type: "number"
+                    type: "number",
+                    minValue: 0
                 }
             }
         }));
         this.applyGravity();
 
-        this._register(this.hitbox.onHit(({ obj, depth }) => {
+        this._register(this.hitbox.onHit(({ obj, overlayX, overlayY }) => {
             if(obj instanceof Block || obj instanceof Ball) {
                 obj.hitbox.cancelNextTest();
 
@@ -68,14 +64,14 @@ export class Block extends CanvasObject<ConvexHitbox> {
                  * To prevent objects from going through each other
                  */
 
-                const p1 = this.hitbox.anchor;
-                const p2 = obj.hitbox.anchor;
-                const movement = Vector.multiplyScalar(Vector.fromPoints(p1, p2).getUnitVector(), depth);
-                
-                this.obj.x -= movement.x / 2;
-                this.obj.y -= movement.y / 2;
-                obj.obj.x += movement.x / 2;
-                obj.obj.y += movement.y / 2;
+                // Test which side the hit happens (left right side / top side)
+                if(Math.abs(overlayX) < Math.abs(overlayY) && overlayX !== 0) {
+                    this.obj.x -= overlayX / 2;
+                    obj.obj.x += overlayX / 2;
+                } else {
+                    this.obj.y -= overlayY / 2;
+                    obj.obj.y += overlayY / 2;
+                }
 
                 this.updateHitboxAnchor();
                 obj.updateHitboxAnchor();
@@ -92,17 +88,35 @@ export class Block extends CanvasObject<ConvexHitbox> {
                 /** *m1 - m2* */
                 const massDiff = this.mass - obj.mass;
     
-                /** *((m2 - m1) v2) / (m1 + m2)* */
-                const va = Vector.multiplyScalar(obj.velocity, -massDiff / massSum);
-                /** *(2 m1 v1) / (m1 + m2)* */
-                const vb = Vector.multiplyScalar(this.velocity, (2 * this.mass) / massSum);
-                /** *((m1 - m2) v1) / (m1 + m2)* */
-                const vc = Vector.multiplyScalar(this.velocity, massDiff / massSum);
-                /** *(2 m2 v2) / (m1 + m2)* */
-                const vd = Vector.multiplyScalar(obj.velocity, (2 * obj.mass) / massSum);
+                const vx1 = this.velocity.getComponent(new Vector(1, 0));
+                const vy1 = this.velocity.getComponent(new Vector(0, 1));
+                const vx2 = obj.velocity.getComponent(new Vector(1, 0));
+                const vy2 = obj.velocity.getComponent(new Vector(0, 1));
+
+                // X direction
     
-                obj.velocity = Vector.add(va, vb); // v2'
-                this.velocity = Vector.add(vc, vd); // v1'
+                /** *((m2 - m1) v2) / (m1 + m2)* */
+                const vxa = Vector.multiplyScalar(vx2, -massDiff / massSum);
+                /** *(2 m1 v1) / (m1 + m2)* */
+                const vxb = Vector.multiplyScalar(vx1, (2 * this.mass) / massSum);
+                /** *((m1 - m2) v1) / (m1 + m2)* */
+                const vxc = Vector.multiplyScalar(vx1, massDiff / massSum);
+                /** *(2 m2 v2) / (m1 + m2)* */
+                const vxd = Vector.multiplyScalar(vx2, (2 * obj.mass) / massSum);
+
+                // Y direction
+
+                /** *((m2 - m1) v2) / (m1 + m2)* */
+                const vya = Vector.multiplyScalar(vy2, -massDiff / massSum);
+                /** *(2 m1 v1) / (m1 + m2)* */
+                const vyb = Vector.multiplyScalar(vy1, (2 * this.mass) / massSum);
+                /** *((m1 - m2) v1) / (m1 + m2)* */
+                const vyc = Vector.multiplyScalar(vy1, massDiff / massSum);
+                /** *(2 m2 v2) / (m1 + m2)* */
+                const vyd = Vector.multiplyScalar(vy2, (2 * obj.mass) / massSum);
+    
+                obj.velocity = Vector.add(Vector.add(vxa, vxb), Vector.add(vya, vyb)); // v2'
+                this.velocity = Vector.add(Vector.add(vxc, vxd), Vector.add(vyc, vyd)); // v1'
             }
         }));
 
@@ -118,10 +132,6 @@ export class Block extends CanvasObject<ConvexHitbox> {
 
     public override update(delta: number) {
         super.update(delta);
-
-        if(this.obj.y < this.render.canvas.height - Ground.GROUND_HEIGHT - this.size) {
-            this.removeForce("ground.support");
-        }
 
         this._drawName(this.size / 2, this.size / 2);
     }

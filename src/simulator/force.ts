@@ -1,11 +1,13 @@
+import type { CanvasObject } from "./object";
+
 import { gravity as g } from "@/common/global";
 
 import { Vector, type IVector } from "./vector";
 
-interface IForce extends IVector {
+export interface IForce extends IVector {
     getAccelerate(mass: number): Vector
     setSize(size: number): void
-    setToZero(): void
+    update(self: CanvasObject): void
 }
 
 export class Force extends Vector implements IForce {
@@ -28,9 +30,7 @@ export class Force extends Vector implements IForce {
         this.y = size * sin;
     }
 
-    public setToZero() {
-        this.x = this.y = 0;
-    }
+    public update(_self: CanvasObject) { }
 
     public static gravity(mass: number): Force {
         return new Force(0, -mass * g);
@@ -59,12 +59,13 @@ export class Force extends Vector implements IForce {
 
 interface IForceCollection {
     has(key: string): boolean
-    add(key: string, force: Force): void
     get(key: string): Force
     set(key: string, force: Force): void
     remove(key: string): void
+    removeForce(force: Force): void
     clear(): void
     getSum(): Force
+    getComponent(n: Vector): Force
 }
 
 /**
@@ -85,26 +86,27 @@ export class ForceCollection implements IForceCollection {
         return this._map.has(key);
     }
 
-    public add(key: string, force: Force) {
-        this._map.set(key, force);
-    }
-
     public get(key: string) {
         return this._map.get(key);
     }
 
     public set(key: string, force: Force) {
-        // We shouldn't combine `set()` with `add()`,
-        // because this may lead to some chaotic issues.
-        if(!this._map.has(key)) throw new Error("Cannot set an inexistent force.");
-
         this._map.set(key, force);
     }
 
     public remove(key: string) {
-        if(!this._map.has(key)) return;
+        if(!this.has(key)) return;
 
         this._map.delete(key);
+    }
+
+    public removeForce(target: Force) {
+        for(const [key, force] of this) {
+            if(target === force) {
+                this.remove(key);
+                return;
+            }
+        }
     }
 
     public clear() {
@@ -119,5 +121,13 @@ export class ForceCollection implements IForceCollection {
         }
 
         return sum;
+    }
+
+    public getComponent(n: Vector) {
+        return this.getSum().getComponent(n) as Force;
+    }
+
+    *[Symbol.iterator](): Iterator<[string, Force]> {
+        for(const item of this._map) yield item;
     }
 }

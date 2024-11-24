@@ -1,4 +1,14 @@
 @font-face {
+    font-family: NotoSans;
+    src: url("@/assets/fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+    font-family: NotoSans-Medium;
+    src: url("@/assets/fonts/NotoSans-Medium.ttf");
+}
+
+@font-face {
     font-family: NotoSans-SC;
     src: url("@/assets/fonts/NotoSansSC-Regular.otf");
 }
@@ -14,10 +24,14 @@
 }
 
 @font-face {
-    font-family: FiraCode-Regular;
+    font-family: FiraCode;
     src: url("@/assets/fonts/FiraCode-Regular.ttf");
 }
 
+:root {
+    --mt-fonts: -apple-system, BlinkMacSystemFont, NotoSans, NotoSans-SC, NotoSans-SC-Medium, NotoSans-SC-Light, "微软雅黑", "Segoe UI", Arial;
+}
+
 * {
-    font-family: FiraCode-Regular, NotoSans-SC, NotoSans-SC-Light, NotoSans-SC-Medium, "微软雅黑", "Segoe UI", Arial;
+    font-family: var(--mt-fonts);
 }

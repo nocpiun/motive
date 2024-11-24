@@ -86,6 +86,7 @@ interface IRender extends Renderable, IDisposable {
      * @param enabled Is the wall mode enabled
      */
     setWallMode(enabled: boolean): void
+    getObjects(): CanvasObject[]
 
     onRender: Event<OnRenderListenerData>
     onRefresh: Event<void>
@@ -244,6 +245,10 @@ export class Render extends Disposable implements IRender {
 
     public setWallMode(enabled: boolean) {
         this.isWallMode = enabled;
+    }
+
+    public getObjects() {
+        return this._objects.toArray();
     }
 
     public update(delta: number) {

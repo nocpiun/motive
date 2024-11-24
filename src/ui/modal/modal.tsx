@@ -1,4 +1,4 @@
-import { createElement as createLucide, X } from "lucide";
+import { createElement as createLucide, type IconNode, X } from "lucide";
 
 import { Emitter, type Event, type Listener } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
@@ -9,6 +9,7 @@ import "./modal.less";
 export interface ModalOptions {
     id: string
     title: string
+    icon?: IconNode
     width?: number
     height?: number
 }
@@ -48,7 +49,12 @@ export class Modal<D = any> extends Component<HTMLDialogElement, ModalOptions> i
             (
                 <dialog className="modal-dialog" id={_options.id}>
                     <header className="modal-dialog-header">
-                        <span className="modal-dialog-title">{_options.title}</span>
+                        <div className="modal-dialog-title-container">
+                            {_options.icon && <span className="modal-dialog-icon">
+                                {createLucide(_options.icon)}
+                            </span>}
+                            <span className="modal-dialog-title">{_options.title}</span>
+                        </div>
                         
                         <button
                             className="modal-dialog-close-button"

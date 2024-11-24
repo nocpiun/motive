@@ -4,6 +4,7 @@ import { ArrowRightFromLine, MoveUpRight, RotateCw } from "lucide";
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
+import { $ } from "@/common/i18n";
 import KatexRegularTTF from "@/assets/fonts/KaTeX_Main-Regular.ttf";
 import KatexRegularWOFF from "@/assets/fonts/KaTeX_Main-Regular.woff";
 import KatexRegularWOFF2 from "@/assets/fonts/KaTeX_Main-Regular.woff2";
@@ -65,21 +66,21 @@ export class Canvas extends Component<HTMLCanvasElement, CanvasOptions> implemen
         
         contextMenuProvider.registerContextMenu(this, [
             {
-                text: "刷新画面",
+                text: $("canvas.ctx.refresh"),
                 icon: RotateCw,
                 action: () => this._onRefresh.fire()
             },
             { separator: true },
             {
-                text: "添加向量",
+                text: $("canvas.ctx.vector"),
                 icon: MoveUpRight,
                 subItems: [
                     {
-                        text: "速度",
+                        text: $("canvas.ctx.vector.velocity"),
                         icon: MoveUpRight,
                     },
                     {
-                        text: "力",
+                        text: $("canvas.ctx.vector.force"),
                         icon: ArrowRightFromLine,
                     }
                 ]

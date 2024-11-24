@@ -1,4 +1,5 @@
 import { Force, ForceCollection } from "@/simulator/force";
+import { Vector } from "@/simulator/vector";
 
 describe("force-collection-tests", () => {
     const forces = new ForceCollection([
@@ -13,8 +14,12 @@ describe("force-collection-tests", () => {
         expect(forces.has("test.5")).toBeFalsy();
     });
 
-    it("add-force", () => {
-        forces.add("test.5", new Force(11, 12));
+    it("get-force", () => {
+        expect(forces.get("test.4")).toEqual(new Force(9, 10));
+    });
+
+    it("set-force", () => {
+        forces.set("test.5", new Force(11, 12));
 
         expect(forces.has("test.5")).toBeTruthy();
     });
@@ -27,6 +32,10 @@ describe("force-collection-tests", () => {
 
     it("sum-of-forces", () => {
         expect(forces.getSum()).toEqual(new Force(24, 28));
+    });
+
+    it("get-component-force", () => {
+        expect(forces.getComponent(new Vector(0, 1))).toEqual(new Force(0, 28));
     });
 
     it("clear-forces", () => {

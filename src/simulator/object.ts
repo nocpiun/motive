@@ -1,6 +1,8 @@
 import type * as PIXI from "pixi.js";
 import type { Node } from "@/common/utils/linkedNodes";
-import type { ObjectModal, ObjectSettingsList } from "@/ui/modal/objectModal";
+import type { ObjectModal } from "@/ui/modal/objectModal";
+import type { InputOptions } from "@/ui/input/input";
+import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
@@ -10,10 +12,20 @@ import type { Block } from "./objects/block";
 import { Emitter, type Event } from "@/common/event";
 import { Disposable } from "@/common/lifecycle";
 import { modalProvider } from "@/ui/modal/modalProvider";
+import { generateRandomID } from "@/common/utils/utils";
 
 import { Vector } from "./vector";
 import { Force, ForceCollection } from "./force";
-import { colors } from "./render/colors";
+import { type Color, colors } from "./render/colors";
+
+export interface ObjectSettingsItem<V = any> {
+    name: string
+    value: V
+    type?: "input" | "switcher"
+    controlOptions?: Omit<InputOptions, "defaultValue"> | Omit<SwitcherOptions, "defaultValue">
+}
+
+export type ObjectSettingsList = Record<string, ObjectSettingsItem>;
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
@@ -34,36 +46,26 @@ interface ICanvasObject extends Renderable {
      */
     setMass(mass: number): void
     /**
-     * Apply a force to the object
-     * 
-     * @param key The key of the force
-     * @param force The force to apply
-     */
-    applyForce(key: string, force: Force): void
-    /**
      * Apply the gravity to the object
      * 
      * *G = mg*
      */
     applyGravity(): void
     /**
-     * Remove a specified force from the object
+     * Reverse the velocity of the specified direction
      * 
-     * If the given key doesn't exist, do nothing.
-     * 
-     * @param key The key of the force
+     * @param direction The direction to reverse
+     * @param damping The damping value
+     * @default damping 1
      */
-    removeForce(key: string): void
-    /**
-     * Clear all forces from the object
-     */
-    clearForces(): void
     reverseVelocity(direction: "x" | "y", damping?: number): void
     /**
      * Update the anchor point of the hitbox,
      * so that it matches the current position of the object.
      */
     updateHitboxAnchor(): void
+    getSettingsList(): ObjectSettingsList
+    applySettings(settings: ObjectSettingsList): void
 
     onPointerDown: Event<PIXI.FederatedPointerEvent>
     onPointerMove: Event<PointerEvent>
@@ -78,9 +80,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     private _onPointerUp = new Emitter<PIXI.FederatedPointerEvent & { velocity: Vector }>();
     private _onSettingsSave = new Emitter<ObjectSettingsList>();
     
-    protected _name?: string;
+    public name?: string;
+    public readonly id: string = generateRandomID();
+    private _settingsListGetter: (() => ObjectSettingsList) | null = null;
 
-    private _forces: ForceCollection = new ForceCollection();
+    public forces: ForceCollection = new ForceCollection();
 
     private _isInteractive: boolean = false;
     private _isHeld: boolean = false;
@@ -107,7 +111,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this._isInteractive = true;
 
         this.obj.on("pointerdown", (e) => {
-            if(!this.render.isMouseMode) return;
+            if(!this.render.isMouseMode || e.button === 2) return;
 
             if(!this._isHeld) {
                 this._isHeld = true;
@@ -165,7 +169,9 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     protected _enableSettings<S extends ObjectSettingsList>(id: string, getItems: () => S): void {
-        this.obj.addEventListener("rightclick", () => {
+        this._settingsListGetter = getItems;
+
+        this.obj.on("rightclick", () => {
             // To avoid dragging the object
             // NOTE: This is a temporary solution
             this._isHeld = false;
@@ -177,25 +183,25 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
             
             const modal = modalProvider.getCurrentModal() as ObjectModal;
             this._register(modal.onSave(({ obj, items }) => {
-                if(obj === this) this._onSettingsSave.fire(items);
+                if(obj === this) this.applySettings(items);
             }));
         });
     }
 
     public setName(name: string) {
-        this._name = name;
+        this.name = name;
     }
 
     /**
      * @param x Relative x position
      * @param y Relative y position
      */
-    protected _drawName(x: number, y: number): void {
-        if(!this._name) return;
+    protected _drawName(x: number, y: number, color: Color = colors["white"]): void {
+        if(!this.name) return;
 
         this.obj.removeChildren();
 
-        const nameText = this.render.createText(this._name, x, y, colors["white"], 20, true);
+        const nameText = this.render.createText(this.name, x, y, color, 20, true);
         nameText.x -= nameText.width / 2;
         nameText.y -= nameText.height / 2;
 
@@ -206,23 +212,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.mass = mass;
 
         // Update the gravity force
-        this._forces.set("gravity", Force.gravity(this.mass));
-    }
-
-    public applyForce(key: string, force: Force) {
-        this._forces.add(key, force);
+        this.forces.set("gravity", Force.gravity(this.mass));
     }
 
     public applyGravity() {
-        this._forces.add("gravity", Force.gravity(this.mass));
-    }
-
-    public removeForce(key: string) {
-        this._forces.remove(key);
-    }
-
-    public clearForces() {
-        this._forces.clear();
+        this.forces.set("gravity", Force.gravity(this.mass));
     }
 
     public reverseVelocity(direction: "x" | "y", damping: number = 1) {
@@ -244,9 +238,23 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         });
     }
 
+    public getSettingsList() {
+        if(!this._settingsListGetter) throw new Error("This object doesn't have any settings.");
+
+        return this._settingsListGetter();
+    }
+
+    public applySettings(settings: ObjectSettingsList) {
+        this._onSettingsSave.fire(settings);
+    }
+
     public update(delta: number) {
         if(!this._isHeld) {
-            const sumForce = this._forces.getSum();
+            for(const [, force] of this.forces) {
+                force.update(this);
+            }
+
+            const sumForce = this.forces.getSum();
             const accelerate = sumForce.getAccelerate(this.mass);
             
             this.velocity = Vector.add(this.velocity, accelerate);
@@ -282,7 +290,7 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
     }
 
     public override dispose() {
-        this.clearForces();
+        this.forces.clear();
         this.velocity = Vector.Zero;
         this.obj.destroy();
         
@@ -295,7 +303,12 @@ export interface ObjectNameMap {
     "ball": Ball
     "block": Block
     "board": any
+    "slope": any
     "rope": any
+    "pole": any
+    "spring": any
+    "arc": any
+    "fixed": any
 }
 
 const objMap = new Map<string, { new(...args: any): any } | any>();
