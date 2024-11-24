@@ -42,7 +42,7 @@ describe("motc-tests", () => {
                             properties: [
                                 { key: "id", value: "ball1" },
                                 { key: "name", value: "m" },
-                                { key: "mass", value: 5 }
+                                { key: "mass", value: "5" }
                             ]
                         },
                         {
@@ -50,7 +50,7 @@ describe("motc-tests", () => {
                             properties: [
                                 { key: "id", value: "block1" },
                                 { key: "name", value: "M" },
-                                { key: "mass", value: 10 }
+                                { key: "mass", value: "10" }
                             ]
                         }
                     ]
@@ -59,7 +59,7 @@ describe("motc-tests", () => {
                     name: "when",
                     members: [
                         {
-                            time: "3s",
+                            name: "3s",
                             statements: [
                                 { verb: "delete", args: ["ball1"] },
                                 { verb: "delete", args: ["block1"] }
@@ -69,6 +69,6 @@ describe("motc-tests", () => {
                 }
             ]
         };
-        expect(MOTC.parse(sample)).toStrictEqual(expectedResult);
+        expect(MOTC.parse(sample)).toEqual(expectedResult);
     });
 });

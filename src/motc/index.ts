@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import type { Scope, ObjectScope } from "./scope";
+import type { Scope, ObjectScope, TimeScope } from "./scope";
 
-import { ChunkType, type MOT } from "./types";
+import { ChunkType, type StatementType, type MOT } from "./types";
 import { type Chunk, ObjectsChunk, WhenChunk } from "./chunk";
 
 enum Flag {
@@ -32,8 +32,7 @@ export class MOTC {
     private _atScope: boolean = false;
     private _atPropertyName: boolean = false;
     private _atPropertyValue: boolean = false;
-    private _atStatementName: boolean = false;
-    private _atStatementValue: boolean = false;
+    private _atStatement: boolean = false;
 
     private _tempString: string = ""; // currently pointed string
     private _tempKeyword: string = ""; // currently pointed keyword
@@ -57,7 +56,7 @@ export class MOTC {
                                 this._atPropertyName = true;
                                 break;
                             case ChunkType.WHEN:
-                                this._atStatementName = true;
+                                this._atStatement = true;
                                 break;
                         }
                     }
@@ -66,7 +65,11 @@ export class MOTC {
                     if(this._atScope) {
                         this._atScope = false;
                         this._atPropertyValue = false;
+                        this._atStatement = false;
+                        this._atScopeName = true;
                         this._tempScope = null;
+                    } else {
+                        this._resetStatus();
                     }
                     break;
                 case Flag.HASH:
@@ -101,6 +104,8 @@ export class MOTC {
                         this._tempScope = this._tempChunk.addScope(this._tempKeyword);
                         this._tempKeyword = "";
                         this._atScope = true;
+                    } else if(this._atStatement && this._tempString.length > 0) {
+                        this._tempString += char;
                     }
                     break;
                 case Flag.NEWLINE:
@@ -113,6 +118,11 @@ export class MOTC {
                         (this._tempScope as ObjectScope).addProperty(this._tempKeyword, this._tempString);
                         this._tempKeyword = this._tempString = "";
                         this._atPropertyName = true;
+                    } else if(this._atStatement && this._tempString.length > 0) {
+                        const processed = this._tempString.split(" ");
+
+                        (this._tempScope as TimeScope).addStatement(processed[0] as StatementType, processed.slice(1));
+                        this._tempString = "";
                     }
                     break;
                 default: // Other characters
@@ -120,11 +130,10 @@ export class MOTC {
                         this._atMetaName ||
                         this._atChunkName ||
                         this._atScopeName ||
-                        this._atPropertyName ||
-                        this._atStatementName
+                        this._atPropertyName
                     ) {
                         this._tempKeyword += char;
-                    } else if(this._atMetaData || this._atPropertyValue) {
+                    } else if(this._atMetaData || this._atPropertyValue || this._atStatement) {
                         this._tempString += char;
                     }
                     break;
@@ -143,8 +152,7 @@ export class MOTC {
         this._atScope = false;
         this._atPropertyName = false;
         this._atPropertyValue = false;
-        this._atStatementName = false;
-        this._atStatementValue = false;
+        this._atStatement = false;
     }
 
     private _resetTemp(): void {

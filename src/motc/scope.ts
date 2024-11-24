@@ -1,4 +1,4 @@
-import type { IObjectScope, IScope, ITimeScope, Property, Statement } from "./types";
+import type { IObjectScope, IScope, ITimeScope, Property, Statement, StatementType } from "./types";
 
 export abstract class Scope implements IScope {
     
@@ -24,7 +24,7 @@ export class TimeScope extends Scope implements ITimeScope {
         super(name);
     }
 
-    public addStatement(): void {
-        /** @todo */
+    public addStatement(verb: StatementType, args: string[]): void {
+        this.statements.push({ verb, args });
     }
 }
