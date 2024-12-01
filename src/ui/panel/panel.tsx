@@ -57,6 +57,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     private _pauseSwitcher: Switcher;
     private _fpsLabel: HTMLSpanElement;
     private _switchers: Switcher[] = [];
+    private _modalAutoPause: boolean = false;
 
     public constructor(target: ComponentLike, _options?: PanelOptions) {
         super(
@@ -153,8 +154,18 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             this._renderer.refresh();
         }));
 
-        this._register(modalProvider.onModalOpen(() => this._pauseRenderer()));
-        this._register(modalProvider.onModalClose(() => this._unpauseRenderer()));
+        this._register(modalProvider.onModalOpen(() => {
+            if(!this._renderer.isPaused) {
+                this._pauseRenderer();
+                this._modalAutoPause = true;
+            }
+        }));
+        this._register(modalProvider.onModalClose(() => {
+            if(this._modalAutoPause) {
+                this._unpauseRenderer();
+                this._modalAutoPause = false;
+            }
+        }));
 
         for(const switcher of this._switchers) {
             this._register(
