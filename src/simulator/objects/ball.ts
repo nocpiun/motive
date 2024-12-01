@@ -16,9 +16,9 @@ export class Ball extends CanvasObject<RoundHitbox> {
 
         x: number,
         y: number,
-        public radius: number = 15,
         mass: number = 1,
-        velocity: Vector = Vector.Zero
+        velocity: Vector = Vector.Zero,
+        public radius: number = 15,
     ) {
         super(
             render,

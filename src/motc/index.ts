@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import type { Render } from "@/simulator/render/render";
 import type { Scope, ObjectScope, TimeScope } from "./scope";
 
 import { ChunkType, type StatementType, type MOT } from "./types";
@@ -189,4 +190,41 @@ export class MOTC {
     public static parse(src: string): MOT {
         return new MOTC(src)._tokenize();
     }
+
+    /** @todo */
+    public static stringify(mot: MOT): string {
+        return "";
+    }
+}
+
+export class Executor {
+    
+    public constructor(private _renderer: Render) { }
+
+    public execute(mot: MOT): void {
+        for(const chunk of mot.chunks) {
+            if(chunk instanceof ObjectsChunk) {
+                for(const scope of chunk.members) {
+                    const properties = scope.properties;
+
+                    try {
+                        /** @todo */
+                        console.log(properties);
+                    } catch(e) {
+                        alert("Failed when importing mot file.");
+                    }
+                }
+            }
+            
+            if(chunk instanceof WhenChunk) {
+                // for(const scope of chunk.members) {
+                //     
+                // }
+            }
+        }
+    }
+
+    // public make(): MOT {
+
+    // }
 }

@@ -1,4 +1,4 @@
-import type { IObjectScope, IScope, ITimeScope, Property, Statement, StatementType } from "./types";
+import type { IObjectScope, IScope, ITimeScope, Properties, Statement, StatementType } from "./types";
 
 export abstract class Scope implements IScope {
     
@@ -6,14 +6,14 @@ export abstract class Scope implements IScope {
 }
 
 export class ObjectScope extends Scope implements IObjectScope {
-    public properties: Property[] = [];
+    public properties: Properties = {};
 
     public constructor(name: string) {
         super(name);
     }
 
     public addProperty(key: string, value: string): void {
-        this.properties.push({ key, value });
+        this.properties[key] = value;
     }
 }
 

@@ -34,17 +34,14 @@ export interface IScope {
 }
 
 export interface IObjectScope extends IScope {
-    properties: Property[]
+    properties: Properties
 }
 
 export interface ITimeScope extends IScope {
     statements: Statement[]
 }
 
-export interface Property {
-    key: string
-    value: string
-}
+export type Properties = { [key: string]: string };
 
 export enum StatementType {
     MOVE = "move",

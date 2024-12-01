@@ -4,12 +4,16 @@
 
 @objects {
     ball {
+        x: 100
+        y: 200
         id: ball1
         name: m
         mass: 5
     }
 
     block {
+        x: 300
+        y: 200
         id: block1
         name: M
         mass: 10

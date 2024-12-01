@@ -39,19 +39,19 @@ describe("motc-tests", () => {
                     members: [
                         {
                             name: "ball",
-                            properties: [
-                                { key: "id", value: "ball1" },
-                                { key: "name", value: "m" },
-                                { key: "mass", value: "5" }
-                            ]
+                            properties: {
+                                "id": "ball1",
+                                "name": "m",
+                                "mass": "5"
+                            }
                         },
                         {
                             name: "block",
-                            properties: [
-                                { key: "id", value: "block1" },
-                                { key: "name", value: "M" },
-                                { key: "mass", value: "10" }
-                            ]
+                            properties: {
+                                "id": "block1",
+                                "name": "M",
+                                "mass": "10"
+                            }
                         }
                     ]
                 },

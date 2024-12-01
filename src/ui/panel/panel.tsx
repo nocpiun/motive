@@ -91,7 +91,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         versionLabel.textContent = getVersionString();
         const toolbarRightGroup = new ButtonGroup(rightSplit);
         toolbarRightGroup.addButton({ icon: Share, tooltip: $("panel.tooltip.export") }, () => {});
-        toolbarRightGroup.addButton({ icon: FilePlus2, tooltip: $("panel.tooltip.import") }, () => modalProvider.open("import"));
+        toolbarRightGroup.addButton({ icon: FilePlus2, tooltip: $("panel.tooltip.import") }, () => modalProvider.open("import", { renderer: this._renderer }));
         toolbarRightGroup.addButton({ icon: Info, tooltip: $("panel.tooltip.about"), tooltipPosition: "top-left" }, () => modalProvider.open("about"));
 
         const switcherContainer = createElement("div", this);

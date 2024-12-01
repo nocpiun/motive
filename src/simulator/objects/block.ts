@@ -18,9 +18,9 @@ export class Block extends CanvasObject<ConvexHitbox> {
 
         x: number,
         y: number,
-        public size: number = 30,
         mass: number = 1,
-        velocity: Vector = Vector.Zero
+        velocity: Vector = Vector.Zero,
+        public size: number = 30,
     ) {
         super(
             render,

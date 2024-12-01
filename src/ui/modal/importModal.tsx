@@ -1,16 +1,22 @@
 import type { ComponentLike } from "@/ui/ui";
 import type { Button } from "@/ui/button/button";
+import type { Render } from "@/simulator/render/render";
 
 import { Import } from "lucide";
 
-import { MOTC } from "@/motc";
+import { Executor, MOTC } from "@/motc";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
 
 const inputLabelText = $("modal.import.label");
 
-export class ImportModal extends Modal {
+interface ImportModalData {
+    renderer: Render
+}
+
+export class ImportModal extends Modal<ImportModalData> {
+    private _renderer: Render | null = null;
     private _rawMot: string | null = null;
 
     private _clearButton: Button;
@@ -48,6 +54,10 @@ export class ImportModal extends Modal {
 
         this._inputLabel.addEventListener("dragover", (e: DragEvent) => e.preventDefault());
 
+        this._register(this.onShow(({ renderer }) => {
+            this._renderer = renderer;
+        }));
+
         this._register(this.onClose(() => {
             this._clear();
         }));
@@ -61,11 +71,12 @@ export class ImportModal extends Modal {
     }
 
     private _loadFile(): void {
+        if(!this._renderer) throw new Error("No renderer is provided.");
         if(!this._rawMot) throw new Error("No mot file to load.");
 
-        /** @todo */
-        console.log(this._rawMot);
-        console.log(MOTC.parse(this._rawMot));
+        const parsed = MOTC.parse(this._rawMot);
+        const executor = new Executor(this._renderer);
+        executor.execute(parsed);
     }
 
     private _clear(): void {
