@@ -1,5 +1,6 @@
+import type { ObjectSettingsItem, ObjectSettingsList } from "@/common/settings";
 import type { ComponentLike } from "@/ui/ui";
-import type { CanvasObject, ObjectSettingsItem, ObjectSettingsList } from "@/simulator/object";
+import type { CanvasObject } from "@/simulator/object";
 
 import { Check, SlidersHorizontal, Trash2 } from "lucide";
 

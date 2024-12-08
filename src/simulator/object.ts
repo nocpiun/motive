@@ -1,8 +1,7 @@
 import type * as PIXI from "pixi.js";
 import type { Node } from "@/common/utils/linkedNodes";
+import type { ObjectSettingsList } from "@/common/settings";
 import type { ObjectModal } from "@/ui/modal/objectModal";
-import type { InputOptions } from "@/ui/input/input";
-import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { Point, Render, Renderable } from "./render/render";
 import type { Hitbox } from "./hitbox";
 import type { Ground } from "./objects/ground";
@@ -17,15 +16,6 @@ import { generateRandomID } from "@/common/utils/utils";
 import { Vector } from "./vector";
 import { Force, ForceCollection } from "./force";
 import { type Color, colors } from "./render/colors";
-
-export interface ObjectSettingsItem<V = any> {
-    name: string
-    value: V
-    type?: "input" | "switcher"
-    controlOptions?: Omit<InputOptions, "defaultValue"> | Omit<SwitcherOptions, "defaultValue">
-}
-
-export type ObjectSettingsList = Record<string, ObjectSettingsItem>;
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild

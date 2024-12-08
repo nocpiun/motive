@@ -1,4 +1,5 @@
-import type { CanvasObject, ObjectSettingsItem, ObjectSettingsList } from "@/simulator/object";
+import type { ObjectSettingsItem, ObjectSettingsList } from "@/common/settings";
+import type { CanvasObject } from "@/simulator/object";
 
 import { Box, Check } from "lucide";
 
