@@ -1,0 +1,62 @@
+@import "@/style/mixin.less";
+@import "../form.less";
+
+:root {
+    // Select Colors
+    --mt-select-button-disabled-bg: var(--tw-color-gray-200);
+}
+
+.select {
+    position: relative;
+
+    &-button {
+        .form-control();
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        .icon-wrapper {
+            width: 17px;
+            height: 17px;
+            transition: transform .1s ease;
+            svg {
+                color: var(--mt-foreground-secondary);
+                width: 17px;
+                height: 17px;
+            }
+        }
+    }
+
+    .select-list {
+        .floating-list-box();
+        display: none;
+        position: absolute;
+        // top: 0; // To be set to the height of the button
+        left: 0;
+        right: 0;
+        width: 100%;
+        box-sizing: border-box;
+
+        &-item {
+            .floating-list-box-item();
+        }
+    }
+
+    &.opened {
+        .select-button .icon-wrapper {
+            transform: rotate(180deg);
+        }
+
+        .select-list {
+            display: flex !important;
+        }
+    }
+
+    &.select-disabled {
+        .select-button {
+            background-color: var(--mt-select-button-disabled-bg);
+            border-color: transparent;
+            cursor: default;
+        }
+    }
+}

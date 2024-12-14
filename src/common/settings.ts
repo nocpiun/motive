@@ -1,4 +1,4 @@
-import type { InputOptions } from "@/ui/input/input"
+import type { InputOptions } from "@/ui/form/input/input"
 import type { SwitcherOptions } from "@/ui/switcher/switcher"
 
 interface SettingsItem<V = any> {

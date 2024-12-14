@@ -1,0 +1,14 @@
+@import "../form.less";
+
+:root {
+    // Input Colors
+    --mt-input-text-selection-bg: var(--tw-color-blue-200);
+}
+
+.input {
+    .form-control();
+
+    &::selection {
+        background-color: var(--mt-input-text-selection-bg);
+    }
+}

@@ -1,0 +1,28 @@
+:root {
+    // Form Colors
+    --mt-form-control-bg: var(--tw-color-gray-100);
+    --mt-form-control-disabled-bg: var(--tw-color-gray-200);
+    --mt-form-control-border: var(--tw-color-gray-300);
+    --mt-form-control-active-border: var(--tw-color-blue-600);
+
+    // Form Properties
+    --mt-form-control-border-radius: 4px;
+}
+
+.form-control() {
+    background-color: var(--mt-form-control-bg);
+    border: 1px solid var(--mt-form-control-border);
+    border-radius: var(--mt-form-control-border-radius);
+    outline: none;
+    padding: 6px 8px;
+    font-family: NotoSans-SC;
+    font-size: 10pt;
+
+    &:focus {
+        border-color: var(--mt-form-control-active-border);
+    }
+
+    &-disabled {
+        background-color: var(--mt-form-control-disabled-bg);
+    }
+}

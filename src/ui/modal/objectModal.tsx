@@ -5,7 +5,7 @@ import type { CanvasObject } from "@/simulator/object";
 import { Check, SlidersHorizontal, Trash2 } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
-import { Input, type InputOptions } from "@/ui/input/input";
+import { Input, type InputOptions } from "@/ui/form/input/input";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";

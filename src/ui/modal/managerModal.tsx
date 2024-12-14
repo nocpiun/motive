@@ -5,7 +5,7 @@ import { Box, Check } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Component, type IComponent, type ComponentLike } from "@/ui/ui";
-import { Input, type InputOptions } from "@/ui/input/input";
+import { Input, type InputOptions } from "@/ui/form/input/input";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";

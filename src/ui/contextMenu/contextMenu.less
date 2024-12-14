@@ -1,16 +1,12 @@
+@import "@/style/mixin.less";
+
 :root {
     // Context Menu Colors
-    --mt-context-menu-bg: var(--tw-color-gray-100);
-    --mt-context-menu-border: var(--tw-color-gray-200);
-    --mt-context-menu-item-hover-bg: var(--tw-color-gray-200);
-    --mt-context-menu-item-active-bg: var(--tw-color-gray-300);
     --mt-context-menu-separator-color: var(--tw-color-gray-300);
     
     // Context Menu Properties
-    --mt-context-menu-border-width: 1px;
     --mt-context-menu-border-radius: 6px;
     --mt-context-menu-item-border-radius: calc(var(--mt-context-menu-border-radius) / 2);
-    --mt-context-menu-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 .context-menu-backdrop {
@@ -28,29 +24,16 @@
     }
 
     .context-menu {
+        .floating-list-box(var(--mt-context-menu-border-radius));
         position: relative;
         top: 0;
         left: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        width: fit-content;
-        height: fit-content;
-        padding: 7px;
-        background-color: var(--mt-context-menu-bg);
-        border: var(--mt-context-menu-border-width) solid var(--mt-context-menu-border);
-        border-radius: var(--mt-context-menu-border-radius);
-        box-shadow: var(--mt-context-menu-shadow);
         z-index: 3000;
     
         &-item {
             position: relative;
-            display: flex;
-            align-items: center;
-            padding: 2px 7px;
             padding-right: 10px;
-            border-radius: var(--mt-context-menu-item-border-radius);
-            cursor: pointer;
+            .floating-list-box-item(var(--mt-context-menu-item-border-radius));
 
             .icon-wrapper {
                 display: flex;
@@ -64,28 +47,10 @@
                 }
             }
 
-            button {
-                flex: 1;
-                color: var(--mt-foreground);
-                font-size: 10pt;
-                font-family: FiraCode, var(--mt-fonts);
-                border: none;
-                background-color: transparent;
-                text-align: left;
-                white-space: nowrap;
-                cursor: pointer;
-            }
-
             // .sub-context-menu-container {
             //     //
             // }
 
-            &:hover {
-                background-color: var(--mt-context-menu-item-hover-bg);
-            }
-            &:active {
-                background-color: var(--mt-context-menu-item-active-bg);
-            }
             &:has(.sub-context-menu-container .context-menu:hover) {
                 background-color: transparent;
             }

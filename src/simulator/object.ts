@@ -58,8 +58,8 @@ interface ICanvasObject extends Renderable {
     applySettings(settings: ObjectSettingsList): void
 
     onPointerDown: Event<PIXI.FederatedPointerEvent>
-    onPointerMove: Event<PointerEvent>
-    onPointerUp: Event<PointerEvent>
+    onPointerMove: Event<PIXI.FederatedPointerEvent>
+    onPointerUp: Event<PIXI.FederatedPointerEvent & { velocity: Vector }>
     onSettingsSave: Event<ObjectSettingsList>
 }
 

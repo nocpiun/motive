@@ -22,6 +22,7 @@ const defaultOptions: InputOptions = {
     type: "text",
     placeholder: "",
     defaultValue: "",
+    width: 200,
     disabled: false,
     maxLength: Infinity,
     minValue: -Infinity,
