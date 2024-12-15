@@ -30,7 +30,7 @@ export interface IForm extends IComponent {
     onSubmit: Event<SettingsList<any>>
 }
 
-export class Form extends Component<HTMLInputElement, FormOptions> implements IForm {
+export class Form extends Component<HTMLFormElement, FormOptions> implements IForm {
     // events
     private _onSubmit = new Emitter<SettingsList<any>>();
 

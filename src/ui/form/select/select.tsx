@@ -41,7 +41,7 @@ export interface ISelect extends IFormControl<string | null> {
     reset(): void
 }
 
-export class Select extends FormControl<string | null, SelectOptions> implements ISelect {
+export class Select extends FormControl<string | null, SelectOptions, HTMLDivElement> implements ISelect {
     public readonly selections: Selection[];
     private _value: string | null = null;
     private _isOpened: boolean = false;
