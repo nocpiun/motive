@@ -5,6 +5,7 @@ import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 
 import { Input, type InputOptions } from "./input/input";
+import { Select, type SelectOptions } from "./select/select";
 
 import "./form.less";
 
@@ -47,6 +48,8 @@ export class Form extends Component<HTMLInputElement, FormOptions> implements IF
         );
 
         if(this._options.id) this._element.id = this._options.id;
+
+        this._element.addEventListener("submit", (e) => e.preventDefault());
     }
 
     public get id() {
@@ -77,6 +80,17 @@ export class Form extends Component<HTMLInputElement, FormOptions> implements IF
                 break;
             }
             case "switcher": {
+                break;
+            }
+            case "select": {
+                component = new Select(controlContainer, {
+                    defaultValue: item.value as string,
+                    ...item.controlOptions as SelectOptions
+                });
+
+                (component as Select).onDidChange((value) => {
+                    this._list[key].value = value;
+                });
                 break;
             }
         }

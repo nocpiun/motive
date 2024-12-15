@@ -1,11 +1,16 @@
 import type { InputOptions } from "@/ui/form/input/input"
 import type { SwitcherOptions } from "@/ui/switcher/switcher"
+import type { SelectOptions } from "@/ui/form/select/select"
 
 export interface SettingsItem<V = any> {
     name: string
     value: V
-    type?: "input" | "switcher"
-    controlOptions?: Omit<InputOptions, "defaultValue"> | Omit<SwitcherOptions, "defaultValue">
+    type?: "input" | "switcher" | "select"
+    controlOptions?: (
+        Omit<InputOptions, "defaultValue">
+        | Omit<SwitcherOptions, "defaultValue">
+        | Omit<SelectOptions, "defaultValue">
+    )
 }
 
 export interface GlobalSettingsItem<V = any> extends SettingsItem<V> { }
