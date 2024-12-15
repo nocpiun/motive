@@ -9,56 +9,41 @@
     --mt-context-menu-item-border-radius: calc(var(--mt-context-menu-border-radius) / 2);
 }
 
-.context-menu-backdrop {
+.context-menu {
+    .floating-list-box(var(--mt-context-menu-border-radius));
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: transparent;
-    z-index: 2500;
+    z-index: 3000;
 
-    &.hidden {
-        width: 0;
-        height: 0;
+    &-item {
+        position: relative;
+        padding-right: 10px;
+        .floating-list-box-item(var(--mt-context-menu-item-border-radius));
+
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            width: 17px;
+            height: 17px;
+            padding-left: 5px;
+            svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        // .sub-context-menu-container {
+        //     //
+        // }
+
+        &:has(.sub-context-menu-container .context-menu:hover) {
+            background-color: transparent;
+        }
     }
 
-    .context-menu {
-        .floating-list-box(var(--mt-context-menu-border-radius));
-        position: relative;
-        top: 0;
-        left: 0;
-        z-index: 3000;
-    
-        &-item {
-            position: relative;
-            padding-right: 10px;
-            .floating-list-box-item(var(--mt-context-menu-item-border-radius));
-
-            .icon-wrapper {
-                display: flex;
-                align-items: center;
-                width: 17px;
-                height: 17px;
-                padding-left: 5px;
-                svg {
-                    width: 14px;
-                    height: 14px;
-                }
-            }
-
-            // .sub-context-menu-container {
-            //     //
-            // }
-
-            &:has(.sub-context-menu-container .context-menu:hover) {
-                background-color: transparent;
-            }
-        }
-    
-        .separator {
-            margin: 2px 5px;
-            border-top: 1px solid var(--mt-context-menu-separator-color);
-        }
+    .separator {
+        margin: 2px 5px;
+        border-top: 1px solid var(--mt-context-menu-separator-color);
     }
 }

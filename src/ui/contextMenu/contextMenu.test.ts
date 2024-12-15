@@ -47,23 +47,22 @@ describe("context-menu-component-tests", () => {
     ];
 
     const contextMenu = new ContextMenu(document.body, { anchor: { x: 50, y: 40 }, position: "bottom-right", items: testItems });
-    const menuElem = contextMenu.element.querySelector(".context-menu") as HTMLDivElement;
 
     it("context-menu-properties", () => {
 
-        expect(menuElem).toBeDefined();
+        expect(contextMenu.element).toBeDefined();
 
-        expect(Array.from(contextMenu.element.classList)).toStrictEqual(["context-menu-backdrop"]);
-        expect(menuElem.getAttribute("data-position")).toBe("bottom-right");
+        expect(Array.from(contextMenu.element.classList)).toStrictEqual(["context-menu"]);
+        expect(contextMenu.element.getAttribute("data-position")).toBe("bottom-right");
     });
 
     it("hover-widget-position", () => {
-        expect(menuElem.style.top).toBe("40px");
-        expect(menuElem.style.left).toBe("50px");
+        expect(contextMenu.element.style.top).toBe("40px");
+        expect(contextMenu.element.style.left).toBe("50px");
     });
 
     it("context-menu-items", () => {
-        menuElem.childNodes.forEach((node, key) => {
+        contextMenu.element.childNodes.forEach((node, key) => {
             const itemElem = node as HTMLDivElement;
 
             switch(key) {
@@ -95,7 +94,7 @@ describe("context-menu-component-tests", () => {
     });
 
     it("context-menu-actions", () => {
-        menuElem.childNodes.forEach((node, key) => {
+        contextMenu.element.childNodes.forEach((node, key) => {
             const itemElem = node as HTMLDivElement;
 
             switch(key) {

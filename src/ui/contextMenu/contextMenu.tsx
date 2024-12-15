@@ -25,7 +25,6 @@ export interface ContextMenuOptions {
     id?: string
     anchor: Anchor
     position: ContextMenuPosition
-    noBackdrop?: boolean
     isSubMenu?: boolean
     items: ContextMenuItemInfo[]
 }
@@ -36,7 +35,6 @@ const defaultOptions: ContextMenuOptions = {
         y: 0
     },
     position: "bottom-right",
-    noBackdrop: false,
     isSubMenu: false,
     items: []
 };
@@ -48,24 +46,18 @@ export interface IContextMenu extends IComponent {
 }
 
 export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> implements IContextMenu {
-    public contextMenuElem: HTMLDivElement;
     
     public constructor(target: ComponentLike, _options?: ContextMenuOptions) {
         super(
             (
-                <div className="context-menu-backdrop">
-                    <div className="context-menu" data-position={_options.position}/>
-                </div>
+                <div className="context-menu" data-position={_options.position}/>
             ),
             target,
             defaultOptions,
             _options
         );
 
-        this.contextMenuElem = this._element.querySelector(".context-menu") as HTMLDivElement;
-
         if(this._options.id) this._element.id = this._options.id;
-        if(this._options.noBackdrop) this._element.classList.add("hidden");
 
         for(const info of this._options.items) {
             if(info.hidden) continue;
@@ -78,8 +70,8 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
         this.setPosition(this._options.position);
 
         // Remove the context menu when the user clicks outside
-        this._element.addEventListener("mousedown", (e) => {
-            if(e.target === this._element && !this._options.isSubMenu) {
+        document.body.addEventListener("mousedown", (e) => {
+            if(!(e.target as HTMLElement).closest(".context-menu")) {
                 contextMenuProvider.clearContextMenus();
             }
         });
@@ -87,7 +79,7 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
     }
 
     private _createItem(info: ContextMenuItemInfo): void {
-        const item = new ContextMenuItem(this.contextMenuElem, {
+        const item = new ContextMenuItem(this._element, {
             ...info,
             id: `${this._options.id}.${generateRandomID()}`,
             parentMenu: this
@@ -100,7 +92,7 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
     }
 
     private _createSeparator(): void {
-        const item = new ContextMenuItem(this.contextMenuElem, {
+        const item = new ContextMenuItem(this._element, {
             separator: true,
             id: `${this._options.id}.${generateRandomID()}`,
             parentMenu: this
@@ -117,30 +109,30 @@ export class ContextMenu extends Component<HTMLDivElement, ContextMenuOptions> i
 
         switch(position) {
             case "top-left":
-                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                this._element.style.left = (this._options.anchor.x - width) +"px";
+                this._element.style.top = (this._options.anchor.y - height) +"px";
                 break;
             case "top-right":
-                this.contextMenuElem.style.left = this._options.anchor.x +"px";
-                this.contextMenuElem.style.top = (this._options.anchor.y - height) +"px";
+                this._element.style.left = this._options.anchor.x +"px";
+                this._element.style.top = (this._options.anchor.y - height) +"px";
                 break;
             case "bottom-left":
-                this.contextMenuElem.style.left = (this._options.anchor.x - width) +"px";
-                this.contextMenuElem.style.top = this._options.anchor.y +"px";
+                this._element.style.left = (this._options.anchor.x - width) +"px";
+                this._element.style.top = this._options.anchor.y +"px";
                 break;
             case "bottom-right":
-                this.contextMenuElem.style.left = this._options.anchor.x +"px";
-                this.contextMenuElem.style.top = this._options.anchor.y +"px";
+                this._element.style.left = this._options.anchor.x +"px";
+                this._element.style.top = this._options.anchor.y +"px";
                 break;
         }
     }
 
     public get width() {
-        return this.contextMenuElem.clientWidth;
+        return this._element.clientWidth;
     }
 
     public get height() {
-        return this.contextMenuElem.clientHeight;
+        return this._element.clientHeight;
     }
 
     public get id() {
@@ -234,7 +226,7 @@ class ContextMenuItem extends Component<HTMLDivElement, ContextMenuItemOptions> 
     private _createSubContextMenu(): void {
         if(this._subMenu) return;
 
-        const parentRect = this._options.parentMenu.contextMenuElem.getBoundingClientRect();
+        const parentRect = this._options.parentMenu.element.getBoundingClientRect();
 
         this._subMenu = new ContextMenu(this._subMenuContainer, {
             items: this._subItems,
