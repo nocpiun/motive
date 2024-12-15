@@ -1,21 +1,21 @@
+import type { ComponentLike } from "@/ui/ui";
+
 import { Emitter, type Event } from "@/common/event";
-import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
+import { FormControl, type IFormControl, type FormControlOptions } from "@/ui/form/control";
 
 import "./input.less";
 
 type InputType = "text" | "number";
 
-export interface InputOptions {
+export interface InputOptions extends FormControlOptions {
     type?: InputType
     placeholder?: string
     defaultValue?: string
     width?: number
     height?: number
-    disabled?: boolean
     maxLength?: number
     minValue?: number // number type input only
     maxValue?: number // number type input only
-    id?: string
 }
 
 const defaultOptions: InputOptions = {
@@ -23,17 +23,12 @@ const defaultOptions: InputOptions = {
     placeholder: "",
     defaultValue: "",
     width: 200,
-    disabled: false,
     maxLength: Infinity,
     minValue: -Infinity,
     maxValue: Infinity
 };
 
-export interface IInput extends IComponent {
-    value: string
-    disabled: boolean
-    id?: string
-
+export interface IInput extends IFormControl<string> {
     /**
      * Type a string into the input
      * 
@@ -43,19 +38,13 @@ export interface IInput extends IComponent {
      * // input.value === "hello world"
      */
     type(text: string): void
-    /**
-     * Clear the input
-     */
-    reset(): void
 
     onInput: Event<string>
-    onDidChange: Event<string>
 }
 
-export class Input extends Component<HTMLInputElement, InputOptions> implements IInput {
+export class Input extends FormControl<string, InputOptions, HTMLInputElement> implements IInput {
     // events
     private _onInput = new Emitter<string>();
-    private _onDidChange = new Emitter<string>();
 
     public constructor(target: ComponentLike, _options?: InputOptions) {
         super(
@@ -87,10 +76,8 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
         if(this._options.disabled) this.disabled = this._options.disabled;
         if(this._options.width) this._element.style.width = `${this._options.width}px`;
         if(this._options.height) this._element.style.height = `${this._options.height}px`;
-        if(this._options.id) this._element.id = this._options.id;
 
         this._register(this._onInput);
-        this._register(this._onDidChange);
     }
 
     private _validate(value: string): boolean {
@@ -131,10 +118,6 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
         return this._options.disabled;
     }
 
-    public get id() {
-        return this._options.id;
-    }
-
     public type(text: string) {
         if(this._options.disabled || !this._validate(this.value + text)) return;
 
@@ -154,11 +137,5 @@ export class Input extends Component<HTMLInputElement, InputOptions> implements 
 
     public get onDidChange() {
         return this._onDidChange.event;
-    }
-
-    public override dispose() {
-        this.reset();
-
-        super.dispose();
     }
 }

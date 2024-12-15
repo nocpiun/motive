@@ -1,7 +1,7 @@
 import type { InputOptions } from "@/ui/form/input/input"
 import type { SwitcherOptions } from "@/ui/switcher/switcher"
 
-interface SettingsItem<V = any> {
+export interface SettingsItem<V = any> {
     name: string
     value: V
     type?: "input" | "switcher"
@@ -11,7 +11,7 @@ interface SettingsItem<V = any> {
 export interface GlobalSettingsItem<V = any> extends SettingsItem<V> { }
 export interface ObjectSettingsItem<V = any> extends SettingsItem<V> { }
 
-type SettingsList<I extends SettingsItem> = Record<string, I>;
+export type SettingsList<I extends SettingsItem> = Record<string, I>;
 export type GlobalSettingsList = SettingsList<GlobalSettingsItem>;
 export type ObjectSettingsList = SettingsList<ObjectSettingsItem>;
 

@@ -1,7 +1,8 @@
+import type { ComponentLike } from "@/ui/ui";
+
 import { ChevronDown, createElement as createLucide } from "lucide";
 
-import { Emitter, type Event } from "@/common/event";
-import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
+import { FormControl, type IFormControl, type FormControlOptions } from "@/ui/form/control";
 
 import "./select.less";
 
@@ -10,14 +11,12 @@ export interface Selection {
     text: string
 }
 
-export interface SelectOptions {
+export interface SelectOptions extends FormControlOptions {
     selections: Selection[]
     placeholder?: string
     defaultValue?: string
     width?: number
     height?: number
-    disabled?: boolean
-    id?: string
 }
 
 const defaultOptions: SelectOptions = {
@@ -25,14 +24,10 @@ const defaultOptions: SelectOptions = {
     placeholder: "",
     defaultValue: "",
     width: 200,
-    disabled: false,
 };
 
-export interface ISelect extends IComponent {
+export interface ISelect extends IFormControl<string | null> {
     selections: Selection[]
-    value: string | null
-    disabled: boolean
-    id?: string
 
     /**
      * Select a selection
@@ -44,14 +39,9 @@ export interface ISelect extends IComponent {
      * Clear the selection
      */
     reset(): void
-
-    onDidChange: Event<string>
 }
 
-export class Select extends Component<HTMLDivElement, SelectOptions> implements ISelect {
-    // events
-    private _onDidChange = new Emitter<string>();
-
+export class Select extends FormControl<string | null, SelectOptions> implements ISelect {
     public readonly selections: Selection[];
     private _value: string | null = null;
     private _isOpened: boolean = false;
@@ -106,7 +96,6 @@ export class Select extends Component<HTMLDivElement, SelectOptions> implements 
         if(this._options.disabled) this.disabled = this._options.disabled;
         if(this._options.width) this._element.style.width = this._selectButton.style.width = `${this._options.width}px`;
         if(this._options.height) this._element.style.height = this._selectButton.style.height = `${this._options.height}px`;
-        if(this._options.id) this._element.id = this._options.id;
 
         this._selectButton.addEventListener("click", () => {
             this._isOpened
@@ -121,22 +110,22 @@ export class Select extends Component<HTMLDivElement, SelectOptions> implements 
             }
         });
         window.addEventListener("blur", () => this.closeList());
-
-        this._register(this._onDidChange);
     }
 
     private set value(value) {
-        this._value = value;
-
         if(value) {
+            this._value = value;
             this._selectButtonLabel.textContent = this._getSelection(value).text;
         } else if(this._options.placeholder) {
+            this._value = value;
             this._selectButtonLabel.textContent = this._options.placeholder;
         } else if(this._options.defaultValue) {
             this.value = this._options.defaultValue;
         } else {
             this.value = this.selections[0].value;
         }
+
+        this._onDidChange.fire(this._value);
     }
 
     public get value() {
@@ -151,10 +140,6 @@ export class Select extends Component<HTMLDivElement, SelectOptions> implements 
 
     public get disabled() {
         return this._options.disabled;
-    }
-
-    public get id() {
-        return this._options.id;
     }
 
     private _getSelection(value: string): Selection | never {
@@ -194,15 +179,5 @@ export class Select extends Component<HTMLDivElement, SelectOptions> implements 
 
     public reset() {
         this.value = null;
-    }
-
-    public get onDidChange() {
-        return this._onDidChange.event;
-    }
-
-    public override dispose() {
-        this.reset();
-
-        super.dispose();
     }
 }

@@ -1,11 +1,11 @@
-import type { ObjectSettingsItem, ObjectSettingsList } from "@/common/settings";
+import type { ObjectSettingsList } from "@/common/settings";
 import type { ComponentLike } from "@/ui/ui";
 import type { CanvasObject } from "@/simulator/object";
 
 import { Check, SlidersHorizontal, Trash2 } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
-import { Input, type InputOptions } from "@/ui/form/input/input";
+import { Form } from "@/ui/form/form";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
@@ -30,7 +30,7 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
     private _onSave = new Emitter<OnSaveListenerData>();
 
     private _data: ObjectModalData | null = null;
-    private _listElem: HTMLDivElement;
+    private _form: Form;
 
     public constructor(target: ComponentLike) {
         super(target, { id: "object-settings", title: "", icon: SlidersHorizontal });
@@ -41,7 +41,7 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
 
         // UI
 
-        this._listElem = this._container.appendChild(<div className="settings-list"/>);
+        this._form = new Form(this._container);
 
         this._register(this._onSave);
 
@@ -50,55 +50,19 @@ export class ObjectModal extends Modal<ObjectModalData> implements IObjectModal 
 
             this._setTitle($("obj."+ data.id));
 
-            for(const [key, item] of Object.entries(data.items)) {
-                this._addItem(key, item);
-            }
+            this._form.registerList(data.items);
         }));
 
         this._register(this.onClose(() => {
             this._data = null;
-            this._clearItems();
+            this._form.unregisterList();
         }));
-    }
-
-    private _addItem<V>(key: string, item: ObjectSettingsItem<V>): void {
-        const type = item.type ?? "input";
-        const itemElem = (
-            <div className="settings-list-item">
-                <span>{item.name}</span>
-                <div className="settings-list-item-control"/>
-            </div>
-        );
-
-        switch(type) {
-            case "input": {
-                const input = new Input(itemElem.querySelector(".settings-list-item-control"), {
-                    defaultValue: typeof item.value === "number" ? item.value.toString() : item.value as string,
-                    ...item.controlOptions as InputOptions
-                });
-
-                input.onInput((newValue) => {
-                    this._data.items[key].value = newValue;
-                });
-                break;
-            }
-            case "switcher": {
-                /** @todo */
-                break;
-            }
-        }
-
-        this._listElem.appendChild(itemElem);
-    }
-
-    private _clearItems(): void {
-        this._listElem.innerHTML = "";
     }
 
     private _save(): void {
         this._onSave.fire({
             obj: this._data.obj,
-            items: this._data.items
+            items: this._form.submit()
         });
         this.close();
     }

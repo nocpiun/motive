@@ -9,6 +9,17 @@
     --mt-form-control-border-radius: 4px;
 }
 
+form.form {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    .form-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
 .form-control() {
     background-color: var(--mt-form-control-bg);
     border: 1px solid var(--mt-form-control-border);

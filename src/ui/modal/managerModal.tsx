@@ -1,11 +1,10 @@
-import type { ObjectSettingsItem, ObjectSettingsList } from "@/common/settings";
 import type { CanvasObject } from "@/simulator/object";
 
 import { Box, Check } from "lucide";
 
 import { Emitter, type Event } from "@/common/event";
 import { Component, type IComponent, type ComponentLike } from "@/ui/ui";
-import { Input, type InputOptions } from "@/ui/form/input/input";
+import { Form } from "@/ui/form/form";
 import { $ } from "@/common/i18n";
 
 import { Modal } from "./modal";
@@ -19,10 +18,9 @@ export class ManagerModal extends Modal<ManagerModalData> {
 
     private _listElem: HTMLDivElement;
     private _listItems: ObjectListItem[] = [];
-    private _pageElem: HTMLDivElement;
+    private _form: Form;
 
     private _currentObject: CanvasObject | null = null;
-    private _currentSettingsList: ObjectSettingsList | null = null;
 
     public constructor(target: ComponentLike) {
         super(target, { id: "manager", title: $("modal.manager.title"), icon: Box, width: 600 });
@@ -35,7 +33,7 @@ export class ManagerModal extends Modal<ManagerModalData> {
         // UI
 
         this._listElem = this._container.appendChild(<div className="object-list"/>);
-        this._pageElem = this._container.appendChild(<div className="object-settings-list"/>);
+        this._form = new Form(this._container);
 
         this._register(this.onShow(({ objects }) => {
             this._objects = objects;
@@ -68,52 +66,18 @@ export class ManagerModal extends Modal<ManagerModalData> {
     private _setObjectPage(obj: CanvasObject): void {
         this._clearObjectPage();
         this._currentObject = obj;
-        this._currentSettingsList = obj.getSettingsList();
 
-        for(const [key, item] of Object.entries(this._currentSettingsList)) {
-            this._addSettingsItem(key, item);
-        }
-    }
-
-    private _addSettingsItem<V>(key: string, item: ObjectSettingsItem<V>): void {
-        const type = item.type ?? "input";
-        const itemElem = (
-            <div className="settings-list-item">
-                <span>{item.name}</span>
-                <div className="settings-list-item-control"/>
-            </div>
-        );
-
-        switch(type) {
-            case "input": {
-                const input = new Input(itemElem.querySelector(".settings-list-item-control"), {
-                    defaultValue: typeof item.value === "number" ? item.value.toString() : item.value as string,
-                    ...item.controlOptions as InputOptions
-                });
-
-                input.onInput((newValue) => {
-                    this._currentSettingsList[key].value = newValue;
-                });
-                break;
-            }
-            case "switcher": {
-                /** @todo */
-                break;
-            }
-        }
-
-        this._pageElem.appendChild(itemElem);
+        this._form.registerList(obj.getSettingsList());
     }
 
     private _clearObjectPage(): void {
         this._currentObject = null;
-        this._currentSettingsList = null;
 
-        this._pageElem.textContent = "";
+        this._form.unregisterList();
     }
 
     private _apply(): void {
-        this._currentObject.applySettings(this._currentSettingsList);
+        this._currentObject.applySettings(this._form.submit());
     }
 
     private _save(): void {
