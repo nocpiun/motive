@@ -53,6 +53,7 @@ interface ISettings {
      * @param type The type of the settings list (local / session), "local" by default
      */
     getValue<V = any>(key: string, type?: SettingsType): V
+    getList(type: SettingsType): GlobalSettingsList
 }
 
 const settingsStorageKey = "motive:settings";
@@ -114,6 +115,12 @@ export class Settings implements ISettings {
         const [, settings] = this._useSpecifiedSettings(type);
 
         return (settings[key] as GlobalSettingsItem<V>).value;
+    }
+
+    public getList(type: SettingsType) {
+        const [, settings] = this._useSpecifiedSettings(type);
+
+        return settings;
     }
 
     public static get(): Settings {
