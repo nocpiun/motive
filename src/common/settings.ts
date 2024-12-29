@@ -38,21 +38,6 @@ interface ISettings {
      */
     addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type?: SettingsType): void
     /**
-     * Set a value of an item in the settings
-     * 
-     * @param key The key of the item
-     * @param value The new value of the item
-     * @param type The type of the settings list (local / session), "local" by default
-     */
-    setValue<V = any>(key: string, value: V, type?: SettingsType): void
-    /**
-     * Get the value of an item in the settings
-     * 
-     * @param key The key of the item
-     * @param type The type of the settings list (local / session), "local" by default
-     */
-    getValue<V = any>(key: string, type?: SettingsType): V
-    /**
      * Check if a key exists in the settings
      * 
      * @param key The key to check
@@ -65,6 +50,13 @@ interface ISettings {
      * @param type The type of the settings list (local / session)
      */
     getList(type: SettingsType): GlobalSettingsList
+    /**
+     * Set the list of settings
+     * 
+     * @param list The list of settings
+     * @param type The type of the settings list (local / session)
+     */
+    setList(type: SettingsType, list: GlobalSettingsList): void
 }
 
 const settingsStorageKey = "motive:settings";
@@ -107,20 +99,6 @@ export class Settings implements ISettings {
         storage.setItem(settingsStorageKey, JSON.stringify(settings));
     }
 
-    public setValue<V = any>(key: string, value: V, type: SettingsType = SettingsType.LOCAL) {
-        const storage = this._useStorage(type);
-        const settings = this.getList(type);
-        
-        settings[key].value = value;
-        storage.setItem(settingsStorageKey, JSON.stringify(settings));
-    }
-
-    public getValue<V = any>(key: string, type: SettingsType = SettingsType.LOCAL): V {
-        const settings = this.getList(type);
-
-        return settings[key].value;
-    }
-
     public hasKey(key: string, type: SettingsType = SettingsType.LOCAL): boolean {
         const settings = this.getList(type);
 
@@ -131,6 +109,12 @@ export class Settings implements ISettings {
         const storage = this._useStorage(type);
 
         return JSON.parse(storage.getItem(settingsStorageKey) as string) as GlobalSettingsList;
+    }
+
+    public setList(type: SettingsType, list: GlobalSettingsList) {
+        const storage = this._useStorage(type);
+
+        storage.setItem(settingsStorageKey, JSON.stringify(list));
     }
 
     public static get(): Settings {

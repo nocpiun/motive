@@ -26,6 +26,7 @@
     "modal.settings.title": "Settings",
     "modal.settings.save": "Save",
     "modal.settings.cancel": "Cancel",
+    "modal.settings.recover": "Recover Default Settings",
 
     "modal.object.save": "Save",
     "modal.object.cancel": "Cancel",

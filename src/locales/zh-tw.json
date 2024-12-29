@@ -26,6 +26,7 @@
     "modal.settings.title": "設定",
     "modal.settings.save": "保存",
     "modal.settings.cancel": "取消",
+    "modal.settings.recover": "恢復默認設定",
 
     "modal.object.save": "保存",
     "modal.object.cancel": "取消",
