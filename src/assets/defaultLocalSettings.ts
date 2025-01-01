@@ -1,6 +1,6 @@
 import type { GlobalSettingsList } from "@/common/settings";
 
-import { BrickWall } from "lucide";
+import { BrickWall, Gauge } from "lucide";
 
 import { getLangList, getLocale } from "@/locales";
 import { $ } from "@/common/i18n";
@@ -18,12 +18,22 @@ export default {
             }))
         }
     },
+    fps: {
+        name: $("settings.fps"),
+        value: true,
+        type: "switcher",
+        controlOptions: {
+            icon: Gauge,
+            tooltip: "FPS"
+        }
+    },
     wallMode: {
         name: $("settings.border-wall"),
         value: true,
         type: "switcher",
         controlOptions: {
-            icon: BrickWall
+            icon: BrickWall,
+            tooltip: $("settings.border-wall")
         }
     },
     gravity: {

@@ -155,6 +155,11 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         this._register(this._renderer);
 
         this._register(this._renderer.onRender(({ fps }) => {
+            if(!Settings.get().getValue("fps")) {
+                this._fpsLabel.textContent = "";
+                return;
+            }
+
             this._fpsLabel.textContent = `FPS: ${fps.toFixed(2)}`;
         }));
         

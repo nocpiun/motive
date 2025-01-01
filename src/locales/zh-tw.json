@@ -71,6 +71,7 @@
 
     "settings.language": "語言",
     "settings.language.description": "需刷新以生效",
+    "settings.fps": "顯示 FPS",
     "settings.border-wall": "邊境墻",
     "settings.gravity": "重力加速度",
     "settings.friction": "地面摩擦係數",
