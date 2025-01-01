@@ -1,5 +1,7 @@
 import type { SettingsList } from "@/common/settings";
 
+import { deepClone } from "@/common/utils/utils";
+
 import { Form } from "./form";
 
 describe("form-component-tests", () => {
@@ -15,11 +17,14 @@ describe("form-component-tests", () => {
                 placeholder: "Test Placeholder"
             }
         },
-        // switcherTest: {
-        //     name: "Switcher Test",
-        //     value: true,
-        //     type: "switcher"
-        // },
+        switcherTest: {
+            name: "Switcher Test",
+            value: true,
+            type: "switcher",
+            controlOptions: {
+                text: "Switcher"
+            }
+        },
         selectTest: {
             name: "Select Test",
             value: "s2",
@@ -48,13 +53,13 @@ describe("form-component-tests", () => {
     it("form-register-settings-list", () => {
         form.registerList(Object.assign(list));
 
-        expect(form.element.childNodes.length).toBe(3);
+        expect(form.element.childNodes.length).toBe(4);
     });
 
     it("form-controls-properties", () => {
         const defaultTest = document.getElementById("defaultTest").querySelector(".form-item-control").childNodes[0] as HTMLInputElement;
         const inputTest = document.getElementById("inputTest").querySelector(".form-item-control").childNodes[0] as HTMLInputElement;
-        // const switcherTest = document.getElementById("switcherTest");
+        const switcherTest = document.getElementById("switcherTest").querySelector(".form-item-control").childNodes[0] as HTMLInputElement;
         const selectTest = document.getElementById("selectTest").querySelector(".form-item-control").childNodes[0] as HTMLDivElement;
 
         expect(defaultTest.tagName).toBe("INPUT");
@@ -62,6 +67,9 @@ describe("form-component-tests", () => {
         expect(inputTest.tagName).toBe("INPUT");
         expect(inputTest.value).toBe("Test Value 2");
         expect(inputTest.placeholder).toBe("Test Placeholder");
+
+        expect(switcherTest.tagName).toBe("BUTTON");
+        expect(switcherTest.querySelector("span").textContent).toBe("Switcher");
 
         expect(selectTest.tagName).toBe("DIV");
         expect(Array.from(selectTest.classList)).toStrictEqual(["select"]);
@@ -75,7 +83,7 @@ describe("form-component-tests", () => {
             counter++;
         });
 
-        expect(form.submit()).toStrictEqual(Object.assign(list));
+        expect(form.submit()).toStrictEqual(deepClone(list));
         expect(counter).toBe(1);
     });
 
