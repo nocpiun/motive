@@ -4,5 +4,3 @@ export function getVersionString(): string {
 }
 
 export const settingsStorageKey = "motive:settings";
-
-export const gravity = 1;

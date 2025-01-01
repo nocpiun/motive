@@ -61,8 +61,17 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
     private _addItem(key: string, item: SettingsItem) {
         const itemElem: HTMLDivElement = (
             <div className="form-item" id={key}>
-                <span>{item.name}</span>
-                <div className="form-item-control"/>
+                <div className="form-item-main">
+                    <span>{item.name}</span>
+                    <div className="form-item-control"/>
+                </div>
+                {
+                    item.description && (
+                        <div className="form-item-description">
+                            <span>{item.description}</span>
+                        </div>
+                    )
+                }
             </div>
         );
         const controlContainer = itemElem.querySelector(".form-item-control");

@@ -14,8 +14,9 @@ import { modalProvider } from "@/ui/modal/modalProvider";
 import { generateRandomID } from "@/common/utils/utils";
 
 import { Vector } from "./vector";
-import { Force, ForceCollection } from "./force";
+import { ForceCollection } from "./force";
 import { type Color, colors } from "./render/colors";
+import { GravityForce } from "./forces/gravityForce";
 
 interface ICanvasObject extends Renderable {
     obj: PIXI.ContainerChild
@@ -202,11 +203,11 @@ export class CanvasObject<H extends Hitbox = Hitbox> extends Disposable implemen
         this.mass = mass;
 
         // Update the gravity force
-        this.forces.set("gravity", Force.gravity(this.mass));
+        this.forces.set("gravity", new GravityForce(this.mass));
     }
 
     public applyGravity() {
-        this.forces.set("gravity", Force.gravity(this.mass));
+        this.forces.set("gravity", new GravityForce(this.mass));
     }
 
     public reverseVelocity(direction: "x" | "y", damping: number = 1) {

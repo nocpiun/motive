@@ -10,6 +10,7 @@ import { deepClone } from "./utils/utils";
 
 export interface SettingsItem<V = any> {
     name: string
+    description?: string
     value: V
     type?: "input" | "switcher" | "select"
     controlOptions?: (
@@ -143,8 +144,18 @@ export class Settings implements ISettings {
 
     public storeList(list: GlobalSettingsList, type: SettingsType = SettingsType.LOCAL): void {
         const [, settingsList] = this._useSettings(type);
+        const oldSettingsList = deepClone(settingsList);
+
         Object.assign(settingsList, list);
         this._storeToStorage(type);
+
+        for(const key in list) {
+            const isChanged = oldSettingsList[key].value !== list[key].value;
+
+            if(key === "language" && isChanged) {
+                window.location.reload();
+            }
+        }
     }
 
     public static get(): Settings {

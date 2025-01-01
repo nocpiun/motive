@@ -8,6 +8,7 @@ import { Vector } from "@/simulator/vector";
 import { GroundHitbox } from "@/simulator/hitboxes/groundHitbox";
 import { Force } from "@/simulator/force";
 import { SupportForce } from "@/simulator/forces/supportForce";
+import { Settings } from "@/common/settings";
 
 import { Ball } from "./ball";
 import { Block } from "./block";
@@ -16,8 +17,8 @@ export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly id = "ground";
 
     public static readonly GROUND_HEIGHT = 25;
-    public static readonly DAMPING = .9;
-    public static readonly FRICTION = .3; // mu
+    public static get DAMPING(): number { return Settings.get().getValue("damping") / 100; };
+    public static get FRICTION(): number { return Settings.get().getValue("friction") / 100; };
     public static readonly STABLE_VELOCITY = 5;
 
     public readonly normalVector: Vector = new Vector(0, 1);

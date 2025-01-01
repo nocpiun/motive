@@ -1,7 +1,5 @@
 import type { CanvasObject } from "./object";
 
-import { gravity as g } from "@/common/global";
-
 import { Vector, type IVector } from "./vector";
 
 export interface IForce extends IVector {
@@ -31,10 +29,6 @@ export class Force extends Vector implements IForce {
     }
 
     public update(_self: CanvasObject) { }
-
-    public static gravity(mass: number): Force {
-        return new Force(0, -mass * g);
-    }
 
     public static from(vector: Vector): Force {
         return new Force(vector.x, vector.y);
