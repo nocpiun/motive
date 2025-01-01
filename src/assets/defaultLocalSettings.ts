@@ -18,7 +18,7 @@ export default {
     },
     gravity: {
         name: $("settings.gravity"),
-        description: $("settings.gravity.description"),
+        description: "g / m/s²",
         value: 1,
         type: "input",
         controlOptions: {
@@ -28,7 +28,7 @@ export default {
     },
     friction: {
         name: $("settings.friction"),
-        description: $("settings.friction.description"),
+        description: "μ / %",
         value: 30,
         type: "input",
         controlOptions: {
@@ -38,7 +38,7 @@ export default {
     },
     damping: {
         name: $("settings.damping"),
-        description: $("settings.damping.description"),
+        description: "γ / %",
         value: 90,
         type: "input",
         controlOptions: {

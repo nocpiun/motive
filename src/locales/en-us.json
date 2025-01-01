@@ -72,9 +72,6 @@
     "settings.language": "Language",
     "settings.language.description": "Refreshing required",
     "settings.gravity": "Gravity",
-    "settings.gravity.description": "g / m/s²",
     "settings.friction": "Ground Friction",
-    "settings.friction.description": "μ / %",
-    "settings.damping": "Ground Damping",
-    "settings.damping.description": "γ / %"
+    "settings.damping": "Ground Damping"
 }

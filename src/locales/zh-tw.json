@@ -72,9 +72,6 @@
     "settings.language": "語言",
     "settings.language.description": "需刷新以生效",
     "settings.gravity": "重力加速度",
-    "settings.gravity.description": "g / m/s²",
     "settings.friction": "地面摩擦係數",
-    "settings.friction.description": "μ / %",
-    "settings.damping": "地面阻尼係數",
-    "settings.damping.description": "γ / %"
+    "settings.damping": "地面阻尼係數"
 }

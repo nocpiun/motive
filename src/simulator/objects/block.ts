@@ -47,6 +47,7 @@ export class Block extends CanvasObject<ConvexHitbox> {
             },
             mass: {
                 name: $("modal.object.block.mass"),
+                description: "m / kg",
                 value: this.mass,
                 controlOptions: {
                     type: "number",

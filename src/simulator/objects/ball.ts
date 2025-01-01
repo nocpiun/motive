@@ -45,6 +45,7 @@ export class Ball extends CanvasObject<RoundHitbox> {
             },
             mass: {
                 name: $("modal.object.ball.mass"),
+                description: "m / kg",
                 value: this.mass,
                 controlOptions: {
                     type: "number",
