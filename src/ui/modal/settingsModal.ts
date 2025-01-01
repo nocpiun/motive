@@ -18,7 +18,7 @@ export class SettingsModal extends Modal {
 
         this._addFooterButton("save", { text: $("modal.settings.save"), variant: "success", icon: Check }, "right", () => this._save());
         this._addFooterButton("cancel", { text: $("modal.settings.cancel"), variant: "secondary" }, "right", () => this._cancel());
-        this._addFooterButton("recover", { text: $("modal.settings.recover"), variant: "danger" }, "left", () => this._recoverDefault());
+        this._addFooterButton("recover", { text: $("modal.settings.recover"), variant: "secondary" }, "left", () => this._recoverDefault());
 
         // UI
 

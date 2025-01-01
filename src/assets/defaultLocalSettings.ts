@@ -47,4 +47,14 @@ export default {
             maxValue: 1
         }
     },
+    stableVelocity: {
+        name: $("settings.stable-velocity"),
+        description: "v / m/s",
+        value: 5,
+        type: "input",
+        controlOptions: {
+            type: "number",
+            minValue: 1
+        }
+    },
 } as GlobalSettingsList;

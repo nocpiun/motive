@@ -112,6 +112,11 @@ dialog.modal-dialog {
         }
     }
 
+    &#settings .modal-dialog-body {
+        overflow-y: auto;
+        .scrollbar-style();
+    }
+
     &#manager .modal-dialog-body {
         display: flex;
         gap: 5px;
@@ -219,8 +224,7 @@ dialog.modal-dialog {
     }
 
     &#settings .modal-dialog-body, &#object-settings .modal-dialog-body {
-        padding: 0 20px;
-        padding-top: 15px;
+        padding: 15px 20px;
     }
 
     &#import .modal-dialog-body {
