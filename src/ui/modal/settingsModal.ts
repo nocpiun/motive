@@ -23,7 +23,16 @@ export class SettingsModal extends Modal {
         // UI
 
         this._form = new Form(this._container);
-        this._form.registerList(this._settings.getList(SettingsType.LOCAL));
+
+        this._register(this.onShow(() => {
+            this._form.registerList(this._settings.getList(SettingsType.LOCAL));
+        }));
+
+        this._register(this._settings.onDidChange(({ key }) => {
+            if(key === "language") {
+                window.location.reload();
+            }
+        }));
     }
 
     private _save(): void {

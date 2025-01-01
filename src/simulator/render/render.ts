@@ -7,6 +7,7 @@ import { Disposable, type IDisposable } from "@/common/lifecycle";
 import { LinkedNodes } from "@/common/utils/linkedNodes";
 import { Ground } from "@/simulator/objects/ground";
 import { Emitter, type Event } from "@/common/event";
+import { Settings } from "@/common/settings";
 
 import { type Color, colors } from "./colors";
 // import { Ball } from "@/simulator/objects/ball";
@@ -80,12 +81,6 @@ interface IRender extends Renderable, IDisposable {
      * @param enabled Is the mouse mode enabled
      */
     setMouseMode(enabled: boolean): void
-    /**
-     * Toggle the wall mode (on / off)
-     * 
-     * @param enabled Is the wall mode enabled
-     */
-    setWallMode(enabled: boolean): void
     getObjects(): CanvasObject[]
 
     onRender: Event<OnRenderListenerData>
@@ -105,7 +100,6 @@ export class Render extends Disposable implements IRender {
 
     public isPaused: boolean = false;
     public isMouseMode: boolean = false;
-    public isWallMode: boolean = true;
 
     public constructor(public canvas: Canvas) {
         super();
@@ -169,7 +163,7 @@ export class Render extends Disposable implements IRender {
             }
 
             // Test wall
-            if(!this.isWallMode) return;
+            if(!Settings.get().getValue("wallMode")) return;
 
             const hitDirection = obj.hitbox.testWall(this.canvas);
             if(hitDirection) {
@@ -243,10 +237,6 @@ export class Render extends Disposable implements IRender {
         this.isMouseMode = enabled;
     }
 
-    public setWallMode(enabled: boolean) {
-        this.isWallMode = enabled;
-    }
-
     public getObjects() {
         return this._objects.toArray();
     }
@@ -272,7 +262,7 @@ export class Render extends Disposable implements IRender {
 
             infoList.push(`Objects: ${this._objects.length}`);
             if(this.isMouseMode) infoList.push("MouseMode");
-            if(this.isWallMode) infoList.push("WallMode");
+            if(Settings.get().getValue("wallMode")) infoList.push("WallMode");
 
             for(let i = 0; i < infoList.length; i++) {
                 this.container.addChild(this.createText(infoList[i], 10, 10 + i * 20));

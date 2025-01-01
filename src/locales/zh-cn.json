@@ -71,6 +71,7 @@
 
     "settings.language": "语言",
     "settings.language.description": "需刷新以生效",
+    "settings.border-wall": "边界墙",
     "settings.gravity": "重力加速度",
     "settings.friction": "地面摩擦系数",
     "settings.damping": "地面阻尼系数",

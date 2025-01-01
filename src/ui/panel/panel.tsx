@@ -12,7 +12,7 @@ import {
     Pause,
     Play,
     RotateCw,
-    Settings,
+    Settings as SettingsIcon,
     Share,
 } from "lucide";
 
@@ -23,6 +23,7 @@ import { Switcher } from "@/ui/switcher/switcher";
 import { modalProvider } from "@/ui/modal/modalProvider";
 import { contextMenuProvider } from "@/ui/contextMenu/contextMenuProvider";
 import { getVersionString } from "@/common/global";
+import { Settings } from "@/common/settings";
 import { $ } from "@/common/i18n";
 
 import "./panel.less";
@@ -53,6 +54,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
     // events
     private _onSelectedObjectChange = new Emitter<keyof ObjectNameMap>();
     
+    private _wallModeSwitcher: Switcher;
     private _refreshButton: Button;
     private _pauseSwitcher: Switcher;
     private _fpsLabel: HTMLSpanElement;
@@ -75,10 +77,10 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         const leftSplit = createElement("div", toolbar);
         leftSplit.classList.add("panel-toolbar-left-split");
         const toolbarLeftGroup = new ButtonGroup(leftSplit);
-        toolbarLeftGroup.addButton({ icon: Settings, tooltip: $("panel.tooltip.settings") }, () => modalProvider.open("settings"));
+        toolbarLeftGroup.addButton({ icon: SettingsIcon, tooltip: $("panel.tooltip.settings") }, () => modalProvider.open("settings"));
         toolbarLeftGroup.addButton({ icon: Box, tooltip: $("panel.tooltip.manager") }, () => modalProvider.open("manager", { objects: this._renderer.getObjects() }));
         toolbarLeftGroup.addSwitcher({ icon: MousePointer2, tooltip: $("panel.tooltip.mouse-mode") }, ({ isActive }) => this._renderer.setMouseMode(isActive));
-        toolbarLeftGroup.addSwitcher({ icon: BrickWall, tooltip: $("panel.tooltip.wall"), defaultValue: true }, ({ isActive }) => this._renderer.setWallMode(isActive));
+        this._wallModeSwitcher = toolbarLeftGroup.addSwitcher({ icon: BrickWall, tooltip: $("panel.tooltip.wall"), defaultValue: Settings.get().getValue("wallMode") }, ({ isActive }) => Settings.get().setValue("wallMode", isActive));
         this._refreshButton = toolbarLeftGroup.addButton({ icon: RotateCw, tooltip: $("panel.tooltip.refresh") });
         this._pauseSwitcher = toolbarLeftGroup.addSwitcher({ icon: Pause, tooltip: $("panel.tooltip.pause") }, ({ isActive }) => {
             isActive ? this._pauseRenderer() : this._unpauseRenderer();
@@ -112,7 +114,7 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
             { separator: true },
             {
                 text: $("panel.ctx.settings"),
-                icon: Settings,
+                icon: SettingsIcon,
                 action: () => modalProvider.open("settings")
             },
             {
@@ -126,6 +128,12 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 action: () => modalProvider.open("about")
             }
         ]);
+
+        this._register(Settings.get().onDidChange(({ key, value }) => {
+            if(key === "wallMode") {
+                this._wallModeSwitcher.setActive(value);
+            }
+        }));
     }
 
     private _pauseRenderer(): void {

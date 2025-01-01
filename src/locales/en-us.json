@@ -71,6 +71,7 @@
 
     "settings.language": "Language",
     "settings.language.description": "Refreshing required",
+    "settings.border-wall": "Border Wall",
     "settings.gravity": "Gravity",
     "settings.friction": "Ground Friction",
     "settings.damping": "Ground Damping",

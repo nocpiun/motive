@@ -1,5 +1,7 @@
 import type { GlobalSettingsList } from "@/common/settings";
 
+import { BrickWall } from "lucide";
+
 import { getLangList, getLocale } from "@/locales";
 import { $ } from "@/common/i18n";
 
@@ -14,6 +16,14 @@ export default {
                 value: lang,
                 text: getLocale(lang)["lang"]
             }))
+        }
+    },
+    wallMode: {
+        name: $("settings.border-wall"),
+        value: true,
+        type: "switcher",
+        controlOptions: {
+            icon: BrickWall
         }
     },
     gravity: {

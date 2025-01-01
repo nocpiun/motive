@@ -61,10 +61,6 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
     private _addItem(key: string, item: SettingsItem) {
         const itemElem: HTMLDivElement = (
             <div className="form-item" id={key}>
-                <div className="form-item-main">
-                    <span>{item.name}</span>
-                    <div className="form-item-control"/>
-                </div>
                 {
                     item.description && (
                         <div className="form-item-description">
@@ -72,6 +68,10 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
                         </div>
                     )
                 }
+                <div className="form-item-main">
+                    <span>{item.name}</span>
+                    <div className="form-item-control"/>
+                </div>
             </div>
         );
         const controlContainer = itemElem.querySelector(".form-item-control");
@@ -96,8 +96,8 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
                     ...item.controlOptions as SwitcherOptions
                 });
 
-                (component as Switcher).onDidChange((value) => {
-                    this._list[key].value = value;
+                (component as Switcher).onDidChange(({ isActive }) => {
+                    this._list[key].value = isActive;
                 });
                 break;
             }

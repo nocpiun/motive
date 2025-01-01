@@ -7,6 +7,7 @@ import defaultSessionSettings from "@/assets/defaultSessionSettings";
 
 import { settingsStorageKey } from "./global";
 import { deepClone } from "./utils/utils";
+import { Emitter } from "./event";
 
 export interface SettingsItem<V = any> {
     name: string
@@ -32,6 +33,11 @@ export enum SettingsType {
     LOCAL, SESSION
 }
 
+interface OnDidChangeListenerData {
+    key: string
+    value: any
+}
+
 interface ISettings {
     /**
      * Adds an item to the settings.
@@ -39,36 +45,46 @@ interface ISettings {
      * @param item - The item to be stored.
      * @param type - Optional. The type of the settings.
      */
-    addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type?: SettingsType): void;
+    addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type?: SettingsType): void
     /**
      * Checks if a key exists in the settings.
      * @param key - The key to check.
      * @param type - Optional. The type of the settings.
      * @returns True if the key exists, false otherwise.
      */
-    hasKey(key: string, type?: SettingsType): boolean;
+    hasKey(key: string, type?: SettingsType): boolean
     /**
      * Retrieves the value associated with a key.
      * @param key - The key whose value is to be retrieved.
      * @param type - Optional. The type of the settings.
      * @returns The value associated with the key.
      */
-    getValue<V = any>(key: string, type?: SettingsType): V;
+    getValue<V = any>(key: string, type?: SettingsType): V
+    /**
+     * Sets the value associated with a key.
+     * @param key - The key whose value is to be set.
+     * @param value - The value to set.
+     * @param type - Optional. The type of the settings.
+     */
+    setValue<V = any>(key: string, value: V, type?: SettingsType): void
     /**
      * Retrieves a list of settings.
      * @param type - The type of the settings.
      * @returns A list of global settings.
      */
-    getList(type: SettingsType): GlobalSettingsList;
+    getList(type: SettingsType): GlobalSettingsList
     /**
      * Stores a list of settings.
      * @param list - The list of settings to store.
      * @param type - Optional. The type of the settings.
      */
-    storeList(list: GlobalSettingsList, type?: SettingsType): void;
+    storeList(list: GlobalSettingsList, type?: SettingsType): void
 }
 
 export class Settings implements ISettings {
+    // events
+    private _onDidChange = new Emitter<OnDidChangeListenerData>();
+
     private static _instance: Settings | null = null;
 
     private readonly _local: Storage = window.localStorage;
@@ -120,13 +136,13 @@ export class Settings implements ISettings {
         storage.setItem(settingsStorageKey, JSON.stringify(settingsMap));
     }
 
-    public addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type: SettingsType = SettingsType.LOCAL): void {
+    public addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type: SettingsType = SettingsType.LOCAL) {
         const [, settingsList] = this._useSettings(type);
         settingsList[key] = item;
         this._storeToStorage(type);
     }
 
-    public hasKey(key: string, type: SettingsType = SettingsType.LOCAL): boolean {
+    public hasKey(key: string, type: SettingsType = SettingsType.LOCAL) {
         const [, settingsList] = this._useSettings(type);
         return key in settingsList;
     }
@@ -136,13 +152,19 @@ export class Settings implements ISettings {
         return settingsList[key].value as V;
     }
 
-    public getList(type: SettingsType): GlobalSettingsList {
+    public setValue<V = any>(key: string, value: V, type: SettingsType = SettingsType.LOCAL) {
+        const [, settingsList] = this._useSettings(type);
+        settingsList[key].value = value;
+        this._storeToStorage(type);
+    }
+
+    public getList(type: SettingsType) {
         const [, settingsList] = this._useSettings(type);
 
         return settingsList;
     }
 
-    public storeList(list: GlobalSettingsList, type: SettingsType = SettingsType.LOCAL): void {
+    public storeList(list: GlobalSettingsList, type: SettingsType = SettingsType.LOCAL) {
         const [, settingsList] = this._useSettings(type);
         const oldSettingsList = deepClone(settingsList);
 
@@ -152,10 +174,14 @@ export class Settings implements ISettings {
         for(const key in list) {
             const isChanged = oldSettingsList[key].value !== list[key].value;
 
-            if(key === "language" && isChanged) {
-                window.location.reload();
+            if(isChanged) {
+                this._onDidChange.fire({ key, value: list[key].value });
             }
         }
+    }
+
+    public get onDidChange() {
+        return this._onDidChange.event;
     }
 
     public static get(): Settings {
