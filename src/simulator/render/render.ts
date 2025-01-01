@@ -163,7 +163,7 @@ export class Render extends Disposable implements IRender {
             }
 
             // Test wall
-            if(!Settings.get().getValue("wallMode")) return;
+            if(!Settings.get().getValue("wallMode")) continue;
 
             const hitDirection = obj.hitbox.testWall(this.canvas);
             if(hitDirection) {

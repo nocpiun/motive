@@ -7,7 +7,7 @@ import defaultSessionSettings from "@/assets/defaultSessionSettings";
 
 import { settingsStorageKey } from "./global";
 import { deepClone } from "./utils/utils";
-import { Emitter } from "./event";
+import { Emitter, type Event } from "./event";
 
 export interface SettingsItem<V = any> {
     name: string
@@ -79,6 +79,8 @@ interface ISettings {
      * @param type - Optional. The type of the settings.
      */
     storeList(list: GlobalSettingsList, type?: SettingsType): void
+
+    onDidChange: Event<OnDidChangeListenerData>
 }
 
 export class Settings implements ISettings {
