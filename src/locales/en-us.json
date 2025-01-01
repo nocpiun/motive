@@ -1,4 +1,6 @@
 {
+    "lang": "English (US)",
+
     "app.name": "Motive",
 
     "modal.about.title": "About",
@@ -65,5 +67,7 @@
     "obj.pole": "Pole",
     "obj.spring": "Spring",
     "obj.arc": "Arc",
-    "obj.fixed": "Fixed Object"
+    "obj.fixed": "Fixed Object",
+
+    "settings.language": "Language"
 }

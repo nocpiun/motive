@@ -3,4 +3,6 @@ export function getVersionString(): string {
     return "v"+ version + (process.env.NODE_ENV === "development" ? " (dev)" : "")
 }
 
+export const settingsStorageKey = "motive:settings";
+
 export const gravity = 1;

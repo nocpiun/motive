@@ -1,23 +1,17 @@
 import { getLocale } from "@/locales";
 
-const langStorageKey = "motive:lang";
+import { settingsStorageKey } from "./global";
+
 const defaultLang = "zh-cn";
-const storage = window.localStorage;
-
-export function initI18n(): void {
-    if(!storage.getItem(langStorageKey)) {
-        setLang(defaultLang);
-    }
-
-    document.documentElement.lang = getLang();
-}
 
 export function getLang(): string {
-    return storage.getItem(langStorageKey) ?? defaultLang;
-}
+    const settings = JSON.parse(window.localStorage.getItem(settingsStorageKey));
 
-export function setLang(lang: string): void {
-    storage.setItem(langStorageKey, lang);
+    if(!settings || !Object.keys(settings).includes("language")) {
+        return defaultLang;
+    }
+    
+    return settings["language"];
 }
 
 /**

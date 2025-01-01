@@ -4,6 +4,7 @@ import type { FormControl } from "./control";
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { Switcher, type SwitcherOptions } from "@/ui/switcher/switcher";
+import { deepClone } from "@/common/utils/utils";
 
 import { Input, type InputOptions } from "./input/input";
 import { Select, type SelectOptions } from "./select/select";
@@ -111,7 +112,7 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
     public registerList<I extends SettingsItem>(list: SettingsList<I>): void {
         this.unregisterList();
 
-        this._list = list;
+        this._list = deepClone(list);
 
         for(const [key, item] of Object.entries(this._list)) {
             this._addItem(key, item);

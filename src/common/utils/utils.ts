@@ -18,3 +18,31 @@ export function generateRandomID(length: number = 6): string {
 export function getPointDistance(point1: Point, point2: Point): number {
     return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
 }
+
+export function deepClone<T>(obj: T): T {
+    if(obj === null || typeof obj !== "object") {
+        return obj;
+    }
+
+    if(obj instanceof Date) {
+        return new Date(obj.getTime()) as any;
+    }
+
+    if(obj instanceof Array) {
+        const arrCopy = [] as any[];
+        obj.forEach((_, i) => {
+            arrCopy[i] = deepClone(obj[i]);
+        });
+        return arrCopy as any;
+    }
+
+    if(obj instanceof Object) {
+        const objCopy = {} as { [key: string]: any };
+        Object.keys(obj).forEach((key) => {
+            objCopy[key] = deepClone((obj as { [key: string]: any })[key]);
+        });
+        return objCopy as T;
+    }
+
+    throw new Error("The type of the object is not supported.");
+}

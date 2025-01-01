@@ -4,8 +4,8 @@ import { Check, Settings as SettingsIcon } from "lucide";
 
 import { Form } from "@/ui/form/form";
 import { type GlobalSettingsList, Settings, SettingsType } from "@/common/settings";
-import defaultLocalSettings from "@/assets/defaultLocalSettings.json";
 import { $ } from "@/common/i18n";
+import defaultLocalSettings from "@/assets/defaultLocalSettings";
 
 import { Modal } from "./modal";
 
@@ -29,7 +29,7 @@ export class SettingsModal extends Modal {
     private _save(): void {
         const unsavedSettings = this._form.submit() as GlobalSettingsList;
 
-        this._settings.setList(SettingsType.LOCAL, unsavedSettings);
+        this._settings.storeList(unsavedSettings);
         this.close();
     }
 
@@ -41,5 +41,6 @@ export class SettingsModal extends Modal {
 
     private _recoverDefault(): void {
         this._form.registerList(defaultLocalSettings);
+        this._settings.storeList(defaultLocalSettings);
     }
 }

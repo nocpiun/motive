@@ -2,7 +2,6 @@ import "@/style/main.less";
 
 import { getVersionString } from "./common/global";
 import { Motive } from "./simulator";
-import { initI18n } from "./common/i18n";
 
 console.log(
     `\n%cMotive%c${getVersionString()} | Nocpiun Org\n`+
@@ -17,8 +16,6 @@ console.log(
     "font-family: Consolas;font-size: 8pt;color: white",
     "font-family: Consolas;font-size: 8pt;color: white"
 );
-
-initI18n();
 
 const root = document.getElementById("root");
 

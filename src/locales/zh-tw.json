@@ -1,4 +1,6 @@
 {
+    "lang": "繁體中文 (中國台灣)",
+
     "app.name": "Motive",
 
     "modal.about.title": "關於",
@@ -65,5 +67,7 @@
     "obj.pole": "杆",
     "obj.spring": "彈簧",
     "obj.arc": "圓弧",
-    "obj.fixed": "固定件"
+    "obj.fixed": "固定件",
+
+    "settings.language": "語言"
 }

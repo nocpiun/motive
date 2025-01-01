@@ -2,8 +2,11 @@ import type { InputOptions } from "@/ui/form/input/input";
 import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { SelectOptions } from "@/ui/form/select/select";
 
-import defaultLocalSettings from "@/assets/defaultLocalSettings.json";
-import defaultSessionSettings from "@/assets/defaultSessionSettings.json";
+import defaultLocalSettings from "@/assets/defaultLocalSettings";
+import defaultSessionSettings from "@/assets/defaultSessionSettings";
+
+import { settingsStorageKey } from "./global";
+import { deepClone } from "./utils/utils";
 
 export interface SettingsItem<V = any> {
     name: string
@@ -30,36 +33,39 @@ export enum SettingsType {
 
 interface ISettings {
     /**
-     * Add a new item to the settings
-     * 
-     * @param key The key of the item
-     * @param item The item to add
-     * @param type The type of the settings list (local / session), "local" by default
+     * Adds an item to the settings.
+     * @param key - The key under which the item will be stored.
+     * @param item - The item to be stored.
+     * @param type - Optional. The type of the settings.
      */
-    addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type?: SettingsType): void
+    addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type?: SettingsType): void;
     /**
-     * Check if a key exists in the settings
-     * 
-     * @param key The key to check
-     * @param type The type of the settings list (local / session), "local" by default
+     * Checks if a key exists in the settings.
+     * @param key - The key to check.
+     * @param type - Optional. The type of the settings.
+     * @returns True if the key exists, false otherwise.
      */
-    hasKey(key: string, type?: SettingsType): boolean
+    hasKey(key: string, type?: SettingsType): boolean;
     /**
-     * Get the list of settings
-     * 
-     * @param type The type of the settings list (local / session)
+     * Retrieves the value associated with a key.
+     * @param key - The key whose value is to be retrieved.
+     * @param type - Optional. The type of the settings.
+     * @returns The value associated with the key.
      */
-    getList(type: SettingsType): GlobalSettingsList
+    getValue<V = any>(key: string, type?: SettingsType): V;
     /**
-     * Set the list of settings
-     * 
-     * @param list The list of settings
-     * @param type The type of the settings list (local / session)
+     * Retrieves a list of settings.
+     * @param type - The type of the settings.
+     * @returns A list of global settings.
      */
-    setList(type: SettingsType, list: GlobalSettingsList): void
+    getList(type: SettingsType): GlobalSettingsList;
+    /**
+     * Stores a list of settings.
+     * @param list - The list of settings to store.
+     * @param type - Optional. The type of the settings.
+     */
+    storeList(list: GlobalSettingsList, type?: SettingsType): void;
 }
-
-const settingsStorageKey = "motive:settings";
 
 export class Settings implements ISettings {
     private static _instance: Settings | null = null;
@@ -67,59 +73,82 @@ export class Settings implements ISettings {
     private readonly _local: Storage = window.localStorage;
     private readonly _session: Storage = window.sessionStorage;
 
+    private _localSettings: GlobalSettingsList;
+    private _sessionSettings: GlobalSettingsList;
+
     private constructor() {
-        if(!this._local.getItem(settingsStorageKey)) {
-            this._local.setItem(settingsStorageKey, JSON.stringify(defaultLocalSettings));
-        }
-        if(!this._session.getItem(settingsStorageKey)) {
-            this._session.setItem(settingsStorageKey, JSON.stringify(defaultSessionSettings));
-        }
+        this._localSettings = deepClone(defaultLocalSettings);
+        this._sessionSettings = deepClone(defaultSessionSettings);
 
-        for(const key in defaultLocalSettings) {
-            if(!this.hasKey(key, SettingsType.LOCAL)) {
-                this.addItem(key, defaultLocalSettings[key], SettingsType.LOCAL);
-            }
-        }
-        for(const key in defaultSessionSettings) {
-            if(!this.hasKey(key, SettingsType.SESSION)) {
-                this.addItem(key, defaultSessionSettings[key], SettingsType.SESSION);
+        this._initializeSettings(SettingsType.LOCAL);
+        this._initializeSettings(SettingsType.SESSION);
+    }
+
+    private _useSettings(type: SettingsType): [Storage, GlobalSettingsList] {
+        return [
+            type === SettingsType.LOCAL ? this._local : this._session,
+            type === SettingsType.LOCAL ? this._localSettings : this._sessionSettings
+        ];
+    }
+
+    private _initializeSettings(type: SettingsType): void {
+        const [storage] = this._useSettings(type);
+        const storedSettings = storage.getItem(settingsStorageKey);
+
+        !storedSettings
+        ? this._storeToStorage(type)
+        : this._loadFromStorage(type);
+    }
+
+    private _loadFromStorage(type: SettingsType): void {
+        const [storage, settingsList] = this._useSettings(type);
+        const storedSettings = JSON.parse(storage.getItem(settingsStorageKey) || "{}");
+
+        for(const key in storedSettings) {
+            if(settingsList[key]) {
+                settingsList[key].value = storedSettings[key];
             }
         }
     }
 
-    private _useStorage(type: SettingsType): Storage {
-        return type === SettingsType.LOCAL ? this._local : this._session;
+    private _storeToStorage(type: SettingsType): void {
+        const [storage, settingsList] = this._useSettings(type);
+        const settingsMap = Object.fromEntries(
+            Object.entries(settingsList).map(([key, item]) => [key, item.value])
+        );
+        storage.setItem(settingsStorageKey, JSON.stringify(settingsMap));
     }
 
-    public addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type: SettingsType = SettingsType.LOCAL) {
-        const storage = this._useStorage(type);
-        const settings = this.getList(type);
-
-        settings[key] = item;
-        storage.setItem(settingsStorageKey, JSON.stringify(settings));
+    public addItem<V = any>(key: string, item: GlobalSettingsItem<V>, type: SettingsType = SettingsType.LOCAL): void {
+        const [, settingsList] = this._useSettings(type);
+        settingsList[key] = item;
+        this._storeToStorage(type);
     }
 
     public hasKey(key: string, type: SettingsType = SettingsType.LOCAL): boolean {
-        const settings = this.getList(type);
-
-        return key in settings;
+        const [, settingsList] = this._useSettings(type);
+        return key in settingsList;
     }
 
-    public getList(type: SettingsType) {
-        const storage = this._useStorage(type);
-
-        return JSON.parse(storage.getItem(settingsStorageKey) as string) as GlobalSettingsList;
+    public getValue<V = any>(key: string, type: SettingsType = SettingsType.LOCAL): V {
+        const [, settingsList] = this._useSettings(type);
+        return settingsList[key].value as V;
     }
 
-    public setList(type: SettingsType, list: GlobalSettingsList) {
-        const storage = this._useStorage(type);
+    public getList(type: SettingsType): GlobalSettingsList {
+        const [, settingsList] = this._useSettings(type);
 
-        storage.setItem(settingsStorageKey, JSON.stringify(list));
+        return settingsList;
+    }
+
+    public storeList(list: GlobalSettingsList, type: SettingsType = SettingsType.LOCAL): void {
+        const [, settingsList] = this._useSettings(type);
+        Object.assign(settingsList, list);
+        this._storeToStorage(type);
     }
 
     public static get(): Settings {
-        if(!Settings._instance) Settings._instance = new Settings();
-
+        if (!Settings._instance) Settings._instance = new Settings();
         return Settings._instance;
     }
 }
