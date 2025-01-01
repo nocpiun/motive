@@ -39,7 +39,7 @@ export class Motive extends Disposable {
         // Init metadata
         document.title = $("app.name");
         document.querySelector("html").lang = getLang();
-        document.head.appendChild(<link rel="icon" href={IconLight} media="(prefers-color-scheme: link)" type="image/png"/>);
+        document.head.appendChild(<link rel="icon" href={IconLight} media="(prefers-color-scheme: light)" type="image/png"/>);
         document.head.appendChild(<link rel="icon" href={IconDark} media="(prefers-color-scheme: dark)" type="image/png"/>);
 
         this._canvas = new Canvas(this._root);
