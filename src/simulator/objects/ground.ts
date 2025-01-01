@@ -17,8 +17,8 @@ export class Ground extends CanvasObject<GroundHitbox> {
     public static readonly id = "ground";
 
     public static readonly GROUND_HEIGHT = 25;
-    public static get DAMPING(): number { return Settings.get().getValue("damping") / 100; };
-    public static get FRICTION(): number { return Settings.get().getValue("friction") / 100; };
+    public static get DAMPING(): number { return Settings.get().getValue("damping"); };
+    public static get FRICTION(): number { return Settings.get().getValue("friction"); };
     public static readonly STABLE_VELOCITY = 5;
 
     public readonly normalVector: Vector = new Vector(0, 1);

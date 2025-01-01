@@ -28,8 +28,8 @@ export default {
     },
     friction: {
         name: $("settings.friction"),
-        description: "μ / %",
-        value: 30,
+        description: "μ",
+        value: .3,
         type: "input",
         controlOptions: {
             type: "number",
@@ -38,13 +38,13 @@ export default {
     },
     damping: {
         name: $("settings.damping"),
-        description: "γ / %",
-        value: 90,
+        description: "γ",
+        value: .9,
         type: "input",
         controlOptions: {
             type: "number",
             minValue: 0,
-            maxValue: 100
+            maxValue: 1
         }
     },
 } as GlobalSettingsList;
