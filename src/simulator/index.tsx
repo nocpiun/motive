@@ -15,7 +15,9 @@ import {
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
 import { Panel } from "@/ui/panel/panel";
-import { $ } from "@/common/i18n";
+import { $, getLang } from "@/common/i18n";
+import IconLight from "@/assets/icons/icon-light.png";
+import IconDark from "@/assets/icons/icon-dark.png";
 
 import { Render } from "./render/render";
 
@@ -34,6 +36,12 @@ export class Motive extends Disposable {
     }
 
     private _init(): void {
+        // Init metadata
+        document.title = $("app.name");
+        document.querySelector("html").lang = getLang();
+        document.head.appendChild(<link rel="icon" href={IconLight} media="(prefers-color-scheme: link)" type="image/png"/>);
+        document.head.appendChild(<link rel="icon" href={IconDark} media="(prefers-color-scheme: dark)" type="image/png"/>);
+
         this._canvas = new Canvas(this._root);
         this._render = new Render(this._canvas);
         

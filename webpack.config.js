@@ -22,7 +22,10 @@ module.exports = {
             {
                 test: /\.(ttf|otf|woff2?)$/,
                 type: "asset/resource",
-                dependency: { not: ["url"] }
+                dependency: { not: ["url"] },
+                generator: {
+                    filename: "assets/[name].[hash].[ext]"
+                }
             },
             {
                 test: /\.(js|mjs|ts)$/,
@@ -37,6 +40,14 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"]
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/,
+                loader: "file-loader",
+                options: {
+                    name: "[name].[hash].[ext]",
+                    outputPath: "assets"
+                }
             }
         ]
     },
