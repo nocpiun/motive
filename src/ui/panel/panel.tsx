@@ -134,6 +134,19 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
                 this._wallModeSwitcher.setActive(value);
             }
         }));
+
+        document.body.addEventListener("keydown", (e) => {
+            const code = e.key.charCodeAt(0);
+
+            if(code >= 48 && code <= 57) { // 0-9
+                const index = parseInt(e.key, 10) - 1;
+
+                if(index >= 0 && index < this._switchers.length) {
+                    const switcher = this._switchers[index];
+                    if(!switcher.disabled) switcher.select();
+                }
+            }
+        });
     }
 
     private _pauseRenderer(): void {
