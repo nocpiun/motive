@@ -38,6 +38,7 @@ export interface IToggle {
     onDidChange: Event<boolean>
 }
 
+/** @see https://github.com/nocpiun/toggle */
 export class Toggle extends Component<HTMLDivElement, ToggleOptions> implements IToggle {
     // events
     private _onDidChange = new Emitter<boolean>();
