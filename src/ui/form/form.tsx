@@ -4,6 +4,7 @@ import type { FormControl } from "./control";
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { Switcher, type SwitcherOptions } from "@/ui/switcher/switcher";
+import { Toggle, type ToggleOptions } from "@/ui/toggle/toggle";
 import { deepClone } from "@/common/utils/utils";
 
 import { Input, type InputOptions } from "./input/input";
@@ -109,6 +110,17 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
 
                 (component as Select).onDidChange((value) => {
                     this._list[key].value = value;
+                });
+                break;
+            }
+            case "toggle": {
+                component = new Toggle(controlContainer, {
+                    defaultValue: item.value as boolean,
+                    ...item.controlOptions as ToggleOptions
+                });
+
+                (component as Toggle).onDidChange((isActive) => {
+                    this._list[key].value = isActive;
                 });
                 break;
             }

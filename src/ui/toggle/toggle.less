@@ -1,0 +1,56 @@
+:root {
+    // Toggle Colors
+    --mt-toggle-bar-bg: var(--tw-color-gray-300);
+    --mt-toggle-bar-active-bg: var(--tw-color-blue-600);
+    --mt-toggle-bar-active-disabled-bg: var(--tw-color-blue-400);
+    --mt-toggle-knob-bg: var(--tw-color-gray-50);
+    --mt-toggle-knob-disabled-bg: var(--tw-color-gray-200);
+}
+
+.toggle {
+    width: 34px;
+    position: relative;
+    cursor: pointer;
+    &-bar {
+        z-index: 0;
+        width: 28px;
+        height: 12px;
+        border-radius: 8px;
+        position: absolute;
+        left: 3px;
+        top: 2px;
+        background-color: var(--mt-toggle-bar-bg);
+        transition: background-color ease 150ms;
+    }
+    &-knob {
+        z-index: 1;
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        position: relative;
+        transition: transform ease 150ms;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .4);
+        background-color: var(--mt-toggle-knob-bg);
+    }
+
+    &.toggle-active {
+        .toggle-bar {
+            background-color: var(--mt-toggle-bar-active-bg);
+        }
+        .toggle-knob {
+            transform: translateX(18px);
+        }
+
+        &.toggle-disabled .toggle-bar {
+            background-color: var(--mt-toggle-bar-active-disabled-bg);
+        }
+    }
+
+    &.toggle-disabled {
+        cursor: default;
+        .toggle-knob {
+            background-color: var(--tw-color-gray-200);
+        }
+    }
+}

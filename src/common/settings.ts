@@ -1,6 +1,7 @@
 import type { InputOptions } from "@/ui/form/input/input";
 import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { SelectOptions } from "@/ui/form/select/select";
+import type { ToggleOptions } from "@/ui/toggle/toggle";
 
 import defaultLocalSettings from "@/assets/defaultLocalSettings";
 import defaultSessionSettings from "@/assets/defaultSessionSettings";
@@ -13,11 +14,12 @@ export interface SettingsItem<V = any> {
     name: string
     description?: string
     value: V
-    type?: "input" | "switcher" | "select"
+    type?: "input" | "switcher" | "select" | "toggle"
     controlOptions?: (
         Omit<InputOptions, "defaultValue">
         | Omit<SwitcherOptions, "defaultValue">
         | Omit<SelectOptions, "defaultValue">
+        | Omit<ToggleOptions, "defaultValue">
     )
 }
 
