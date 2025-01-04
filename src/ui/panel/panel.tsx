@@ -136,6 +136,8 @@ export class Panel extends Component<HTMLDivElement, PanelOptions> implements IP
         }));
 
         document.body.addEventListener("keydown", (e) => {
+            if(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
             const code = e.key.charCodeAt(0);
 
             if(code >= 48 && code <= 57) { // 0-9
