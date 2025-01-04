@@ -2,6 +2,7 @@ import type { InputOptions } from "@/ui/form/input/input";
 import type { SwitcherOptions } from "@/ui/switcher/switcher";
 import type { SelectOptions } from "@/ui/form/select/select";
 import type { ToggleOptions } from "@/ui/toggle/toggle";
+import type { IconNode } from "lucide";
 
 import defaultLocalSettings from "@/assets/defaultLocalSettings";
 import defaultSessionSettings from "@/assets/defaultSessionSettings";
@@ -13,6 +14,7 @@ import { Emitter, type Event } from "./event";
 export interface SettingsItem<V = any> {
     name: string
     description?: string
+    icon?: IconNode
     value: V
     type?: "input" | "switcher" | "select" | "toggle"
     controlOptions?: (

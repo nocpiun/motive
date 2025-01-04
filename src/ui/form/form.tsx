@@ -1,6 +1,8 @@
 import type { SettingsItem, SettingsList } from "@/common/settings";
 import type { FormControl } from "./control";
 
+import { createElement as createLucide } from "lucide";
+
 import { Emitter, type Event } from "@/common/event";
 import { Component, type ComponentLike, type IComponent } from "@/ui/ui";
 import { Switcher, type SwitcherOptions } from "@/ui/switcher/switcher";
@@ -70,7 +72,14 @@ export class Form extends Component<HTMLFormElement, FormOptions> implements IFo
                     )
                 }
                 <div className="form-item-main">
-                    <span>{item.name}</span>
+                    <div className="form-item-label">
+                        {item.icon && (
+                            <div className="icon-wrapper">
+                                {createLucide(item.icon)}
+                            </div>
+                        )}
+                        <span>{item.name}</span>
+                    </div>
                     <div className="form-item-control"/>
                 </div>
             </div>

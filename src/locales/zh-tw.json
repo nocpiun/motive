@@ -71,6 +71,9 @@
 
     "settings.language": "語言",
     "settings.language.description": "需刷新以生效",
+    "settings.layout": "面板佈局",
+    "settings.layout.top": "靠上",
+    "settings.layout.bottom": "靠下",
     "settings.fps": "顯示 FPS",
     "settings.border-wall": "邊境墻",
     "settings.gravity": "重力加速度",

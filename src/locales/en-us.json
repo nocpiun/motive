@@ -71,6 +71,9 @@
 
     "settings.language": "Language",
     "settings.language.description": "Refreshing required",
+    "settings.layout": "Panel Layout",
+    "settings.layout.top": "Top",
+    "settings.layout.bottom": "Bottom",
     "settings.fps": "Display FPS",
     "settings.border-wall": "Border Wall",
     "settings.gravity": "Gravity",

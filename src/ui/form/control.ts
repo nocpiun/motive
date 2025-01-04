@@ -44,10 +44,4 @@ export abstract class FormControl<V, O, E extends HTMLElement = HTMLElement> ext
     public get onDidChange() {
         return this._onDidChange.event;
     }
-
-    public override dispose() {
-        this.reset();
-
-        super.dispose();
-    }
 }

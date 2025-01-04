@@ -15,6 +15,7 @@ import {
 import { Disposable } from "@/common/lifecycle";
 import { Canvas } from "@/ui/canvas/canvas";
 import { Panel } from "@/ui/panel/panel";
+import { Settings } from "@/common/settings";
 import { $, getLang } from "@/common/i18n";
 import IconLight from "@/assets/icons/icon-light.png";
 import IconDark from "@/assets/icons/icon-dark.png";
@@ -46,6 +47,9 @@ export class Motive extends Disposable {
         this._render = new Render(this._canvas);
         
         this._panel = new Panel(this._root);
+
+        // Layout
+        if(Settings.get().getValue("layout") === "top") this._root.classList.add("layout-reverse");
         
         // Register object switchers
         this._panel.addObjectSwitcher("ball", $("obj.ball"), Circle, false, true);
@@ -80,6 +84,14 @@ export class Motive extends Disposable {
 
         this._register(this._canvas.onRefresh(() => {
             if(!this._render.isPaused) this._render.refresh();
+        }));
+
+        this._register(Settings.get().onDidChange(({ key, value }) => {
+            if(key === "layout") {
+                value === "top"
+                ? this._root.classList.add("layout-reverse")
+                : this._root.classList.remove("layout-reverse");
+            }
         }));
     }
 }
