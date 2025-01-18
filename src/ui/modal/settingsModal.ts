@@ -4,6 +4,7 @@ import { Check, Settings as SettingsIcon } from "lucide";
 
 import { Form } from "@/ui/form/form";
 import { type GlobalSettingsList, Settings, SettingsType } from "@/common/settings";
+import { toastProvider } from "@/ui/toast/toastProvider";
 import { $ } from "@/common/i18n";
 import defaultLocalSettings from "@/assets/defaultLocalSettings";
 
@@ -40,6 +41,8 @@ export class SettingsModal extends Modal {
 
         this._settings.storeList(unsavedSettings);
         this.close();
+
+        toastProvider.showTitleToast("设置", "保存成功", 3000, "success");
     }
 
     private _cancel(): void {

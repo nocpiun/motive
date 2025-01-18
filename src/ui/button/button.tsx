@@ -71,7 +71,7 @@ export class Button extends Component<HTMLButtonElement, ButtonOptions> implemen
                         _options.icon
                         && (
                             <div className="icon-wrapper">
-                                {_options.icon && createLucide(_options.icon)}
+                                {createLucide(_options.icon)}
                             </div>
                         )
                     }

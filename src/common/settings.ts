@@ -4,6 +4,7 @@ import type { SelectOptions } from "@/ui/form/select/select";
 import type { ToggleOptions } from "@/ui/toggle/toggle";
 import type { IconNode } from "lucide";
 
+import { toastProvider } from "@/ui/toast/toastProvider";
 import defaultLocalSettings from "@/assets/defaultLocalSettings";
 import defaultSessionSettings from "@/assets/defaultSessionSettings";
 
@@ -118,9 +119,12 @@ export class Settings implements ISettings {
         const [storage] = this._useSettings(type);
         const storedSettings = storage.getItem(settingsStorageKey);
 
-        !storedSettings
-        ? this._storeToStorage(type)
-        : this._loadFromStorage(type);
+        if(!storedSettings) {
+            this._storeToStorage(type);
+            toastProvider.showTitleToast("欢迎使用 Motive!", "已初始化设置", Infinity);
+        } else {
+            this._loadFromStorage(type);
+        }
     }
 
     private _loadFromStorage(type: SettingsType): void {

@@ -1,0 +1,83 @@
+:root {
+    // Toast Colors
+    --mt-toast-secondary-bg: var(--tw-color-gray-100);
+    --mt-toast-secondary-border: var(--tw-color-gray-200);
+
+    --mt-toast-success-bg: var(--tw-color-green-700);
+    --mt-toast-success-border: var(--tw-color-green-700);
+
+    --mt-toast-danger-bg: var(--tw-color-red-600);
+    --mt-toast-danger-border: var(--tw-color-red-600);
+
+    // Toast Properties
+    --mt-toast-border-width: 1px;
+    --mt-toast-border-radius: 4px;
+    --mt-toast-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.toast {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 270px;
+    height: fit-content;
+    padding: 15px 18px;
+    border: var(--mt-toast-border-width) solid;
+    border-radius: var(--mt-toast-border-radius);
+    transform: translateY(-100%);
+    transition: transform ease .2s;
+    box-shadow: var(--mt-toast-shadow);
+    z-index: 1000;
+
+    &-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            &, svg {
+                width: 17px;
+                height: 17px;
+            }
+        }
+    }
+
+    &-main {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        .toast-title {
+            font-family: NotoSans-SC-Medium, NotoSans-Medium;
+            font-size: 13pt;
+        }
+        .toast-text {
+            font-size: 11pt;
+        }
+    }
+
+    &.toast-secondary {
+        background-color: var(--mt-toast-secondary-bg);
+        border-color: var(--mt-toast-secondary-border);
+    }
+
+    &.toast-success {
+        background-color: var(--mt-toast-success-bg);
+        border-color: var(--mt-toast-success-border);
+        .toast-main {
+            color: var(--mt-foreground-white);
+        }
+    }
+
+    &.toast-danger {
+        background-color: var(--mt-toast-danger-bg);
+        border-color: var(--mt-toast-danger-border);
+        .toast-main {
+            color: var(--mt-foreground-white);
+        }
+    }
+}
